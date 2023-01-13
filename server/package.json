@@ -1,0 +1,51 @@
+{
+  "name": "frourio-app-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "npm run generate && npm run migrate:dev",
+    "dev": "run-p dev:*",
+    "dev:build": "node ./scripts/build.dev.js",
+    "dev:server": "node-dev --respawn index.js",
+    "dev:frourio": "frourio --watch",
+    "dev:prisma": "prisma generate --watch",
+    "prebuild": "npm run generate && npm run migrate:deploy",
+    "build": "node ./scripts/build.prod.js",
+    "generate": "run-p generate:*",
+    "generate:frourio": "frourio",
+    "generate:prisma": "prisma generate",
+    "migrate:dev": "prisma migrate dev && npx prisma db seed",
+    "migrate:dev:createonly": "prisma migrate dev --create-only",
+    "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
+    "migrate:reset": "prisma migrate reset",
+    "start": "cross-env NODE_ENV=production node index.js"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.2.0",
+    "@fastify/helmet": "^10.1.0",
+    "@prisma/client": "^4.7.0",
+    "date-fns": "^2.28.0",
+    "dotenv": "^16.0.0",
+    "fastify": "^4.11.0",
+    "zod": "^3.20.2"
+  },
+  "devDependencies": {
+    "@types/busboy": "^1.3.0",
+    "@types/jest": "^27.4.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.15.16",
+    "esbuild-node-externals": "^1.5.0",
+    "frourio": "^0.31.1",
+    "node-dev": "^7.1.0",
+    "notios": "^0.4.0",
+    "prisma": "^4.7.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
