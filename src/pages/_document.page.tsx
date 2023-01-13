@@ -1,7 +1,8 @@
+import { createGetInitialProps } from '@mantine/next'
 import { Head, Html, Main, NextScript } from 'next/document'
 import { GA_ID } from 'src/utils/gtag'
 
-export default function Document() {
+function Document() {
   return (
     <Html lang="ja">
       <Head>
@@ -26,3 +27,7 @@ export default function Document() {
     </Html>
   )
 }
+
+Document.getInitialProps = createGetInitialProps()
+
+export default Document

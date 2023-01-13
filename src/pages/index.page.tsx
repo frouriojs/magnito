@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button } from '@mantine/core'
 import Head from 'next/head'
 
 const Home = () => {
@@ -10,7 +10,7 @@ const Home = () => {
         <link rel="icon" href="favicon.ico" />
       </Head>
       <span>next-frourio-starter</span>
-      <Button variant="contained">Hello World</Button>
+      <Button>Hello World</Button>
     </>
   )
 }

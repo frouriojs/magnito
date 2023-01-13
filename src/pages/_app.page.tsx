@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
@@ -28,9 +29,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <SafeHydrate>
-        <Component {...pageProps} />
-      </SafeHydrate>
+      <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
+        <SafeHydrate>
+          <Component {...pageProps} />
+        </SafeHydrate>
+      </MantineProvider>
     </RecoilRoot>
   )
 }
