@@ -1,0 +1,74 @@
+{
+  "kind": "identitytoolkit#DownloadAccountResponse",
+  "users": [
+    {
+      "localId": "DPSkoJjj8KsGHcQbxTgrjBvWBvry",
+      "createdAt": "1637156432583",
+      "lastLoginAt": "1637156432583",
+      "displayName": "Test User1",
+      "photoUrl": "https://github.com/icons8/flat-color-icons/raw/master/svg/businessman.svg",
+      "emailVerified": false,
+      "email": "testuser1@example.com",
+      "salt": "fakeSaltgovA2leAJckPXg5eYKxn",
+      "passwordHash": "fakeHash:salt=fakeSaltgovA2leAJckPXg5eYKxn:password=testuserexample1",
+      "passwordUpdatedAt": 1637156432583,
+      "validSince": "1637156432",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "testuser1@example.com",
+          "federatedId": "testuser1@example.com",
+          "rawId": "testuser1@example.com",
+          "displayName": "Test User1",
+          "photoUrl": "https://github.com/icons8/flat-color-icons/raw/master/svg/businessman.svg"
+        }
+      ]
+    },
+    {
+      "localId": "K9oXOw5p4rYejYmqSUnmOTszIayh",
+      "createdAt": "1637156463904",
+      "lastLoginAt": "1637156463903",
+      "displayName": "No Icon1",
+      "photoUrl": "",
+      "emailVerified": false,
+      "email": "noicon1@example.com",
+      "salt": "fakeSaltTtKyT0aMQ0ejTo3WMwE2",
+      "passwordHash": "fakeHash:salt=fakeSaltTtKyT0aMQ0ejTo3WMwE2:password=noicon1",
+      "passwordUpdatedAt": 1637156463903,
+      "validSince": "1637156463",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "noicon1@example.com",
+          "federatedId": "noicon1@example.com",
+          "rawId": "noicon1@example.com",
+          "displayName": "No Icon1",
+          "photoUrl": ""
+        }
+      ]
+    },
+    {
+      "localId": "t5lq8rDTp238rIIhJm1se9xniNmR",
+      "createdAt": "1637156455279",
+      "lastLoginAt": "1637156455279",
+      "displayName": "Test User2",
+      "photoUrl": "https://github.com/icons8/flat-color-icons/raw/master/svg/businesswoman.svg",
+      "emailVerified": false,
+      "email": "testuser2@example.com",
+      "salt": "fakeSaltdbUljyCSmcidArL2dqed",
+      "passwordHash": "fakeHash:salt=fakeSaltdbUljyCSmcidArL2dqed:password=testuserexample2",
+      "passwordUpdatedAt": 1637156455279,
+      "validSince": "1637156455",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "testuser2@example.com",
+          "federatedId": "testuser2@example.com",
+          "rawId": "testuser2@example.com",
+          "displayName": "Test User2",
+          "photoUrl": "https://github.com/icons8/flat-color-icons/raw/master/svg/businesswoman.svg"
+        }
+      ]
+    }
+  ]
+}

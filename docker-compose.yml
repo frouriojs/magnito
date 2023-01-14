@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  firebase:
+    build: ./docker/dev/firebase
+    restart: always
+    ports:
+      - 9099:9099 # Auth
+      - 4000:4000 # Emulator Suite UI
+    env_file:
+      - ./docker/dev/.env
+    working_dir: /opt/workspace
+    command: firebase emulators:start --only=auth --project=emulator --import=seeder
+
+  minio:
+    image: minio/minio
+    restart: always
+    ports:
+      - 9000:9000 # Storage
+      - 9001:9001 # Console
+    env_file:
+      - ./docker/dev/.env
+    volumes:
+      - ./docker/dev/minio/data:/data
+      - ./docker/dev/minio/policies:/policies
+    entrypoint: []
+    command: >
+      sh -c "cp -r /policies/* /data/.minio.sys/;
+      minio server /data --console-address :9001;"
+    healthcheck:
+      test: curl -I http://localhost:9000/minio/health/live
+      interval: 5s
+
+  mc:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    env_file:
+      - ./docker/dev/.env
+    entrypoint: []
+    command: |
+      sh -c "
+        set -euxo pipefail
+        mc alias set minio http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
+        mc mb minio/$$S3_BUCKET || true
+        mc policy set public minio/$$S3_BUCKET
+        mc admin service restart minio
+      "
+
+  postgres:
+    image: postgres:10
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ./docker/dev/.env
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
+    driver: local

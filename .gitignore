@@ -36,8 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
-# serverless stack files
-.serverless/
+# docker
+/docker/dev/minio/config/
+/docker/dev/minio/data/*
+!/docker/dev/minio/data/static
 
 # server
 server/index.js
