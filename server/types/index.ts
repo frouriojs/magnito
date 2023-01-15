@@ -1,9 +1,6 @@
-export type UserInfo = {
+export type VerifiedUser = {
   id: string
-  name: string
-  icon: string
-}
-
-export type AuthHeader = {
-  authorization: string
+  email: string
+  displayName: string | undefined
+  photoURL: string | undefined
 }

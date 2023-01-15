@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { RecoilRoot } from 'recoil'
+import { AuthProvider } from 'src/context/AuthContext'
 import { gaPageview } from 'src/utils/gtag'
 import '../styles/globals.css'
 
@@ -25,16 +26,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   return (
-    <RecoilRoot>
-      <Head>
-        <meta name="robots" content="noindex,nofollow" />
-      </Head>
-      <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
-        <SafeHydrate>
-          <Component {...pageProps} />
-        </SafeHydrate>
-      </MantineProvider>
-    </RecoilRoot>
+    <AuthProvider>
+      <RecoilRoot>
+        <Head>
+          <meta name="robots" content="noindex,nofollow" />
+        </Head>
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
+          <SafeHydrate>
+            <Component {...pageProps} />
+          </SafeHydrate>
+        </MantineProvider>
+      </RecoilRoot>
+    </AuthProvider>
   )
 }
 export default MyApp

@@ -1,4 +1,8 @@
 import api from '$/api/$api'
 import aspida from '@aspida/axios'
+import axios from 'axios'
 
-export const apiClient = api(aspida())
+const agent = axios.create()
+agent.defaults.withCredentials = true
+
+export const apiClient = api(aspida(agent))

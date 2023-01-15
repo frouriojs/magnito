@@ -1,7 +1,11 @@
-import { Button } from '@mantine/core'
+import { LoadingOverlay, Space } from '@mantine/core'
 import Head from 'next/head'
+import { Header } from 'src/components/organisms/Header'
+import { useAuthContext } from 'src/context/AuthContext'
 
 const Home = () => {
+  const { user } = useAuthContext()
+
   return (
     <>
       <Head>
@@ -9,8 +13,17 @@ const Home = () => {
         <meta name="description" content="next-frourio-starter" />
         <link rel="icon" href="favicon.ico" />
       </Head>
-      <span>next-frourio-starter</span>
-      <Button>Hello World</Button>
+      {user ? (
+        <>
+          <Header user={user} />
+          <Space h={48} />
+          <div css={{ fontSize: '80px', textAlign: 'center', fontWeight: 'bold' }}>
+            Welcome to frourio!
+          </div>
+        </>
+      ) : (
+        <LoadingOverlay visible />
+      )}
     </>
   )
 }
