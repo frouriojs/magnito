@@ -1,10 +1,11 @@
-import { LoadingOverlay, Space } from '@mantine/core'
+import { Space } from '@mantine/core'
+import { useAtom } from 'jotai'
 import Head from 'next/head'
 import { Header } from 'src/components/organisms/Header'
-import { useAuthContext } from 'src/context/AuthContext'
+import { userAtom } from './Atoms/user'
 
 const Home = () => {
-  const { user } = useAuthContext()
+  const [user] = useAtom(userAtom)
 
   return (
     <>
@@ -13,7 +14,7 @@ const Home = () => {
         <meta name="description" content="next-frourio-starter" />
         <link rel="icon" href="favicon.ico" />
       </Head>
-      {user ? (
+      {user && (
         <>
           <Header user={user} />
           <Space h={48} />
@@ -21,8 +22,6 @@ const Home = () => {
             Welcome to frourio!
           </div>
         </>
-      ) : (
-        <LoadingOverlay visible />
       )}
     </>
   )

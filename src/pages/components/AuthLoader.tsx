@@ -1,32 +1,18 @@
-import type { VerifiedUser } from '$/types'
 import { LoadingOverlay } from '@mantine/core'
 import { onAuthStateChanged } from 'firebase/auth'
+import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
-import type { ReactNode } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useReducer } from 'react'
+import { userAtom } from 'src/pages/Atoms/user'
 import { pagesPath } from 'src/utils/$path'
 import { apiClient } from 'src/utils/apiClient'
+import { createAuth } from 'src/utils/firebase'
 import { returnNull } from 'src/utils/returnNull'
-import { createAuth } from '../utils/firebase'
 
-export type AuthContextProps = {
-  user: VerifiedUser | null
-}
-
-export type AuthProps = {
-  children: ReactNode
-}
-
-const AuthContext = createContext<Partial<AuthContextProps>>({})
-
-export const useAuthContext = () => {
-  return useContext(AuthContext)
-}
-
-export const AuthProvider = ({ children }: AuthProps) => {
+export const AuthLoader = () => {
   const router = useRouter()
-  const [user, setUser] = useState<VerifiedUser | null>(null)
-  const [isInitedAuth, setIsInitedAuth] = useState(false)
+  const [user, setUser] = useAtom(userAtom)
+  const [isInitedAuth, dispatchIsInitedAuth] = useReducer(() => true, false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(createAuth(), async (fbUser) => {
@@ -38,13 +24,13 @@ export const AuthProvider = ({ children }: AuthProps) => {
         setUser(null)
       }
 
-      setIsInitedAuth(true)
+      dispatchIsInitedAuth()
     })
 
     return () => {
       unsubscribe()
     }
-  }, [])
+  }, [setUser])
 
   useEffect(() => {
     if (!isInitedAuth) return
@@ -59,10 +45,5 @@ export const AuthProvider = ({ children }: AuthProps) => {
     user ? redirectToHome() : redirectToLogin()
   }, [router, isInitedAuth, user])
 
-  return (
-    <AuthContext.Provider value={{ user }}>
-      {children}
-      {!isInitedAuth && <LoadingOverlay visible overlayBlur={2} />}
-    </AuthContext.Provider>
-  )
+  return <LoadingOverlay visible={!isInitedAuth} overlayBlur={2} />
 }
