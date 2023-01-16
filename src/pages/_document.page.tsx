@@ -6,6 +6,10 @@ function Document() {
   return (
     <Html lang="ja">
       <Head>
+        <title>next-frourio-starter</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="description" content="next-frourio-starter" />
+        <link rel="icon" href="favicon.ico" />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
           dangerouslySetInnerHTML={{

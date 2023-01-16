@@ -8,27 +8,6 @@ https://solufa.github.io/next-frourio-starter/
 
 ## ローカル開発
 
-### ミドルウェアのセットアップ
-
-```sh
-$ docker-compose up -d
-```
-
-#### Firebase Emulator
-
-http://localhost:4000/auth
-
-#### MinIO Console
-
-http://localhost:9001/
-
-#### PostgreSQL UI
-
-```sh
-$ cd server
-$ npx prisma studio
-```
-
 ### Node.js のインストール
 
 ローカルマシンに直接インストールする
@@ -48,8 +27,6 @@ $ npm install -g yarn
 フロントとバックエンドそれぞれに package.json があるので 2 回インストールが必要
 
 ```sh
-$ git clone |Git URL|
-$ cd |Project Directory|
 $ yarn
 $ yarn --cwd server
 ```
@@ -64,6 +41,27 @@ prisma 用の.env には自分で起動した PostgreSQL の設定を書く
 $ cp server/.env.example server/.env
 $ cp docker/dev/.env.example docker/dev/.env
 $ echo "API_DATABASE_URL=postgresql://root:root@localhost:5432/|Project Name|" >> server/prisma/.env
+```
+
+### ミドルウェアのセットアップ
+
+```sh
+$ docker-compose up -d
+```
+
+#### Firebase Emulator
+
+http://localhost:4000/auth
+
+#### MinIO Console
+
+http://localhost:9001/
+
+#### PostgreSQL UI
+
+```sh
+$ cd server
+$ npx prisma studio
 ```
 
 ### 開発サーバー起動

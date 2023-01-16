@@ -60,7 +60,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export const Header = ({ user }: { user: VerifiedUser }) => {
+export const BasicHeader = ({ user }: { user: VerifiedUser }) => {
   const { classes, theme, cx } = useStyles()
   const [opened, { toggle }] = useDisclosure(false)
   const [userMenuOpened, setUserMenuOpened] = useState(false)
