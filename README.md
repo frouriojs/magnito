@@ -33,11 +33,11 @@ $ yarn --cwd server
 
 ### 環境変数ファイルの作成
 
-.env ファイルを 3 つ作成する  
-prisma 用の.env には自分で起動した PostgreSQL の設定を書く  
-上記の Docker Compose を使う場合は以下の設定
+.env ファイルを 4 つ作成する  
+prisma 用の.env には自分で起動した PostgreSQL の設定を書く
 
 ```sh
+$ cp .env.example .env
 $ cp server/.env.example server/.env
 $ cp docker/dev/.env.example docker/dev/.env
 $ echo "API_DATABASE_URL=postgresql://root:root@localhost:5432/|Project Name|" >> server/prisma/.env
