@@ -1,4 +1,4 @@
-import type { VerifiedUser } from '$/types'
+import type { VerifiedUser } from '$/commonWithClient'
 
 export type Methods = {
   get: {

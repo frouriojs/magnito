@@ -1,5 +1,7 @@
+import type { VerifiedUserId } from './branded'
+
 export type VerifiedUser = {
-  id: string
+  id: VerifiedUserId
   email: string
   displayName: string | undefined
   photoURL: string | undefined

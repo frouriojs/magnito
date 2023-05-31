@@ -17,7 +17,10 @@ export const AuthLoader = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(createAuth(), async (fbUser) => {
       if (fbUser) {
-        await fbUser.getIdToken().then((id) => apiClient.session.$post({ body: { id } }))
+        await fbUser
+          .getIdToken()
+          .then((id) => apiClient.session.$post({ body: { id } }))
+          .catch(returnNull)
         await apiClient.me.$get().catch(returnNull).then(setUser)
       } else {
         await apiClient.session.$delete()

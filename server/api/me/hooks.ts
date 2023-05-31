@@ -1,5 +1,6 @@
+import type { VerifiedUser } from '$/commonWithClient'
+import { verifiedUserIdParser } from '$/commonWithClient/idParsers'
 import { getVerifiedUser } from '$/middleware/firebaseAdmin'
-import type { VerifiedUser } from '$/types'
 import { defineHooks } from './$relay'
 
 export type AdditionalRequest = {
@@ -16,7 +17,7 @@ export default defineHooks(() => ({
     }
 
     req.user = {
-      id: user.uid,
+      id: verifiedUserIdParser.parse(user.uid),
       email: user.email ?? '',
       displayName: user.displayName,
       photoURL: user.photoURL,
