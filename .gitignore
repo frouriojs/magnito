@@ -19,6 +19,8 @@ node_modules/
 .DS_Store
 *.pem
 tsconfig.tsbuildinfo
+*.css.d.ts
+*.css.d.ts.map
 $*.ts
 .env
 

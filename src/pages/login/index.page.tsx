@@ -1,47 +1,30 @@
-import { Button, Space } from '@mantine/core';
-import { GithubIcon } from '@mantine/ds';
+import { GithubIcon } from 'src/components/icons/GithubIcon';
 import { staticPath } from 'src/utils/$path';
 import { loginWithGitHub } from 'src/utils/loginWithGitHub';
+import { useLoadingOverlay } from '../@hooks/useLoadingOverlay';
+import styles from './index.module.css';
 
 const Login = () => {
+  const { addLoading, removeLoading } = useLoadingOverlay();
+  const login = async () => {
+    addLoading();
+    await loginWithGitHub();
+    removeLoading();
+  };
+
   return (
     <div
-      css={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: `center/cover url('${staticPath.images.odaiba_jpg}')`,
-      }}
+      className={styles.container}
+      style={{ background: `center/cover url('${staticPath.images.odaiba_jpg}')` }}
     >
-      <div
-        css={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          backdropFilter: 'blur(4px)',
-        }}
-      >
-        <div css={{ fontSize: '80px', fontWeight: 'bold', textShadow: '1px 1px white' }}>
-          next-frourio-starter
+      <div className={styles.main}>
+        <div className={styles.title}>next-frourio-starter</div>
+        <div style={{ marginTop: '16px' }} onClick={login}>
+          <div className={styles.btn}>
+            <GithubIcon size={18} fill="#fff" />
+            <span>Login with GitHub</span>
+          </div>
         </div>
-        <Space h={16} />
-        <Button
-          leftIcon={<GithubIcon size={16} />}
-          sx={(theme) => ({
-            backgroundColor: theme.colors.dark[theme.colorScheme === 'dark' ? 9 : 6],
-            color: '#fff',
-            '&:hover': {
-              backgroundColor: theme.colors.dark[theme.colorScheme === 'dark' ? 9 : 6],
-            },
-          })}
-          onClick={loginWithGitHub}
-        >
-          Login with GitHub
-        </Button>
       </div>
     </div>
   );
