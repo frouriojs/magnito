@@ -47,7 +47,7 @@
     "prisma": "^4.7.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^4.9.3",
+    "typescript": "^5.0.4",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.31.3"
   },
