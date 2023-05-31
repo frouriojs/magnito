@@ -20,20 +20,20 @@ jobs:
         with:
           node-version: 18
       - uses: actions/cache@v2
-        id: client-yarn-cache
+        id: client-npm-cache
         with:
           path: 'node_modules'
-          key: client-yarn-${{ hashFiles('yarn.lock') }}
+          key: client-npm-${{ hashFiles('package-lock.json') }}
       - uses: actions/cache@v2
-        id: server-yarn-cache
+        id: server-npm-cache
         with:
           path: 'server/node_modules'
-          key: server-yarn-${{ hashFiles('server/yarn.lock') }}
-      - run: yarn install
-        if: steps.client-yarn-cache.outputs.cache-hit != 'true'
-      - run: yarn install --cwd server
-        if: steps.server-yarn-cache.outputs.cache-hit != 'true'
-      - run: yarn build:client
+          key: server-npm-${{ hashFiles('server/package-lock.json') }}
+      - run: npm install
+        if: steps.client-npm-cache.outputs.cache-hit != 'true'
+      - run: npm install --prefix server
+        if: steps.server-npm-cache.outputs.cache-hit != 'true'
+      - run: npm run build:client
         env:
           API_BASE_PATH: ${{ secrets.API_BASE_PATH }}
           API_ORIGIN: ${{ secrets.API_ORIGIN }}

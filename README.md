@@ -14,21 +14,13 @@ https://solufa.github.io/next-frourio-starter/
 
 https://nodejs.org/ja/ の左ボタン、LTS をダウンロードしてインストール
 
-### yarn のインストール
-
-Node.js をインストールすると npm コマンドが使える
-
-```sh
-$ npm install -g yarn
-```
-
 ### リポジトリのクローンと npm モジュールのインストール
 
 フロントとバックエンドそれぞれに package.json があるので 2 回インストールが必要
 
 ```sh
-$ yarn
-$ yarn --cwd server
+$ npm i
+$ npm i --prefix server
 ```
 
 ### 環境変数ファイルの作成
@@ -69,7 +61,7 @@ $ npx prisma studio
 次回以降は以下のコマンドだけで開発できる
 
 ```sh
-$ yarn notios
+$ npm run notios
 ```
 
 Web ブラウザで http://localhost:3000 を開く
