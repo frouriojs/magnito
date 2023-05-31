@@ -7,9 +7,12 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - run: |
+          cp docker/dev/.env.example docker/dev/.env
+          docker-compose up -d
       - name: setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 18
       - uses: actions/cache@v2
@@ -29,3 +32,4 @@ jobs:
       - run: yarn lint
       - run: yarn typecheck
       - run: yarn test
+      - run: yarn --cwd server test
