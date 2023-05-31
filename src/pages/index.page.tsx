@@ -1,7 +1,7 @@
-import { Space } from '@mantine/core';
 import { useAtom } from 'jotai';
-import { BasicHeader } from 'src/components/organisms/BasicHeader';
+import { BasicHeader } from 'src/pages/@components/BasicHeader/BasicHeader';
 import { userAtom } from '../atoms/user';
+import styles from './index.module.css';
 
 const Home = () => {
   const [user] = useAtom(userAtom);
@@ -10,8 +10,7 @@ const Home = () => {
     user && (
       <>
         <BasicHeader user={user} />
-        <Space h={48} />
-        <div css={{ fontSize: '80px', textAlign: 'center', fontWeight: 'bold' }}>
+        <div className={styles.title} style={{ marginTop: '160px' }}>
           Welcome to frourio!
         </div>
       </>

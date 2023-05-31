@@ -1,4 +1,3 @@
-import { LoadingOverlay } from '@mantine/core';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
@@ -8,6 +7,7 @@ import { pagesPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
 import { createAuth } from 'src/utils/firebase';
 import { returnNull } from 'src/utils/returnNull';
+import { Loading } from '../../components/Loading/Loading';
 
 export const AuthLoader = () => {
   const router = useRouter();
@@ -48,5 +48,5 @@ export const AuthLoader = () => {
     user ? redirectToHome() : redirectToLogin();
   }, [router, isInitedAuth, user]);
 
-  return <LoadingOverlay visible={!isInitedAuth} overlayBlur={2} />;
+  return <Loading visible={!isInitedAuth} />;
 };

@@ -1,4 +1,3 @@
-import { MantineProvider } from '@mantine/core';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -6,16 +5,15 @@ import { useEffect } from 'react';
 import { gaPageview } from 'src/utils/gtag';
 import '../styles/globals.css';
 import { AuthLoader } from './@components/AuthLoader';
-import { useLoadingOverlay } from './@hooks/useLoadingOverlay';
+import { useLoading } from './@hooks/useLoading';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const SafeHydrate = dynamic(() => import('../components/SafeHydrate'), { ssr: false });
   const router = useRouter();
-  const { loadingOverlay } = useLoadingOverlay();
+  const { loadingElm } = useLoading();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleRouteChange = (url: string, { shallow }: any) => {
+    const handleRouteChange = (url: string, { shallow }: { shallow: boolean }) => {
       if (!shallow) gaPageview(url);
     };
 
@@ -26,13 +24,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.events]);
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
+    <>
       <SafeHydrate>
         <Component {...pageProps} />
-        {loadingOverlay}
+        {loadingElm}
       </SafeHydrate>
       <AuthLoader />
-    </MantineProvider>
+    </>
   );
 }
+
 export default MyApp;

@@ -1,0 +1,41 @@
+.container {
+  height: 60px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.main {
+  max-width: 960px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userBtn {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: 0.2s;
+}
+
+.userBtn:hover {
+  background: white;
+  border-color: #eee;
+}
+
+.userIcon {
+  border-radius: 50%;
+}
+
+.userName {
+  font-size: 14px;
+  color: #555;
+  font-weight: bold;
+}

@@ -1,11 +1,11 @@
 import { GithubIcon } from 'src/components/icons/GithubIcon';
 import { staticPath } from 'src/utils/$path';
-import { loginWithGitHub } from 'src/utils/loginWithGitHub';
-import { useLoadingOverlay } from '../@hooks/useLoadingOverlay';
+import { loginWithGitHub } from 'src/utils/login';
+import { useLoading } from '../@hooks/useLoading';
 import styles from './index.module.css';
 
 const Login = () => {
-  const { addLoading, removeLoading } = useLoadingOverlay();
+  const { addLoading, removeLoading } = useLoading();
   const login = async () => {
     addLoading();
     await loginWithGitHub();
