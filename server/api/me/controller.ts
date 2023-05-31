@@ -1,7 +1,7 @@
-import { defineController } from './$relay'
+import { defineController } from './$relay';
 
 export default defineController(() => ({
   get: ({ user }) => {
-    return { status: 200, body: user }
+    return { status: 200, body: user };
   },
-}))
+}));

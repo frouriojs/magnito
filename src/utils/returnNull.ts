@@ -1,1 +1,1 @@
-export const returnNull = () => null
+export const returnNull = () => null;

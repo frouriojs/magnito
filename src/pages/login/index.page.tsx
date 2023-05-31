@@ -1,7 +1,7 @@
-import { Button, Space } from '@mantine/core'
-import { GithubIcon } from '@mantine/ds'
-import { staticPath } from 'src/utils/$path'
-import { loginWithGitHub } from 'src/utils/loginWithGitHub'
+import { Button, Space } from '@mantine/core';
+import { GithubIcon } from '@mantine/ds';
+import { staticPath } from 'src/utils/$path';
+import { loginWithGitHub } from 'src/utils/loginWithGitHub';
 
 const Login = () => {
   return (
@@ -44,7 +44,7 @@ const Login = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

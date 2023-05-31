@@ -1,6 +1,6 @@
-import { createGetInitialProps } from '@mantine/next'
-import { Head, Html, Main, NextScript } from 'next/document'
-import { GA_ID } from 'src/utils/gtag'
+import { createGetInitialProps } from '@mantine/next';
+import { Head, Html, Main, NextScript } from 'next/document';
+import { GA_ID } from 'src/utils/gtag';
 
 function Document() {
   return (
@@ -29,9 +29,9 @@ function Document() {
         <NextScript />
       </body>
     </Html>
-  )
+  );
 }
 
-Document.getInitialProps = createGetInitialProps()
+Document.getInitialProps = createGetInitialProps();
 
-export default Document
+export default Document;

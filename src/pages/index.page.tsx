@@ -1,10 +1,10 @@
-import { Space } from '@mantine/core'
-import { useAtom } from 'jotai'
-import { BasicHeader } from 'src/components/organisms/BasicHeader'
-import { userAtom } from '../atoms/user'
+import { Space } from '@mantine/core';
+import { useAtom } from 'jotai';
+import { BasicHeader } from 'src/components/organisms/BasicHeader';
+import { userAtom } from '../atoms/user';
 
 const Home = () => {
-  const [user] = useAtom(userAtom)
+  const [user] = useAtom(userAtom);
 
   return (
     user && (
@@ -16,7 +16,7 @@ const Home = () => {
         </div>
       </>
     )
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -1,5 +1,5 @@
-import type { z } from 'zod'
+import type { z } from 'zod';
 
-type Branded<T extends string> = string & z.BRAND<T>
+type Branded<T extends string> = string & z.BRAND<T>;
 
-export type VerifiedUserId = Branded<'VerifiedUserId'>
+export type VerifiedUserId = Branded<'VerifiedUserId'>;

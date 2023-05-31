@@ -1,19 +1,19 @@
-import type { VerifiedUser } from '$/commonWithClient'
-import { verifiedUserIdParser } from '$/commonWithClient/idParsers'
-import { getVerifiedUser } from '$/middleware/firebaseAdmin'
-import { defineHooks } from './$relay'
+import type { VerifiedUser } from '$/commonWithClient';
+import { verifiedUserIdParser } from '$/commonWithClient/idParsers';
+import { getVerifiedUser } from '$/middleware/firebaseAdmin';
+import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {
-  user: VerifiedUser
-}
+  user: VerifiedUser;
+};
 
 export default defineHooks(() => ({
   preHandler: async (req, res) => {
-    const user = await getVerifiedUser(req.cookies.session)
+    const user = await getVerifiedUser(req.cookies.session);
 
     if (!user) {
-      res.status(401).send()
-      return
+      res.status(401).send();
+      return;
     }
 
     req.user = {
@@ -21,6 +21,6 @@ export default defineHooks(() => ({
       email: user.email ?? '',
       displayName: user.displayName,
       photoURL: user.photoURL,
-    }
+    };
   },
-}))
+}));

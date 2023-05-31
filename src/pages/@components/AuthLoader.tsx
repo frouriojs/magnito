@@ -1,18 +1,18 @@
-import { LoadingOverlay } from '@mantine/core'
-import { onAuthStateChanged } from 'firebase/auth'
-import { useAtom } from 'jotai'
-import { useRouter } from 'next/router'
-import { useEffect, useReducer } from 'react'
-import { userAtom } from 'src/atoms/user'
-import { pagesPath } from 'src/utils/$path'
-import { apiClient } from 'src/utils/apiClient'
-import { createAuth } from 'src/utils/firebase'
-import { returnNull } from 'src/utils/returnNull'
+import { LoadingOverlay } from '@mantine/core';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useAtom } from 'jotai';
+import { useRouter } from 'next/router';
+import { useEffect, useReducer } from 'react';
+import { userAtom } from 'src/atoms/user';
+import { pagesPath } from 'src/utils/$path';
+import { apiClient } from 'src/utils/apiClient';
+import { createAuth } from 'src/utils/firebase';
+import { returnNull } from 'src/utils/returnNull';
 
 export const AuthLoader = () => {
-  const router = useRouter()
-  const [user, setUser] = useAtom(userAtom)
-  const [isInitedAuth, dispatchIsInitedAuth] = useReducer(() => true, false)
+  const router = useRouter();
+  const [user, setUser] = useAtom(userAtom);
+  const [isInitedAuth, dispatchIsInitedAuth] = useReducer(() => true, false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(createAuth(), async (fbUser) => {
@@ -20,33 +20,33 @@ export const AuthLoader = () => {
         await fbUser
           .getIdToken()
           .then((id) => apiClient.session.$post({ body: { id } }))
-          .catch(returnNull)
-        await apiClient.me.$get().catch(returnNull).then(setUser)
+          .catch(returnNull);
+        await apiClient.me.$get().catch(returnNull).then(setUser);
       } else {
-        await apiClient.session.$delete()
-        setUser(null)
+        await apiClient.session.$delete();
+        setUser(null);
       }
 
-      dispatchIsInitedAuth()
-    })
+      dispatchIsInitedAuth();
+    });
 
     return () => {
-      unsubscribe()
-    }
-  }, [setUser])
+      unsubscribe();
+    };
+  }, [setUser]);
 
   useEffect(() => {
-    if (!isInitedAuth) return
+    if (!isInitedAuth) return;
 
     const redirectToHome = async () => {
-      router.pathname === pagesPath.login.$url().pathname && (await router.push(pagesPath.$url()))
-    }
+      router.pathname === pagesPath.login.$url().pathname && (await router.push(pagesPath.$url()));
+    };
     const redirectToLogin = async () => {
-      router.pathname === pagesPath.$url().pathname && (await router.push(pagesPath.login.$url()))
-    }
+      router.pathname === pagesPath.$url().pathname && (await router.push(pagesPath.login.$url()));
+    };
 
-    user ? redirectToHome() : redirectToLogin()
-  }, [router, isInitedAuth, user])
+    user ? redirectToHome() : redirectToLogin();
+  }, [router, isInitedAuth, user]);
 
-  return <LoadingOverlay visible={!isInitedAuth} overlayBlur={2} />
-}
+  return <LoadingOverlay visible={!isInitedAuth} overlayBlur={2} />;
+};

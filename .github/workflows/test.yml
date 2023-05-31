@@ -31,5 +31,8 @@ jobs:
         if: steps.server-yarn-cache.outputs.cache-hit != 'true'
       - run: yarn lint
       - run: yarn typecheck
+      - run: |
+          cp .env.example .env
+          cp server/.env.example server/.env
       - run: yarn test
       - run: yarn --cwd server test

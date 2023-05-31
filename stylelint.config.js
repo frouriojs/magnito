@@ -12,4 +12,4 @@ module.exports = {
     'unit-no-unknown': null,
   },
   customSyntax: '@stylelint/postcss-css-in-js',
-}
+};

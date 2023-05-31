@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   define: { 'import.meta.vitest': false },
@@ -8,4 +8,4 @@ export default defineConfig({
     includeSource: ['src/**/*.{ts,tsx}'],
     exclude: ['node_modules', 'server', 'out'],
   },
-})
+});

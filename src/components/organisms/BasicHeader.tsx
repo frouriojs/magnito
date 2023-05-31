@@ -1,4 +1,4 @@
-import type { VerifiedUser } from '$/commonWithClient'
+import type { VerifiedUser } from '$/commonWithClient';
 import {
   Avatar,
   Burger,
@@ -8,8 +8,8 @@ import {
   Menu,
   Text,
   UnstyledButton,
-} from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconChevronDown,
   IconHeart,
@@ -20,10 +20,10 @@ import {
   IconStar,
   IconSwitchHorizontal,
   IconTrash,
-} from '@tabler/icons'
-import { useState } from 'react'
-import { staticPath } from 'src/utils/$path'
-import { logout } from 'src/utils/loginWithGitHub'
+} from '@tabler/icons';
+import { useState } from 'react';
+import { staticPath } from 'src/utils/$path';
+import { logout } from 'src/utils/loginWithGitHub';
 
 // eslint-disable-next-line complexity
 const useStyles = createStyles((theme) => ({
@@ -58,12 +58,12 @@ const useStyles = createStyles((theme) => ({
   userActive: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
   },
-}))
+}));
 
 export const BasicHeader = ({ user }: { user: VerifiedUser }) => {
-  const { classes, theme, cx } = useStyles()
-  const [opened, { toggle }] = useDisclosure(false)
-  const [userMenuOpened, setUserMenuOpened] = useState(false)
+  const { classes, theme, cx } = useStyles();
+  const [opened, { toggle }] = useDisclosure(false);
+  const [userMenuOpened, setUserMenuOpened] = useState(false);
 
   return (
     <div className={classes.header}>
@@ -127,5 +127,5 @@ export const BasicHeader = ({ user }: { user: VerifiedUser }) => {
         </Group>
       </Container>
     </div>
-  )
-}
+  );
+};

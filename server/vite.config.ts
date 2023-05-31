@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   define: { 'import.meta.vitest': false },
@@ -12,4 +12,4 @@ export default defineConfig({
     hookTimeout: 100000,
     testTimeout: 10000,
   },
-})
+});
