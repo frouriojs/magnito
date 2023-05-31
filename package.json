@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "notios": "notios dev",
-    "dev": "npm run migrate:dev && run-p dev:*",
+    "dev": "npm run migrate:dev --prefix server && run-p dev:*",
     "dev:client": "next dev -p 3000",
+    "dev:hcm": "hcm 'src/**/*.module.css' -w",
+    "hcm": "hcm 'src/**/*.module.css'",
     "dev:server": "npm run dev --prefix server",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida -s -w",
@@ -23,24 +25,14 @@
     "lint:prettier": "prettier --check \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore",
     "lint:style": "stylelint \"**/*.ts{,x}\"",
     "lint:fix": "npm run lint:js -- --fix && prettier --write \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore && npm run lint:style -- --fix",
-    "migrate:dev": "npm run migrate:dev --prefix server",
-    "migrate:dev:createonly": "npm run migrate:dev:createonly --prefix server",
-    "migrate:reset": "npm run migrate:reset --prefix server",
-    "seed": "npm run seed --prefix server",
-    "start": "run-p start:*",
-    "start:client": "next start",
-    "start:server": "npm start --prefix server",
-    "task:scrape": "ts-node tasks/scrape.ts",
-    "task:code": "ts-node tasks/genAddressCode.ts",
     "pretypecheck": "npm run generate && npm run generate --prefix server",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:updateSnapshot": "vitest -u",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p server"
+    "typecheck": "npm run hcm && tsc --noEmit && tsc --noEmit -p server"
   },
   "dependencies": {
     "@aspida/axios": "^1.11.0",
-    "@aspida/swr": "^1.11.0",
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.9.3",
@@ -55,8 +47,7 @@
     "jotai": "^1.13.0",
     "next": "^13.0.5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "swr": "^1.3.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.37.2",
@@ -69,6 +60,7 @@
     "eslint": "^8.22.0",
     "eslint-config-next": "^12.2.5",
     "eslint-config-prettier": "^8.5.0",
+    "happy-css-modules": "^2.1.1",
     "node-fetch": "2",
     "notios": "^0.4.0",
     "pathpida": "^0.20.1",
