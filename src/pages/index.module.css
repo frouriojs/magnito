@@ -3,3 +3,20 @@
   text-align: center;
   font-weight: bold;
 }
+
+.tasks {
+  width: 300px;
+  padding: 0;
+  margin: 20px auto 0;
+  list-style-type: none;
+  text-align: left;
+}
+
+.tasks > li {
+  margin-top: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.deleteBtn {
+  float: right;
+}

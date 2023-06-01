@@ -1,26 +1,17 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prismaClient } from '$/service/prismaClient';
+import { randomUUID } from 'crypto';
 
 async function main() {
-  const task1 = await prisma.task.upsert({
-    where: { id: 'e49a6cdd-f018-4123-b991-14077e5baa54' },
-    update: {},
-    create: {
-      label: 'task1',
-      done: true,
-    },
-  });
+  const count = await prismaClient.task.count();
 
-  const task2 = await prisma.task.upsert({
-    where: { id: '1082b8f6-b791-4e52-b667-b40e423839fb' },
-    update: {},
-    create: {
-      label: 'task2',
-      done: false,
-    },
-  });
+  if (count > 0) return;
 
-  console.log({ task1, task2 });
+  await Promise.all(
+    [
+      { id: randomUUID(), label: 'task1', done: true, createdAt: new Date() },
+      { id: randomUUID(), label: 'task2', done: false, createdAt: new Date(Date.now() + 100) },
+    ].map((data) => prismaClient.task.create({ data }))
+  );
 }
 
 main()
@@ -29,5 +20,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   });

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "notios": "notios dev",
-    "dev": "npm run migrate:dev --prefix server && run-p dev:*",
+    "dev": "npm run migrate:deploy --prefix server && run-p dev:*",
     "dev:client": "next dev -p 3000",
     "dev:hcm": "hcm 'src/**/*.module.css' -w",
     "hcm": "hcm 'src/**/*.module.css'",

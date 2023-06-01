@@ -1,7 +1,7 @@
-import type { VerifiedUser } from '$/commonWithClient';
+import type { UserModel } from '$/commonTypesWithClient/models';
 
 export type Methods = {
   get: {
-    resBody: VerifiedUser;
+    resBody: UserModel;
   };
 };

@@ -7,7 +7,7 @@ export const firebaseAdmin = admin.initializeApp(
     : { credential: admin.credential.cert(JSON.parse(FIREBASE_SERVER_KEY)) }
 );
 
-export const getVerifiedUser = async (cookieVal: string | undefined) => {
+export const getUserModel = async (cookieVal: string | undefined) => {
   const auth = firebaseAdmin.auth();
   const idToken = await auth.verifySessionCookie(cookieVal ?? '', true).catch(() => null);
 

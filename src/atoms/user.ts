@@ -1,4 +1,4 @@
-import type { VerifiedUser } from '$/commonWithClient';
+import type { UserModel } from '$/commonTypesWithClient/models';
 import { atom } from 'jotai';
 
-export const userAtom = atom<VerifiedUser | null>(null);
+export const userAtom = atom<UserModel | null>(null);
