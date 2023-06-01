@@ -11,16 +11,34 @@ const toModel = (prismaTask: Task): TaskModel => ({
   created: prismaTask.createdAt.getTime(),
 });
 
-export const getTasks = async (limit?: number): Promise<TaskModel[]> =>
-  (await prismaClient.task.findMany({ take: limit, orderBy: { createdAt: 'desc' } })).map(toModel);
+export const getTasks = async (limit?: number): Promise<TaskModel[]> => {
+  const prismaTasks = await prismaClient.task.findMany({
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+  });
 
-export const createTask = (label: TaskModel['label']): Promise<TaskModel> =>
-  prismaClient.task
-    .create({ data: { id: randomUUID(), done: false, label, createdAt: new Date() } })
-    .then(toModel);
+  return prismaTasks.map(toModel);
+};
 
-export const updateTask = (id: string, partialTask: Prisma.TaskUpdateInput): Promise<TaskModel> =>
-  prismaClient.task.update({ where: { id }, data: partialTask }).then(toModel);
+export const createTask = async (label: TaskModel['label']): Promise<TaskModel> => {
+  const prismaTask = await prismaClient.task.create({
+    data: { id: randomUUID(), done: false, label, createdAt: new Date() },
+  });
 
-export const deleteTask = (id: string): Promise<TaskModel> =>
-  prismaClient.task.delete({ where: { id } }).then(toModel);
+  return toModel(prismaTask);
+};
+
+export const updateTask = async (
+  id: string,
+  partialTask: Prisma.TaskUpdateInput
+): Promise<TaskModel> => {
+  const prismaTask = await prismaClient.task.update({ where: { id }, data: partialTask });
+
+  return toModel(prismaTask);
+};
+
+export const deleteTask = async (id: string): Promise<TaskModel> => {
+  const prismaTask = await prismaClient.task.delete({ where: { id } });
+
+  return toModel(prismaTask);
+};
