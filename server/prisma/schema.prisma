@@ -8,8 +8,8 @@ generator client {
 }
 
 model Task {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime @default(now())
+  id        String   @id
   label     String
-  done      Boolean  @default(false)
+  done      Boolean
+  createdAt DateTime
 }
