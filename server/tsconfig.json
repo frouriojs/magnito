@@ -5,6 +5,7 @@
     "lib": ["dom"],
     "module": "esnext",
     "moduleResolution": "node",
+    "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
       "$/*": ["./*"],
