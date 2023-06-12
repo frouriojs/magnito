@@ -5,6 +5,7 @@
     "esbenp.prettier-vscode",
     "prisma.prisma",
     "stylelint.vscode-stylelint",
-    "styled-components.vscode-styled-components"
+    "styled-components.vscode-styled-components",
+    "yoavbls.pretty-ts-errors"
   ]
 }
