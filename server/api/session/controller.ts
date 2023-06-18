@@ -1,10 +1,16 @@
 import { firebaseAdmin } from '$/middleware/firebaseAdmin';
+import type { CookieSerializeOptions } from '@fastify/cookie';
 import { defineController } from './$relay';
 
 export type AdditionalRequest = {
-  body: {
-    id: string;
-  };
+  body: { id: string };
+};
+
+const options: CookieSerializeOptions = {
+  httpOnly: true,
+  secure: true,
+  path: '/',
+  sameSite: 'none',
 };
 
 export default defineController(() => ({
@@ -17,11 +23,8 @@ export default defineController(() => ({
         const sessionCookie = await auth.createSessionCookie(id, { expiresIn });
 
         reply.setCookie('session', sessionCookie, {
+          ...options,
           expires: new Date(Date.now() + expiresIn),
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== 'development',
-          path: '/',
-          sameSite: 'lax',
         });
       },
     },
@@ -36,11 +39,9 @@ export default defineController(() => ({
         const sessionId = req.cookies.session || '';
         const decodedClaims = await auth.verifySessionCookie(sessionId).catch(() => null);
 
-        if (decodedClaims) {
-          await auth.revokeRefreshTokens(decodedClaims.sub);
-        }
+        if (decodedClaims) await auth.revokeRefreshTokens(decodedClaims.sub);
 
-        reply.clearCookie('session', { path: '/' });
+        reply.clearCookie('session', options);
       },
     },
     handler: () => {

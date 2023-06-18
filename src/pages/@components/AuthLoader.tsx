@@ -30,9 +30,7 @@ export const AuthLoader = () => {
       dispatchIsInitedAuth();
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [setUser]);
 
   useEffect(() => {
