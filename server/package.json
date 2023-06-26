@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "npm run generate && npm run migrate:dev",
+    "predev": "npm run generate && npm run migrate:deploy",
     "dev": "run-p dev:*",
     "dev:build": "node ./scripts/build.dev.js",
     "dev:server": "node-dev --respawn index.js",

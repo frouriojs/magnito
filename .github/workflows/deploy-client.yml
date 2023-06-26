@@ -33,7 +33,7 @@ jobs:
         if: steps.client-npm-cache.outputs.cache-hit != 'true'
       - run: npm install --prefix server
         if: steps.server-npm-cache.outputs.cache-hit != 'true'
-      - run: npm run build:client
+      - run: npm run build
         env:
           API_BASE_PATH: ${{ secrets.API_BASE_PATH }}
           API_ORIGIN: ${{ secrets.API_ORIGIN }}

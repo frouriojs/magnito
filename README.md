@@ -71,8 +71,3 @@ Web ブラウザで http://localhost:3000 を開く
 [Node.js モノレポ開発のターミナルログ混雑解消のための新作 CLI ツール notios](https://zenn.dev/luma/articles/nodejs-new-cli-tool-notios)
 
 閉じるときは `Ctrl + C` を 2 回連続で入力
-
-### 開発中のバグの早期発見
-
-開発サーバー起動後のターミナルで `dev > [run-p] dev:* > dev:typecheckClient (あるいはtypecheckServer)` の順に開いて Enter を押すと型検査の結果が表示される  
-ファイルを保存するたびに更新されるのでブラウザで動かす前に型エラーを解消するとほとんどのバグがなくなる
