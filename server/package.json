@@ -19,7 +19,7 @@
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
     "start": "cross-env NODE_ENV=production node index.js",
-    "test": "API_DATABASE_URL=postgresql://root:root@localhost:5432/test vitest run"
+    "test": "vitest run"
   },
   "prisma": {
     "seed": "node -r esbuild-register prisma/seed.ts"

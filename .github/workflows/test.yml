@@ -34,5 +34,6 @@ jobs:
       - run: |
           cp .env.example .env
           cp server/.env.example server/.env
+          cp server/prisma/.env.example server/prisma/.env
       - run: npm test
       - run: npm test --prefix server
