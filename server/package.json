@@ -22,7 +22,7 @@
     "test": "API_DATABASE_URL=postgresql://root:root@localhost:5432/test vitest run"
   },
   "prisma": {
-    "seed": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
+    "seed": "node -r esbuild-register prisma/seed.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^8.3.0",
@@ -41,12 +41,11 @@
     "cross-env": "^7.0.3",
     "esbuild": "^0.15.16",
     "esbuild-node-externals": "^1.5.0",
+    "esbuild-register": "^3.4.2",
     "frourio": "^0.31.1",
     "node-dev": "^7.1.0",
     "notios": "^0.4.0",
     "prisma": "^4.7.0",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.31.3"
