@@ -11,7 +11,7 @@
     "dev:server": "npm run dev --prefix server",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath .gitignore -s -w",
-    "build": "npm run generate && next build && next export",
+    "build": "npm run generate && next build",
     "generate": "run-p generate:*",
     "generate:aspida": "aspida",
     "generate:path": "pathpida --ignorePath .gitignore -s",
