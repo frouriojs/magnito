@@ -17,5 +17,7 @@
     "strictPropertyInitialization": false,
     "target": "es6",
     "incremental": true
-  }
+  },
+  "include": ["**/*.ts", "scripts/*.js", "aspida.config.js", ".eslintrc.js"],
+  "exclude": ["node_modules"]
 }

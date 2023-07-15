@@ -15,7 +15,7 @@ export const BasicHeader = ({ user }: { user: UserModel }) => {
         <img src={staticPath.frourio_svg} height={36} alt="frourio logo" />
 
         <div className={styles.userBtn} onClick={onLogout}>
-          {user.photoURL ? (
+          {user.photoURL !== undefined ? (
             <img
               className={styles.userIcon}
               src={user.photoURL}

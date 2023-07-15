@@ -2,7 +2,7 @@ import { FIREBASE_AUTH_EMULATOR_HOST, FIREBASE_SERVER_KEY } from '$/service/envV
 import admin from 'firebase-admin';
 
 export const firebaseAdmin = admin.initializeApp(
-  FIREBASE_AUTH_EMULATOR_HOST
+  FIREBASE_AUTH_EMULATOR_HOST !== undefined
     ? { projectId: 'emulator' }
     : { credential: admin.credential.cert(JSON.parse(FIREBASE_SERVER_KEY)) }
 );

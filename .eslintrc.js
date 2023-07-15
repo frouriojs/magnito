@@ -16,15 +16,12 @@ module.exports = {
     es6: true,
   },
   settings: {
-    react: {
-      version: 'detect',
-    },
+    react: { version: 'detect' },
   },
   parserOptions: {
     sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
+    project: './tsconfig.json',
+    ecmaFeatures: { jsx: true },
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
@@ -38,6 +35,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'error',
+    '@typescript-eslint/strict-boolean-expressions': 'error',
     complexity: ['error', 5],
     'max-depth': ['error', 1],
     'max-nested-callbacks': ['error', 3],
