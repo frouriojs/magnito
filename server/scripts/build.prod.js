@@ -1,4 +1,9 @@
 const { build } = require('esbuild');
-const config = require('./config.prod.js');
+const config = require('./config.common');
 
-build(config).catch(() => process.exit(1));
+build({
+  ...config,
+  minify: true,
+  sourcemap: 'linked',
+  define: { 'process.env.NODE_ENV': `"production"` },
+}).catch(() => process.exit(1));

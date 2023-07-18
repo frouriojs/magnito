@@ -1,4 +1,8 @@
 const { build } = require('esbuild');
-const config = require('./config.dev.js');
+const config = require('./config.common');
 
-build(config);
+build({
+  ...config,
+  watch: true,
+  define: { 'process.env.NODE_ENV': `"development"` },
+});

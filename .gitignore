@@ -43,4 +43,5 @@ npm-debug.log*
 
 # server
 server/index.js
+server/index.js.map
 server/upload/
