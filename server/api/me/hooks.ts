@@ -1,6 +1,6 @@
 import type { UserModel } from '$/commonTypesWithClient/models';
 import { getUserModel } from '$/middleware/firebaseAdmin';
-import { UserIdParser } from '$/service/idParsers';
+import { userIdParser } from '$/service/idParsers';
 import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {
@@ -17,7 +17,7 @@ export default defineHooks(() => ({
     }
 
     req.user = {
-      id: UserIdParser.parse(user.uid),
+      id: userIdParser.parse(user.uid),
       email: user.email ?? '',
       displayName: user.displayName,
       photoURL: user.photoURL,
