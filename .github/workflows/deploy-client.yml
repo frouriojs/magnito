@@ -15,8 +15,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
       - uses: actions/cache@v2
@@ -35,8 +35,9 @@ jobs:
         if: steps.server-npm-cache.outputs.cache-hit != 'true'
       - run: npm run build
         env:
-          API_BASE_PATH: ${{ secrets.API_BASE_PATH }}
-          API_ORIGIN: ${{ secrets.API_ORIGIN }}
+          API_BASE_PATH: ${{ vars.API_BASE_PATH }}
+          API_ORIGIN: ${{ vars.API_ORIGIN }}
+          NEXT_PUBLIC_FIREBASE_CONFIG: ${{ vars.NEXT_PUBLIC_FIREBASE_CONFIG }}
       - run: touch ./out/.nojekyll
       - uses: peaceiris/actions-gh-pages@v3
         with:
