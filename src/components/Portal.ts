@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-export const Portal: React.FC = ({ children }) => {
+export const Portal = ({ children }: { children: ReactNode }) => {
   const [el, setEl] = useState<HTMLDivElement>();
 
   useEffect(() => {
