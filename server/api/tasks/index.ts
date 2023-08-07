@@ -1,6 +1,7 @@
 import type { TaskModel } from '$/commonTypesWithClient/models';
+import type { DefineMethods } from 'aspida';
 
-export type Methods = {
+export type Methods = DefineMethods<{
   get: {
     query?: {
       limit?: number;
@@ -12,4 +13,4 @@ export type Methods = {
     reqBody: Pick<TaskModel, 'label'>;
     resBody: TaskModel;
   };
-};
+}>;

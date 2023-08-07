@@ -1,4 +1,6 @@
-export type Methods = {
+import type { DefineMethods } from 'aspida';
+
+export type Methods = DefineMethods<{
   post: {
     reqBody: { id: string };
     resBody: { status: 'success' };
@@ -6,4 +8,4 @@ export type Methods = {
   delete: {
     resBody: { status: 'success' };
   };
-};
+}>;
