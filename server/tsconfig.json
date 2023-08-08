@@ -8,8 +8,7 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "$/*": ["./*"],
-      "$prisma/*": ["./node_modules/.prisma/*"]
+      "$/*": ["./*"]
     },
     "rootDir": ".",
     "skipLibCheck": true,
@@ -18,6 +17,6 @@
     "target": "es6",
     "incremental": true
   },
-  "include": ["**/*.ts", "scripts/*.js", "aspida.config.js", ".eslintrc.js"],
+  "include": ["**/*.ts", "scripts/*.js", ".eslintrc.js"],
   "exclude": ["node_modules"]
 }

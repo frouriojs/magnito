@@ -1,7 +1,6 @@
 {
   "name": "frourio-app-server",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "predev": "npm run generate && npm run migrate:deploy",
     "dev": "run-p dev:*",
@@ -11,7 +10,7 @@
     "dev:prisma": "prisma generate --watch",
     "prebuild": "npm run generate && npm run migrate:deploy",
     "build": "node ./scripts/build.prod.js",
-    "generate": "run-p generate:*",
+    "generate": "npm run generate:prisma && npm run generate:frourio",
     "generate:frourio": "frourio",
     "generate:prisma": "prisma generate",
     "migrate:dev": "prisma migrate dev && npx prisma db seed",
@@ -19,7 +18,8 @@
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
     "start": "node --enable-source-maps index.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "npm run generate && tsc --noEmit"
   },
   "prisma": {
     "seed": "node -r esbuild-register prisma/seed.ts"
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/busboy": "^1.5.0",
-    "@types/jest": "^29.5.3",
+    "commonTypesWithClient": "file:./commonTypesWithClient",
     "esbuild": "^0.18.18",
     "esbuild-node-externals": "^1.8.0",
     "esbuild-register": "^3.4.2",
@@ -46,8 +46,7 @@
     "notios": "^0.4.1",
     "prisma": "^5.1.1",
     "typescript": "^5.1.6",
-    "vite-tsconfig-paths": "^4.2.0",
-    "vitest": "^0.34.1"
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -20,26 +20,33 @@ jobs:
         with:
           node-version: 18
       - uses: actions/cache@v2
-        id: client-npm-cache
+        id: root-npm-cache
         with:
           path: 'node_modules'
-          key: client-npm-${{ hashFiles('package-lock.json') }}
+          key: root-npm-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v2
+        id: client-npm-cache
+        with:
+          path: 'client/node_modules'
+          key: client-npm-${{ hashFiles('client/package-lock.json') }}
       - uses: actions/cache@v2
         id: server-npm-cache
         with:
           path: 'server/node_modules'
           key: server-npm-${{ hashFiles('server/package-lock.json') }}
       - run: npm install
+        if: steps.root-npm-cache.outputs.cache-hit != 'true'
+      - run: npm install --prefix client
         if: steps.client-npm-cache.outputs.cache-hit != 'true'
       - run: npm install --prefix server
         if: steps.server-npm-cache.outputs.cache-hit != 'true'
-      - run: npm run build
+      - run: npm run build --prefix client
         env:
           API_BASE_PATH: ${{ vars.API_BASE_PATH }}
           API_ORIGIN: ${{ vars.API_ORIGIN }}
           NEXT_PUBLIC_FIREBASE_CONFIG: ${{ vars.NEXT_PUBLIC_FIREBASE_CONFIG }}
-      - run: touch ./out/.nojekyll
+      - run: touch ./client/out/.nojekyll
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+          publish_dir: ./client/out

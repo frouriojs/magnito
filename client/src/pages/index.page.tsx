@@ -1,4 +1,4 @@
-import type { TaskModel } from '$/commonTypesWithClient/models';
+import type { TaskModel } from 'commonTypesWithClient/models';
 import { useAtom } from 'jotai';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useEffect, useState } from 'react';

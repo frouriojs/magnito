@@ -8,6 +8,7 @@ module.exports = {
       : '',
   output: 'export',
   trailingSlash: true,
+  transpilePackages: ['api'],
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 };

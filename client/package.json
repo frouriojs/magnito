@@ -1,0 +1,41 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:client": "next dev -p 3000",
+    "dev:hcm": "hcm 'src/**/*.module.css' -w",
+    "dev:aspida": "aspida --watch",
+    "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
+    "build": "npm run generate && next build",
+    "generate": "run-p generate:*",
+    "generate:aspida": "aspida",
+    "generate:path": "pathpida --ignorePath ../.gitignore -s",
+    "hcm": "hcm 'src/**/*.module.css'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:updateSnapshot": "vitest -u",
+    "typecheck": "npm run generate && npm run hcm && tsc --noEmit"
+  },
+  "dependencies": {
+    "@aspida/axios": "^1.13.3",
+    "api": "file:../server/api",
+    "axios": "^1.4.0",
+    "commonTypesWithClient": "file:../server/commonTypesWithClient",
+    "firebase": "^10.1.0",
+    "jotai": "^2.2.3",
+    "next": "^13.4.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "happy-css-modules": "^2.1.2",
+    "notios": "^0.4.1",
+    "pathpida": "^0.21.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -5,15 +5,9 @@ node_modules/
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
 # next.js
-/.next/
-/out/
-
-# production
-/build
+/client/.next/
+/client/out/
 
 # misc
 .DS_Store

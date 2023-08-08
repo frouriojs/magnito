@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".",
+    "paths": { "src/*": ["./src/*"] },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -17,5 +19,6 @@
     "types": ["vitest/importMeta"],
     "incremental": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "*.js", ".eslintrc.js"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "*.js", ".eslintrc.js"],
+  "exclude": ["node_modules"]
 }

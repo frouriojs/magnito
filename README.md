@@ -14,17 +14,18 @@ https://nodejs.org/ja/ の左ボタン、LTS をダウンロードしてイン�
 
 ### リポジトリのクローンと npm モジュールのインストール
 
-フロントとバックエンドそれぞれに package.json があるので 2 回インストールが必要
+ルートとフロントとバックエンドそれぞれに package.json があるので 3 回インストールが必要
 
 ```sh
 $ npm i
+$ npm i --prefix client
 $ npm i --prefix server
 ```
 
 ### 環境変数ファイルの作成
 
 ```sh
-$ cp .env.example .env
+$ cp client/.env.example client/.env
 $ cp server/.env.example server/.env
 $ cp docker/dev/.env.example docker/dev/.env
 $ cp server/prisma/.env.example server/prisma/.env
