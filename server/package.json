@@ -42,7 +42,7 @@
     "esbuild": "^0.18.18",
     "esbuild-node-externals": "^1.8.0",
     "esbuild-register": "^3.4.2",
-    "frourio": "^0.34.1",
+    "frourio": "^1.0.0",
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",
     "prisma": "^5.1.1",
