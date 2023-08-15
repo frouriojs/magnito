@@ -18,7 +18,7 @@
     "typecheck": "npm run hcm && tsc --noEmit"
   },
   "dependencies": {
-    "@aspida/axios": "^1.13.3",
+    "@aspida/axios": "^1.14.0",
     "api": "file:../server/api",
     "axios": "^1.4.0",
     "commonTypesWithClient": "file:../server/commonTypesWithClient",
