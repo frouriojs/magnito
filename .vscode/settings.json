@@ -13,6 +13,5 @@
   "typescript.referencesCodeLens.enabled": true,
   "files.eol": "\n",
   "editor.tabSize": 2,
-  "prettier.prettierPath": "node_modules/prettier",
   "stylelint.validate": ["css", "less", "postcss", "typescriptreact"]
 }
