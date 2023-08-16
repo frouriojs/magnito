@@ -1,5 +1,5 @@
 {
-  "name": "frourio-app-server",
+  "name": "server",
   "version": "0.1.0",
   "scripts": {
     "predev": "npm run generate && npm run migrate:deploy",
@@ -10,7 +10,7 @@
     "dev:prisma": "prisma generate --watch",
     "prebuild": "npm run generate && npm run migrate:deploy",
     "build": "node ./scripts/build.prod.js",
-    "generate": "npm run generate:prisma && npm run generate:frourio",
+    "generate": "run-p generate:*",
     "generate:frourio": "frourio",
     "generate:prisma": "prisma generate",
     "migrate:dev": "prisma migrate dev && npx prisma db seed",

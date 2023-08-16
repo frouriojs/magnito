@@ -1,6 +1,6 @@
-import type { UserModel } from '$/commonTypesWithClient/models';
 import { getUserModel } from '$/middleware/firebaseAdmin';
 import { userIdParser } from '$/service/idParsers';
+import type { UserModel } from 'commonTypesWithClient/models';
 import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {

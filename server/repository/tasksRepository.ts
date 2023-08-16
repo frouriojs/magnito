@@ -1,5 +1,5 @@
-import type { TaskModel } from '$/commonTypesWithClient/models';
 import type { Prisma, Task } from '@prisma/client';
+import type { TaskModel } from 'commonTypesWithClient/models';
 import { randomUUID } from 'crypto';
 import { taskIdParser } from '../service/idParsers';
 import { prismaClient } from '../service/prismaClient';

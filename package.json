@@ -1,6 +1,5 @@
 {
   "name": "next-frourio-starter",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
     "notios": "notios dev",

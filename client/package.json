@@ -20,6 +20,7 @@
   "dependencies": {
     "@aspida/axios": "^1.14.0",
     "api": "file:../server/api",
+    "aspida": "^1.14.0",
     "axios": "^1.4.0",
     "commonTypesWithClient": "file:../server/commonTypesWithClient",
     "firebase": "^10.1.0",
