@@ -1,15 +1,15 @@
 .title {
   font-size: 80px;
-  text-align: center;
   font-weight: bold;
+  text-align: center;
 }
 
 .tasks {
   width: 300px;
   padding: 0;
   margin: 20px auto 0;
-  list-style-type: none;
   text-align: left;
+  list-style-type: none;
 }
 
 .tasks > li {

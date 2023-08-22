@@ -13,5 +13,5 @@
   "typescript.referencesCodeLens.enabled": true,
   "files.eol": "\n",
   "editor.tabSize": 2,
-  "stylelint.validate": ["css", "less", "postcss", "typescriptreact"]
+  "stylelint.validate": ["css"]
 }

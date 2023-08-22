@@ -26,12 +26,12 @@
   gap: 8px;
   align-items: center;
   padding: 8px 12px;
-  border-radius: 4px;
   font-size: 14px;
-  color: white;
   font-weight: bold;
-  background: #222;
+  color: white;
   cursor: pointer;
+  background: #222;
+  border-radius: 4px;
   transition: 0.2s background;
 }
 

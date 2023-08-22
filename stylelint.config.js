@@ -2,14 +2,11 @@ module.exports = {
   extends: [
     'stylelint-config-standard',
     'stylelint-config-recess-order',
-    'stylelint-config-styled-components',
     'stylelint-config-prettier',
   ],
   // add your custom config here
   // https://stylelint.io/user-guide/configuration
   rules: {
-    'value-keyword-case': null,
-    'unit-no-unknown': null,
+    'selector-class-pattern': '^[a-z][a-zA-Z0-9]+$',
   },
-  customSyntax: '@stylelint/postcss-css-in-js',
 };
