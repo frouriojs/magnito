@@ -31,9 +31,7 @@ npm-debug.log*
 .vercel
 
 # docker
-/docker/dev/minio/config/
-/docker/dev/minio/data/*
-!/docker/dev/minio/data/static
+/docker/dev/minio/
 
 # server
 server/index.js
