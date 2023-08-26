@@ -2,6 +2,6 @@ import type { DefineMethods } from 'aspida';
 
 export type Methods = DefineMethods<{
   get: {
-    resBody: string;
+    resBody: Record<'server' | 'db', 'ok' | 'ng'>;
   };
 }>;
