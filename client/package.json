@@ -22,6 +22,7 @@
     "api": "file:../server/api",
     "aspida": "^1.14.0",
     "axios": "^1.4.0",
+    "commonConstantsWithClient": "file:../server/commonConstantsWithClient",
     "commonTypesWithClient": "file:../server/commonTypesWithClient",
     "firebase": "^10.1.0",
     "jotai": "^2.2.3",

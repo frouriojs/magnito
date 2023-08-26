@@ -1,3 +1,4 @@
+import { APP_TITLE } from 'commonConstantsWithClient';
 import { GithubIcon } from 'src/components/icons/GithubIcon';
 import { staticPath } from 'src/utils/$path';
 import { loginWithGitHub } from 'src/utils/login';
@@ -18,7 +19,7 @@ const Login = () => {
       style={{ background: `center/cover url('${staticPath.images.odaiba_jpg}')` }}
     >
       <div className={styles.main}>
-        <div className={styles.title}>next-frourio-starter</div>
+        <div className={styles.title}>{APP_TITLE}</div>
         <div style={{ marginTop: '16px' }} onClick={login}>
           <div className={styles.btn}>
             <GithubIcon size={18} fill="#fff" />
