@@ -19,7 +19,7 @@ export const AuthLoader = () => {
       if (fbUser) {
         await fbUser
           .getIdToken()
-          .then((id) => apiClient.session.$post({ body: { id } }))
+          .then((idToken) => apiClient.session.$post({ body: { idToken } }))
           .catch(returnNull);
         await apiClient.me.$get().catch(returnNull).then(setUser);
       } else {

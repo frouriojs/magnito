@@ -3,7 +3,7 @@ import type { CookieSerializeOptions } from '@fastify/cookie';
 import { defineController } from './$relay';
 
 export type AdditionalRequest = {
-  body: { id: string };
+  body: { idToken: string };
 };
 
 const options: CookieSerializeOptions = {
@@ -19,8 +19,8 @@ export default defineController(() => ({
       preHandler: async (req, reply) => {
         const auth = firebaseAdmin.auth();
         const expiresIn = 60 * 60 * 24 * 5 * 1000;
-        const id = req.body?.id ?? '';
-        const sessionCookie = await auth.createSessionCookie(id, { expiresIn });
+        const idToken = req.body?.idToken ?? '';
+        const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
 
         reply.setCookie('session', sessionCookie, {
           ...options,
