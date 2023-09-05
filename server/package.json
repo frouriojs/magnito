@@ -10,7 +10,7 @@
     "dev:prisma": "prisma generate --watch",
     "prebuild": "npm run generate && npm run migrate:deploy",
     "build": "node ./scripts/build.prod.js",
-    "generate": "run-p generate:*",
+    "generate": "run-s generate:prisma generate:frourio",
     "generate:frourio": "frourio",
     "generate:prisma": "prisma generate",
     "migrate:dev": "prisma migrate dev && npx prisma db seed",
