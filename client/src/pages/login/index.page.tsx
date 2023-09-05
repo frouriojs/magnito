@@ -6,7 +6,7 @@ import { useLoading } from '../@hooks/useLoading';
 import styles from './index.module.css';
 
 const Login = () => {
-  const { addLoading, removeLoading } = useLoading();
+  const { loadingElm, addLoading, removeLoading } = useLoading();
   const login = async () => {
     addLoading();
     await loginWithGitHub();
@@ -27,6 +27,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {loadingElm}
     </div>
   );
 };
