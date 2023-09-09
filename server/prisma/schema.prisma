@@ -9,6 +9,7 @@ generator client {
 
 model Task {
   id        String   @id
+  userId    String
   label     String
   done      Boolean
   createdAt DateTime

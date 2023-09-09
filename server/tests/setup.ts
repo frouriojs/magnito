@@ -19,14 +19,14 @@ beforeAll(async (info) => {
 });
 
 beforeEach(async (info) => {
-  if (unneededServer(info.meta.file)) return;
+  if (unneededServer(info.task.file)) return;
 
   await util.promisify(exec)('npx prisma migrate reset --force');
   await util.promisify(exec)('npx prisma db seed');
 });
 
 afterEach(async (info) => {
-  if (unneededServer(info.meta.file)) return;
+  if (unneededServer(info.task.file)) return;
 
   await prismaClient.$disconnect();
 });

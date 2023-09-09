@@ -8,8 +8,20 @@ async function main() {
 
   await Promise.all(
     [
-      { id: randomUUID(), label: 'task1', done: true, createdAt: new Date() },
-      { id: randomUUID(), label: 'task2', done: false, createdAt: new Date(Date.now() + 100) },
+      {
+        id: randomUUID(),
+        userId: 'dummy-userId',
+        label: 'task1',
+        done: true,
+        createdAt: new Date(),
+      },
+      {
+        id: randomUUID(),
+        userId: 'dummy-userId',
+        label: 'task2',
+        done: false,
+        createdAt: new Date(Date.now() + 100),
+      },
     ].map((data) => prismaClient.task.create({ data }))
   );
 }

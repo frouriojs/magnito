@@ -25,22 +25,27 @@ const Home = () => {
     e.preventDefault();
     if (!label) return;
 
-    await apiClient.tasks.post({ body: { label } });
+    await apiClient.tasks.post({ body: { label } }).catch(returnNull);
     setLabel('');
     await fetchTasks();
   };
   const toggleDone = async (task: TaskModel) => {
-    await apiClient.tasks._taskId(task.id).patch({ body: { done: !task.done } });
+    await apiClient.tasks
+      ._taskId(task.id)
+      .patch({ body: { done: !task.done } })
+      .catch(returnNull);
     await fetchTasks();
   };
   const deleteTask = async (task: TaskModel) => {
-    await apiClient.tasks._taskId(task.id).delete();
+    await apiClient.tasks._taskId(task.id).delete().catch(returnNull);
     await fetchTasks();
   };
 
   useEffect(() => {
+    if (!user) return;
+
     fetchTasks();
-  }, []);
+  }, [user]);
 
   if (!tasks || !user) return <Loading visible />;
 

@@ -1,12 +1,18 @@
-import type { Task } from '@prisma/client';
 import type { DefineMethods } from 'aspida';
+import type { TaskModel } from 'commonTypesWithClient/models';
 
 export type Methods = DefineMethods<{
   patch: {
-    reqBody: Partial<Pick<Task, 'label' | 'done'>>;
+    reqBody: {
+      label?: string;
+      done?: boolean;
+    };
     status: 204;
+    resBody: TaskModel;
   };
+
   delete: {
     status: 204;
+    resBody: TaskModel;
   };
 }>;

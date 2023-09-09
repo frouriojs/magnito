@@ -1,4 +1,6 @@
-import type { TaskId, UserId } from './branded';
+import { z } from 'zod';
+import { taskIdParser } from '../service/idParsers';
+import type { UserId } from './ids';
 
 export type UserModel = {
   id: UserId;
@@ -7,9 +9,11 @@ export type UserModel = {
   photoURL: string | undefined;
 };
 
-export type TaskModel = {
-  id: TaskId;
-  label: string;
-  done: boolean;
-  created: number;
-};
+export const taskParser = z.object({
+  id: taskIdParser,
+  label: z.string(),
+  done: z.boolean(),
+  created: z.number(),
+});
+
+export type TaskModel = z.infer<typeof taskParser>;
