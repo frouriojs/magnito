@@ -34,7 +34,7 @@ $ cp server/prisma/.env.example server/prisma/.env
 ### ミドルウェアのセットアップ
 
 ```sh
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 ### 開発サーバー起動
