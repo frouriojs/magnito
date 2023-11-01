@@ -33,6 +33,7 @@ services:
         condition: service_healthy
     env_file:
       - ./docker/dev/.env
+      - ./server/.env
     entrypoint: []
     command: |
       sh -c "

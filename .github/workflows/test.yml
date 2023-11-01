@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           cp docker/dev/.env.example docker/dev/.env
+          cp server/.env.example server/.env
           docker compose up -d
       - name: setup Node.js
         uses: actions/setup-node@v3
@@ -41,6 +42,5 @@ jobs:
       - run: npm run typecheck
       - run: |
           cp client/.env.example client/.env
-          cp server/.env.example server/.env
           cp server/prisma/.env.example server/prisma/.env
       - run: npm test
