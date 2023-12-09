@@ -1,5 +1,6 @@
 import { APP_TITLE } from 'commonConstantsWithClient';
 import { Head, Html, Main, NextScript } from 'next/document';
+import { staticPath } from 'src/utils/$path';
 import { GA_ID } from 'src/utils/gtag';
 
 function Document() {
@@ -9,7 +10,7 @@ function Document() {
         <title>{APP_TITLE}</title>
         <meta name="robots" content="noindex,nofollow" />
         <meta name="description" content={APP_TITLE} />
-        <link rel="icon" href="favicon.png" />
+        <link rel="icon" href={staticPath.favicon_png} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
           dangerouslySetInnerHTML={{
