@@ -6,10 +6,7 @@ export default defineController(() => ({
     status: 200,
     body: {
       server: 'ok',
-      db: await prismaClient.task
-        .count()
-        .then(() => 'ok' as const)
-        .catch(() => 'ng' as const),
+      db: await prismaClient.$queryRaw`SELECT CURRENT_TIMESTAMP;`.then(() => 'ok' as const),
     },
   }),
 }));
