@@ -40,7 +40,5 @@ jobs:
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: |
-          cp client/.env.example client/.env
-          cp server/prisma/.env.example server/prisma/.env
+      - run: cp client/.env.example client/.env
       - run: npm test
