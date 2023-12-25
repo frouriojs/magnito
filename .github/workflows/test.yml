@@ -8,10 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cp docker/dev/.env.example docker/dev/.env
-          cp server/.env.example server/.env
-          docker compose up -d
       - name: setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -40,5 +36,9 @@ jobs:
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: cp client/.env.example client/.env
+      - run: |
+          cp client/.env.example client/.env
+          cp server/.env.example server/.env
+          cp docker/dev/.env.example docker/dev/.env
+          docker compose up -d
       - run: npm test
