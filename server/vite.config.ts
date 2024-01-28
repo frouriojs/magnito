@@ -8,7 +8,7 @@ export default defineConfig({
   define: { 'import.meta.vitest': false },
   plugins: [tsconfigPaths()],
   test: {
-    env: { API_DATABASE_URL: process.env.TEST_DATABASE_URL ?? '' },
+    env: { DATABASE_URL: process.env.TEST_DATABASE_URL ?? '' },
     setupFiles: ['tests/setup.ts'],
     includeSource: ['**/*.ts'],
     // include: ['**/index.test.ts'],
