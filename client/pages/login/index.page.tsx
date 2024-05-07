@@ -1,7 +1,7 @@
 import { APP_NAME } from 'api/@constants';
-import { GithubIcon } from 'src/components/icons/GithubIcon';
-import { staticPath } from 'src/utils/$path';
-import { loginWithGitHub } from 'src/utils/login';
+import { GithubIcon } from 'components/icons/GithubIcon';
+import { staticPath } from 'utils/$path';
+import { loginWithGitHub } from 'utils/login';
 import { useLoading } from '../@hooks/useLoading';
 import styles from './index.module.css';
 

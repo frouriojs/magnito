@@ -14,6 +14,6 @@
     "target": "es6",
     "incremental": true
   },
-  "include": ["**/*.ts", "**/*.js", ".eslintrc.js"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules", "api/@types/$relay.ts", "api/@constants/$relay.ts"]
 }

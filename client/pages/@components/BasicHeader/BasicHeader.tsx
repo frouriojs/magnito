@@ -1,7 +1,7 @@
 import type { UserModel } from 'api/@types/models';
-import { HumanIcon } from 'src/components/icons/HumanIcon';
-import { staticPath } from 'src/utils/$path';
-import { logout } from 'src/utils/login';
+import { HumanIcon } from 'components/icons/HumanIcon';
+import { staticPath } from 'utils/$path';
+import { logout } from 'utils/login';
 import styles from './BasicHeader.module.css';
 
 export const BasicHeader = ({ user }: { user: UserModel }) => {

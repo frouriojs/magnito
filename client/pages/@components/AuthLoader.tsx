@@ -1,12 +1,12 @@
+import { userAtom } from 'atoms/user';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useEffect, useReducer } from 'react';
-import { userAtom } from 'src/atoms/user';
-import { pagesPath } from 'src/utils/$path';
-import { apiClient } from 'src/utils/apiClient';
-import { createAuth } from 'src/utils/firebase';
-import { returnNull } from 'src/utils/returnNull';
+import { pagesPath } from 'utils/$path';
+import { apiClient } from 'utils/apiClient';
+import { createAuth } from 'utils/firebase';
+import { returnNull } from 'utils/returnNull';
 import { Loading } from '../../components/Loading/Loading';
 
 export const AuthLoader = () => {

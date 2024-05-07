@@ -1,5 +1,5 @@
 import { GithubAuthProvider, signInWithPopup } from 'firebase/auth';
-import { createAuth } from 'src/utils/firebase';
+import { createAuth } from 'utils/firebase';
 import { returnNull } from './returnNull';
 
 export const loginWithGitHub = async () => {

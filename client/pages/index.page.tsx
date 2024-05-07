@@ -1,11 +1,11 @@
 import type { TaskModel } from 'api/@types/models';
+import { Loading } from 'components/Loading/Loading';
 import { useAtom } from 'jotai';
+import { BasicHeader } from 'pages/@components/BasicHeader/BasicHeader';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
-import { Loading } from 'src/components/Loading/Loading';
-import { BasicHeader } from 'src/pages/@components/BasicHeader/BasicHeader';
-import { apiClient } from 'src/utils/apiClient';
-import { returnNull } from 'src/utils/returnNull';
+import { apiClient } from 'utils/apiClient';
+import { returnNull } from 'utils/returnNull';
 import { userAtom } from '../atoms/user';
 import styles from './index.module.css';
 
