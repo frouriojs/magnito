@@ -73,7 +73,7 @@ export const updateTaskByBrandedId = async (params: {
 
 export const deleteTaskByBrandedId = async (
   userId: UserId,
-  taskId: Maybe<TaskId>
+  taskId: Maybe<TaskId>,
 ): Promise<TaskModel> => {
   const prismaTask = await prismaClient.task.delete({
     where: { id: taskId, userId },
@@ -92,5 +92,5 @@ export const getTasksWithDI = depend(
     const prismaTasks = await findManyTask(userId);
 
     return prismaTasks.map(toModel);
-  }
+  },
 );

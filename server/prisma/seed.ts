@@ -22,7 +22,7 @@ async function main() {
         done: false,
         createdAt: new Date(Date.now() + 100),
       },
-    ].map((data) => prismaClient.task.create({ data }))
+    ].map((data) => prismaClient.task.create({ data })),
   );
 }
 

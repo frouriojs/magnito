@@ -16,7 +16,7 @@ export const testUser = { name: 'vitest-user', email: 'vitest@example.com' };
 
 const agent = axios.create();
 export const apiClient = api(
-  aspida(agent, { baseURL: `http://127.0.0.1:${PORT}${API_BASE_PATH}` })
+  aspida(agent, { baseURL: `http://127.0.0.1:${PORT}${API_BASE_PATH}` }),
 );
 
 beforeAll(async () => {
@@ -24,7 +24,7 @@ beforeAll(async () => {
   connectAuthEmulator(auth, `http://${FIREBASE_AUTH_EMULATOR_HOST}`, { disableWarnings: true });
   const result = await signInWithCredential(
     auth,
-    GithubAuthProvider.credential(JSON.stringify({ sub: testUser.name, email: testUser.email }))
+    GithubAuthProvider.credential(JSON.stringify({ sub: testUser.name, email: testUser.email })),
   );
   const idToken = await result.user.getIdToken();
   const res = await apiClient.session.post({ body: { idToken } });

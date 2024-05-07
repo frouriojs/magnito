@@ -12,7 +12,7 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     includeSource: ['**/*.ts'],
     // include: ['**/index.test.ts'],
-    threads: false,
+    poolOptions: { threads: { singleThread: true } },
     hookTimeout: 100000,
     testTimeout: 10000,
   },
