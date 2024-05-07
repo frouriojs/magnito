@@ -1,5 +1,3 @@
-import { firebaseAdmin } from '$/middleware/firebaseAdmin';
-import { API_BASE_PATH, FIREBASE_AUTH_EMULATOR_HOST, PORT } from '$/service/envValues';
 import aspida from '@aspida/axios';
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
@@ -9,6 +7,8 @@ import {
   getAuth,
   signInWithCredential,
 } from 'firebase/auth';
+import { firebaseAdmin } from 'middleware/firebaseAdmin';
+import { API_BASE_PATH, FIREBASE_AUTH_EMULATOR_HOST, PORT } from 'service/envValues';
 import { afterAll, beforeAll } from 'vitest';
 import api from '../../api/$api';
 

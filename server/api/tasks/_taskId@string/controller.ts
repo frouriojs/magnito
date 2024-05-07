@@ -1,4 +1,4 @@
-import { deleteTaskByStringId, updateTaskByStringId } from '$/repository/tasksRepository';
+import { deleteTaskByStringId, updateTaskByStringId } from 'repository/tasksRepository';
 import { z } from 'zod';
 import { defineController } from './$relay';
 

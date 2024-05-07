@@ -1,4 +1,4 @@
-import { findManyTask, getTasksWithDI } from '$/repository/tasksRepository';
+import { findManyTask, getTasksWithDI } from 'repository/tasksRepository';
 import { defineController } from './$relay';
 
 export default defineController({ findManyTask }, (deps) => ({

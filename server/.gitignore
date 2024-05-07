@@ -1,0 +1,7 @@
+# dependencies
+node_modules/
+
+index.js
+index.js.map
+coverage/
+$*.ts

@@ -1,6 +1,6 @@
-import type { UserModel } from '$/commonTypesWithClient/models';
-import { userIdParser } from '$/service/idParsers';
+import type { UserModel } from 'api/@types/models';
 import type { UserRecord } from 'firebase-admin/lib/auth/user-record';
+import { userIdParser } from 'service/idParsers';
 
 export const usersRepo = {
   recordToModel: (user: UserRecord): UserModel => ({

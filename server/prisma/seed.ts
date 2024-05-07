@@ -1,5 +1,5 @@
-import { prismaClient } from '$/service/prismaClient';
 import { randomUUID } from 'crypto';
+import { prismaClient } from 'service/prismaClient';
 
 async function main() {
   const count = await prismaClient.task.count();

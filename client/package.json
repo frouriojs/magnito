@@ -8,6 +8,11 @@
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
     "build": "npm run generate && next build",
+    "lint": "run-p lint:js lint:prettier lint:style",
+    "lint:js": "eslint --ext .ts,.tsx,.js --ignore-path .gitignore .",
+    "lint:prettier": "prettier --check \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore",
+    "lint:style": "stylelint \"**/*.css\" --ignore-path .gitignore",
+    "lint:fix": "npm run lint:js -- --fix && prettier --write \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore && npm run lint:style -- --fix",
     "generate": "run-p generate:*",
     "generate:aspida": "aspida",
     "generate:path": "pathpida --ignorePath ../.gitignore -s",
@@ -19,11 +24,8 @@
   },
   "dependencies": {
     "@aspida/axios": "^1.14.0",
-    "api": "file:../server/api",
     "aspida": "^1.14.0",
     "axios": "^1.6.8",
-    "commonConstantsWithClient": "file:../server/commonConstantsWithClient",
-    "commonTypesWithClient": "file:../server/commonTypesWithClient",
     "firebase": "^10.11.1",
     "jotai": "^2.8.0",
     "next": "^14.2.3",
@@ -36,7 +38,8 @@
     "dotenv": "^16.4.5",
     "happy-css-modules": "^2.1.2",
     "notios": "^0.4.1",
-    "pathpida": "^0.22.0"
+    "pathpida": "^0.22.0",
+    "zod": "^3.23.6"
   },
   "engines": {
     "node": ">=20.0.0"

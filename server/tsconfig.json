@@ -7,9 +7,6 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "baseUrl": ".",
-    "paths": {
-      "$/*": ["./*"]
-    },
     "rootDir": ".",
     "skipLibCheck": true,
     "strict": true,
@@ -18,5 +15,5 @@
     "incremental": true
   },
   "include": ["**/*.ts", "**/*.js", ".eslintrc.js"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "api/@types/$relay.ts", "api/@constants/$relay.ts"]
 }

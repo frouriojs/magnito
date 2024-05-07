@@ -3,8 +3,8 @@ import {
   deleteTaskByBrandedId,
   getTasks,
   updateTaskByBrandedId,
-} from '$/repository/tasksRepository';
-import { taskIdParser } from '$/service/idParsers';
+} from 'repository/tasksRepository';
+import { taskIdParser } from 'service/idParsers';
 import { z } from 'zod';
 import { defineController } from './$relay';
 

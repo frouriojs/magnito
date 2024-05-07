@@ -1,6 +1,6 @@
+import type { Maybe, TaskId } from 'api/@types/ids';
+import type { TaskModel } from 'api/@types/models';
 import type { DefineMethods } from 'aspida';
-import type { Maybe, TaskId } from 'commonTypesWithClient/ids';
-import type { TaskModel } from 'commonTypesWithClient/models';
 
 export type Methods = DefineMethods<{
   get: {

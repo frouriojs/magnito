@@ -1,6 +1,6 @@
-import type { Maybe, TaskId, UserId } from '$/commonTypesWithClient/ids';
 import type { Prisma, Task } from '@prisma/client';
-import type { TaskModel } from 'commonTypesWithClient/models';
+import type { Maybe, TaskId, UserId } from 'api/@types/ids';
+import type { TaskModel } from 'api/@types/models';
 import { randomUUID } from 'crypto';
 import { depend } from 'velona';
 import { taskIdParser } from '../service/idParsers';

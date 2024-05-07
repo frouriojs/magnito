@@ -1,5 +1,5 @@
+import type { TaskModel } from 'api/@types/models';
 import type { DefineMethods } from 'aspida';
-import type { TaskModel } from 'commonTypesWithClient/models';
 
 export type Methods = DefineMethods<{
   patch: {

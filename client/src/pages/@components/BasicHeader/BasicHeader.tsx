@@ -1,4 +1,4 @@
-import type { UserModel } from 'commonTypesWithClient/models';
+import type { UserModel } from 'api/@types/models';
 import { HumanIcon } from 'src/components/icons/HumanIcon';
 import { staticPath } from 'src/utils/$path';
 import { logout } from 'src/utils/login';

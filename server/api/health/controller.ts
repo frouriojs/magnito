@@ -1,4 +1,4 @@
-import { prismaClient } from '$/service/prismaClient';
+import { prismaClient } from 'service/prismaClient';
 import { defineController } from './$relay';
 
 export default defineController(() => ({
