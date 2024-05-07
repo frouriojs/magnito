@@ -1,12 +1,10 @@
 services:
   firebase:
-    build: ./docker/dev/firebase
+    build: ./docker/firebase
     restart: always
     ports:
       - 9099:9099 # Auth
       - 4000:4000 # Emulator Suite UI
-    env_file:
-      - ./docker/dev/.env
     working_dir: /opt/workspace
     command: firebase emulators:start --only=auth --project=emulator --import ./firebase-export --export-on-exit
 
@@ -17,13 +15,13 @@ services:
       - 9000:9000 # Storage
       - 9001:9001 # Console
     env_file:
-      - ./docker/dev/.env
+      - ./server/.env
     volumes:
-      - ./docker/dev/minio/data:/data
+      - minio:/data
     entrypoint: []
-    command: minio server /data --console-address :9001
+    command: minio server /data --address :9000 --console-address :9001
     healthcheck:
-      test: curl -I http://localhost:9000/minio/health/live
+      test: timeout 5s bash -c ':> /dev/tcp/127.0.0.1/9000' || exit 1
       interval: 5s
 
   mc:
@@ -32,15 +30,13 @@ services:
       minio:
         condition: service_healthy
     env_file:
-      - ./docker/dev/.env
       - ./server/.env
     entrypoint: []
     command: |
       sh -c "
-        set -euxo pipefail
         mc alias set myminio http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
         mc mb myminio/$$S3_BUCKET --region=$$S3_REGION || true
-        mc anonymous set download myminio/$$S3_BUCKET
+        mc mb myminio/$$TEST_S3_BUCKET --region=$$S3_REGION || true
       "
 
   postgres:
@@ -48,11 +44,16 @@ services:
     restart: always
     ports:
       - 5432:5432
-    env_file:
-      - ./docker/dev/.env
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: app
+      TZ: Asia/Tokyo
     volumes:
-      - database:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
 
 volumes:
-  database:
+  minio:
+    driver: local
+  postgres:
     driver: local

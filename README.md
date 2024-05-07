@@ -27,7 +27,6 @@ $ npm i --prefix server
 ```sh
 $ cp client/.env.example client/.env
 $ cp server/.env.example server/.env
-$ cp docker/dev/.env.example docker/dev/.env
 ```
 
 ### ミドルウェアのセットアップ

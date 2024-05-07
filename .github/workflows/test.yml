@@ -39,6 +39,5 @@ jobs:
       - run: |
           cp client/.env.example client/.env
           cp server/.env.example server/.env
-          cp docker/dev/.env.example docker/dev/.env
           docker compose up -d
       - run: npm test
