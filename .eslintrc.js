@@ -23,6 +23,14 @@ module.exports = {
     ecmaFeatures: { jsx: true },
   },
   rules: {
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector:
+          "TSAsExpression[typeAnnotation.type='TSTypeReference'] > TSAsExpression[typeAnnotation.type='TSUnknownKeyword']",
+        message: 'No type assertion by unknown',
+      },
+    ],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/self-closing-comp': 'error',
@@ -40,11 +48,28 @@ module.exports = {
     'max-depth': ['error', 2],
     'max-nested-callbacks': ['error', 3],
     'max-lines': ['error', 200],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+      },
+    ],
   },
   overrides: [
     {
       files: ['*.js'],
       rules: { '@typescript-eslint/no-var-requires': ['off'] },
+    },
+    {
+      files: ['server/**/*.ts'],
+      rules: { '@typescript-eslint/explicit-function-return-type': ['error'] },
+    },
+    {
+      files: ['server/api/**/controller.ts', 'server/api/**/hooks.ts'],
+      rules: { '@typescript-eslint/explicit-function-return-type': ['off'] },
     },
   ],
 };

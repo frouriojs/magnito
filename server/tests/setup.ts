@@ -8,7 +8,7 @@ import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 let server: FastifyInstance;
 
-const unneededServer = (file: { filepath?: string } | undefined) =>
+const unneededServer = (file: { filepath?: string } | undefined): boolean =>
   !/\/tests\/api\/.+\.test\.ts$/.test(file?.filepath ?? '');
 
 beforeAll(async (info) => {

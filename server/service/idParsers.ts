@@ -1,7 +1,8 @@
-import type { TaskId, UserId } from 'api/@types/ids';
+import type { TaskId, UserId } from 'api/@types/brandedId';
 import { z } from 'zod';
 
-const createIdParser = <T extends string>() => z.string() as unknown as z.ZodType<T>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createIdParser = <T extends string>(): z.ZodType<T> => z.string() as any;
 
 export const userIdParser = createIdParser<UserId>();
 

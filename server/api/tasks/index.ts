@@ -1,4 +1,4 @@
-import type { Maybe, TaskId } from 'api/@types/ids';
+import type { Maybe, TaskId } from 'api/@types/brandedId';
 import type { TaskModel } from 'api/@types/models';
 import type { DefineMethods } from 'aspida';
 

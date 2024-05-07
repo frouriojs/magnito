@@ -1,5 +1,5 @@
 import type { Prisma, Task } from '@prisma/client';
-import type { Maybe, TaskId, UserId } from 'api/@types/ids';
+import type { Maybe, TaskId, UserId } from 'api/@types/brandedId';
 import type { TaskModel } from 'api/@types/models';
 import { randomUUID } from 'crypto';
 import { depend } from 'velona';
@@ -25,13 +25,7 @@ export const getTasks = async (userId: UserId, limit?: number): Promise<TaskMode
 
 export const createTask = async (userId: UserId, label: TaskModel['label']): Promise<TaskModel> => {
   const prismaTask = await prismaClient.task.create({
-    data: {
-      id: randomUUID(),
-      userId,
-      done: false,
-      label,
-      createdAt: new Date(),
-    },
+    data: { id: randomUUID(), userId, done: false, label, createdAt: new Date() },
   });
 
   return toModel(prismaTask);
@@ -51,9 +45,7 @@ export const updateTaskByStringId = async (params: {
 };
 
 export const deleteTaskByStringId = async (userId: UserId, taskId: string): Promise<TaskModel> => {
-  const prismaTask = await prismaClient.task.delete({
-    where: { id: taskId, userId },
-  });
+  const prismaTask = await prismaClient.task.delete({ where: { id: taskId, userId } });
 
   return toModel(prismaTask);
 };
@@ -75,14 +67,12 @@ export const deleteTaskByBrandedId = async (
   userId: UserId,
   taskId: Maybe<TaskId>,
 ): Promise<TaskModel> => {
-  const prismaTask = await prismaClient.task.delete({
-    where: { id: taskId, userId },
-  });
+  const prismaTask = await prismaClient.task.delete({ where: { id: taskId, userId } });
 
   return toModel(prismaTask);
 };
 
-export const findManyTask = async (userId: UserId) => {
+export const findManyTask = async (userId: UserId): Promise<Task[]> => {
   return await prismaClient.task.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
 };
 

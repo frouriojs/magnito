@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { prismaClient } from 'service/prismaClient';
 
-async function main() {
+async function main(): Promise<void> {
   const count = await prismaClient.task.count();
 
   if (count > 0) return;

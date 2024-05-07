@@ -1,5 +1,5 @@
 import type { Task } from '@prisma/client';
-import type { UserId } from 'api/@types/ids';
+import type { UserId } from 'api/@types/brandedId';
 import type { UserModel } from 'api/@types/models';
 import controller from 'api/tasks/di/controller';
 import fastify from 'fastify';

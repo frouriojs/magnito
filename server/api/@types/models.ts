@@ -1,4 +1,4 @@
-import type { TaskId, UserId } from './ids';
+import type { TaskId, UserId } from './brandedId';
 
 export type UserModel = {
   id: UserId;
