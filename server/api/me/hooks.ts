@@ -1,10 +1,10 @@
-import type { UserModel } from 'api/@types/models';
+import type { UserEntity } from 'api/@types/user';
 import { getUserRecord } from 'middleware/firebaseAdmin';
 import { usersRepo } from 'repository/usersRepo';
 import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {
-  user: UserModel;
+  user: UserEntity;
 };
 
 export default defineHooks(() => ({

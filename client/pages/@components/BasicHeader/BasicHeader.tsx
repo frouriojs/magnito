@@ -1,10 +1,10 @@
-import type { UserModel } from 'api/@types/models';
+import type { UserEntity } from 'api/@types/user';
 import { HumanIcon } from 'components/icons/HumanIcon';
 import { staticPath } from 'utils/$path';
 import { logout } from 'utils/login';
 import styles from './BasicHeader.module.css';
 
-export const BasicHeader = ({ user }: { user: UserModel }) => {
+export const BasicHeader = ({ user }: { user: UserEntity }) => {
   const onLogout = async () => {
     if (confirm('Logout?')) await logout();
   };

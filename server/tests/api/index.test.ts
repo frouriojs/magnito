@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import type { UserId } from 'api/@types/brandedId';
-import type { UserModel } from 'api/@types/models';
 import type { TaskEntity } from 'api/@types/task';
+import type { UserEntity } from 'api/@types/user';
 import controller from 'api/tasks/di/controller';
 import fastify from 'fastify';
 import { taskIdParser } from 'service/idParsers';
@@ -23,7 +23,7 @@ test('認証確認', async () => {
 
 test('依存性注入', async () => {
   const res1 = await controller(fastify()).get({
-    user: { id: 'dummy-userId' } as UserModel,
+    user: { id: 'dummy-userId' } as UserEntity,
   });
 
   expect(res1.body).toHaveLength(2);
@@ -43,7 +43,7 @@ test('依存性注入', async () => {
 
   const res2 = await controller
     .inject({ findManyByAuthorId: mockedFindManyTask })(fastify())
-    .get({ user: { id: 'dummy-userId' } as UserModel });
+    .get({ user: { id: 'dummy-userId' } as UserEntity });
 
   expect(res2.body).toHaveLength(1);
 });

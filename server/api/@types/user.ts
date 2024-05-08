@@ -1,6 +1,6 @@
 import type { UserId } from './brandedId';
 
-export type UserModel = {
+export type UserEntity = {
   id: UserId;
   email: string;
   displayName: string | undefined;

@@ -1,4 +1,4 @@
-import type { UserModel } from 'api/@types/models';
+import type { UserEntity } from 'api/@types/user';
 import { atom } from 'jotai';
 
-export const userAtom = atom<UserModel | null>(null);
+export const userAtom = atom<UserEntity | null>(null);
