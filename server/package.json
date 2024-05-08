@@ -55,6 +55,7 @@
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",
     "prisma": "^5.13.0",
+    "ts-essentials": "^10.0.0",
     "typescript": "^5.4.5",
     "vite-tsconfig-paths": "^4.3.2"
   },

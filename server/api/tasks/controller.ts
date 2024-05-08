@@ -1,25 +1,19 @@
-import {
-  createTask,
-  deleteTaskByBrandedId,
-  getTasks,
-  updateTaskByBrandedId,
-} from 'repository/tasksRepository';
+import { taskQuery } from 'domain/task/repository/taskQuery';
+import { taskUseCase } from 'domain/task/useCase/taskUseCase';
 import { taskIdParser } from 'service/idParsers';
+import { prismaClient } from 'service/prismaClient';
 import { z } from 'zod';
 import { defineController } from './$relay';
 
 export default defineController(() => ({
   get: async ({ user, query }) => ({
     status: 200,
-    body: await getTasks(user.id, query?.limit),
+    body: await taskQuery.findManyByAuthorId(prismaClient, user.id, query?.limit),
   }),
-  post: {
-    validators: { body: z.object({ label: z.string() }) },
-    handler: async ({ user, body }) => ({
-      status: 201,
-      body: await createTask(user.id, body.label),
-    }),
-  },
+  post: async ({ user, body }) => ({
+    status: 201,
+    body: await taskUseCase.create(user, body),
+  }),
   patch: {
     validators: {
       body: z.object({
@@ -29,17 +23,14 @@ export default defineController(() => ({
       }),
     },
     handler: async ({ user, body }) => {
-      const task = await updateTaskByBrandedId({
-        userId: user.id,
-        taskId: body.taskId,
-        partialTask: body,
-      });
+      const task = await taskUseCase.update(user, body);
 
       return { status: 204, body: task };
     },
   },
   delete: async ({ user, body }) => {
-    const task = await deleteTaskByBrandedId(user.id, body.taskId);
+    const task = await taskUseCase.delete(user, body.taskId);
+
     return { status: 204, body: task };
   },
 }));

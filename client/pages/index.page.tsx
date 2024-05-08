@@ -1,4 +1,4 @@
-import type { TaskModel } from 'api/@types/models';
+import type { TaskEntity } from 'api/@types/task';
 import { Loading } from 'components/Loading/Loading';
 import { useAtom } from 'jotai';
 import { BasicHeader } from 'pages/@components/BasicHeader/BasicHeader';
@@ -11,7 +11,7 @@ import styles from './index.module.css';
 
 const Home = () => {
   const [user] = useAtom(userAtom);
-  const [tasks, setTasks] = useState<TaskModel[]>();
+  const [tasks, setTasks] = useState<TaskEntity[]>();
   const [label, setLabel] = useState('');
   const inputLabel = (e: ChangeEvent<HTMLInputElement>) => {
     setLabel(e.target.value);
@@ -29,14 +29,14 @@ const Home = () => {
     setLabel('');
     await fetchTasks();
   };
-  const toggleDone = async (task: TaskModel) => {
+  const toggleDone = async (task: TaskEntity) => {
     await apiClient.tasks
       ._taskId(task.id)
       .patch({ body: { done: !task.done } })
       .catch(returnNull);
     await fetchTasks();
   };
-  const deleteTask = async (task: TaskModel) => {
+  const deleteTask = async (task: TaskEntity) => {
     await apiClient.tasks._taskId(task.id).delete().catch(returnNull);
     await fetchTasks();
   };

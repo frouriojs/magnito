@@ -10,14 +10,14 @@ async function main(): Promise<void> {
     [
       {
         id: randomUUID(),
-        userId: 'dummy-userId',
+        authorId: 'dummy-userId',
         label: 'task1',
         done: true,
         createdAt: new Date(),
       },
       {
         id: randomUUID(),
-        userId: 'dummy-userId',
+        authorId: 'dummy-userId',
         label: 'task2',
         done: false,
         createdAt: new Date(Date.now() + 100),

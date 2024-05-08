@@ -1,9 +1,10 @@
-import { findManyTask, getTasksWithDI } from 'repository/tasksRepository';
+import { taskQuery } from 'domain/task/repository/taskQuery';
+import { prismaClient } from 'service/prismaClient';
 import { defineController } from './$relay';
 
-export default defineController({ findManyTask }, (deps) => ({
+export default defineController({ findManyByAuthorId: taskQuery.findManyByAuthorId }, (deps) => ({
   get: async ({ user }) => ({
     status: 200,
-    body: await getTasksWithDI.inject(deps)(user.id),
+    body: await taskQuery.findManyWithDI.inject(deps)(prismaClient, user.id),
   }),
 }));

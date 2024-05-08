@@ -1,8 +1,8 @@
-import type { TaskModel } from 'api/@types/models';
+import type { TaskEntity } from 'api/@types/task';
 import type { DefineMethods } from 'aspida';
 
 export type Methods = DefineMethods<{
   get: {
-    resBody: TaskModel[];
+    resBody: TaskEntity[];
   };
 }>;

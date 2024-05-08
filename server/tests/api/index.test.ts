@@ -1,6 +1,7 @@
-import type { Task } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import type { UserId } from 'api/@types/brandedId';
 import type { UserModel } from 'api/@types/models';
+import type { TaskEntity } from 'api/@types/task';
 import controller from 'api/tasks/di/controller';
 import fastify from 'fastify';
 import { taskIdParser } from 'service/idParsers';
@@ -27,21 +28,22 @@ test('依存性注入', async () => {
 
   expect(res1.body).toHaveLength(2);
 
-  const mockedFindManyTask = async (userId: UserId): Promise<Task[]> => [
+  const mockedFindManyTask = async (
+    _: Prisma.TransactionClient,
+    authorId: UserId,
+  ): Promise<TaskEntity[]> => [
     {
       id: taskIdParser.parse('foo'),
-      userId,
       label: 'baz',
       done: false,
-      createdAt: new Date(),
+      createdTime: Date.now(),
+      author: { id: authorId, displayName: undefined },
     },
   ];
 
   const res2 = await controller
-    .inject({ findManyTask: mockedFindManyTask })(fastify())
-    .get({
-      user: { id: 'dummy-userId' } as UserModel,
-    });
+    .inject({ findManyByAuthorId: mockedFindManyTask })(fastify())
+    .get({ user: { id: 'dummy-userId' } as UserModel });
 
   expect(res2.body).toHaveLength(1);
 });
