@@ -22,6 +22,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
+    "@vitest/coverage-v8": "^1.6.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.3",
     "eslint-config-prettier": "^9.1.0",
@@ -34,6 +35,7 @@
     "stylelint-config-standard": "^36.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
+    "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
   },
   "engines": {

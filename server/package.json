@@ -23,7 +23,7 @@
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
     "start": "node --enable-source-maps index.js",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "prisma": {
@@ -55,8 +55,7 @@
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",
     "prisma": "^5.13.0",
-    "typescript": "^5.4.5",
-    "vite-tsconfig-paths": "^4.3.2"
+    "typescript": "^5.4.5"
   },
   "engines": {
     "node": ">=20.0.0"
