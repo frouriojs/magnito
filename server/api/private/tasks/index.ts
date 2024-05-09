@@ -11,12 +11,12 @@ export type Methods = DefineMethods<{
   };
 
   post: {
-    reqBody: Maybe<TaskCreateVal>;
+    reqBody: TaskCreateVal;
     resBody: TaskEntity;
   };
 
   patch: {
-    reqBody: Maybe<TaskUpdateVal>;
+    reqBody: TaskUpdateVal;
     status: 204;
     resBody: TaskEntity;
   };
