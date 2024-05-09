@@ -17,7 +17,7 @@ const Home = () => {
     setLabel(e.target.value);
   };
   const fetchTasks = async () => {
-    const tasks = await apiClient.tasks.$get().catch(returnNull);
+    const tasks = await apiClient.private.tasks.$get().catch(returnNull);
 
     if (tasks !== null) setTasks(tasks);
   };
@@ -25,19 +25,19 @@ const Home = () => {
     e.preventDefault();
     if (!label) return;
 
-    await apiClient.tasks.post({ body: { label } }).catch(returnNull);
+    await apiClient.private.tasks.post({ body: { label } }).catch(returnNull);
     setLabel('');
     await fetchTasks();
   };
   const toggleDone = async (task: TaskEntity) => {
-    await apiClient.tasks
+    await apiClient.private.tasks
       ._taskId(task.id)
       .patch({ body: { done: !task.done } })
       .catch(returnNull);
     await fetchTasks();
   };
   const deleteTask = async (task: TaskEntity) => {
-    await apiClient.tasks._taskId(task.id).delete().catch(returnNull);
+    await apiClient.private.tasks._taskId(task.id).delete().catch(returnNull);
     await fetchTasks();
   };
 
@@ -65,7 +65,9 @@ const Home = () => {
           <li key={task.id}>
             <label>
               <input type="checkbox" checked={task.done} onChange={() => toggleDone(task)} />
-              <span>{task.label}</span>
+              <span>
+                {task.label} by {task.author.displayName}
+              </span>
             </label>
             <input
               type="button"

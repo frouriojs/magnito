@@ -1,6 +1,6 @@
 import type { UserEntity } from 'api/@types/user';
+import { userUseCase } from 'domain/user/useCase/userUseCase';
 import { getUserRecord } from 'middleware/firebaseAdmin';
-import { usersRepo } from 'repository/usersRepo';
 import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {
@@ -16,6 +16,6 @@ export default defineHooks(() => ({
       return;
     }
 
-    req.user = usersRepo.recordToModel(user);
+    req.user = await userUseCase.findOrCreateUser(user);
   },
 }));

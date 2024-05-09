@@ -2,7 +2,7 @@ import type { Prisma } from '@prisma/client';
 import type { UserId } from 'api/@types/brandedId';
 import type { TaskEntity } from 'api/@types/task';
 import type { UserEntity } from 'api/@types/user';
-import controller from 'api/tasks/di/controller';
+import controller from 'api/private/tasks/di/controller';
 import fastify from 'fastify';
 import { taskIdParser } from 'service/idParsers';
 import { expect, test } from 'vitest';
@@ -16,7 +16,7 @@ test('API接続確認', async () => {
 });
 
 test('認証確認', async () => {
-  const res = await apiClient.me.$get();
+  const res = await apiClient.private.me.$get();
 
   expect(res.email).toBe(testUser.email);
 });
@@ -26,7 +26,7 @@ test('依存性注入', async () => {
     user: { id: 'dummy-userId' } as UserEntity,
   });
 
-  expect(res1.body).toHaveLength(2);
+  expect(res1.body).toHaveLength(0);
 
   const mockedFindManyTask = async (
     _: Prisma.TransactionClient,

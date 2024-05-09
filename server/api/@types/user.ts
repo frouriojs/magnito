@@ -5,4 +5,5 @@ export type UserEntity = {
   email: string;
   displayName: string | undefined;
   photoURL: string | undefined;
+  createdTime: number;
 };

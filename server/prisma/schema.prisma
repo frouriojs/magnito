@@ -11,6 +11,7 @@ model User {
   id          String   @id
   email       String
   displayName String?
+  photoURL    String?
   createdAt   DateTime
   tasks       Task[]
 }

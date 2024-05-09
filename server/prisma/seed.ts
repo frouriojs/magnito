@@ -1,29 +1,7 @@
-import { randomUUID } from 'crypto';
 import { prismaClient } from 'service/prismaClient';
 
 async function main(): Promise<void> {
-  const count = await prismaClient.task.count();
-
-  if (count > 0) return;
-
-  await Promise.all(
-    [
-      {
-        id: randomUUID(),
-        authorId: 'dummy-userId',
-        label: 'task1',
-        done: true,
-        createdAt: new Date(),
-      },
-      {
-        id: randomUUID(),
-        authorId: 'dummy-userId',
-        label: 'task2',
-        done: false,
-        createdAt: new Date(Date.now() + 100),
-      },
-    ].map((data) => prismaClient.task.create({ data })),
-  );
+  // seeder script
 }
 
 main()

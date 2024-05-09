@@ -21,7 +21,7 @@ export const AuthLoader = () => {
           .getIdToken()
           .then((idToken) => apiClient.session.$post({ body: { idToken } }))
           .catch(returnNull);
-        await apiClient.me.$get().catch(returnNull).then(setUser);
+        await apiClient.private.me.$get().catch(returnNull).then(setUser);
       } else {
         await apiClient.session.$delete();
         setUser(null);
