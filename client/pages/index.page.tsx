@@ -65,9 +65,7 @@ const Home = () => {
           <li key={task.id}>
             <label>
               <input type="checkbox" checked={task.done} onChange={() => toggleDone(task)} />
-              <span>
-                {task.label} by {task.author.displayName}
-              </span>
+              <span>{task.label}</span>
             </label>
             <input
               type="button"
