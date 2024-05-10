@@ -1,1 +1,1 @@
-export const APP_NAME = 'next-frourio-starter';
+export const APP_NAME = 'magnito';
