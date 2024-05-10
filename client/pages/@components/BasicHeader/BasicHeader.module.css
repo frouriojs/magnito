@@ -1,6 +1,8 @@
 .container {
+  position: sticky;
+  top: 0;
   height: 60px;
-  background: #fafafa;
+  background: #fff;
   border-bottom: 1px solid #eee;
 }
 
