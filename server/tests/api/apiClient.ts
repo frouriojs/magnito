@@ -15,10 +15,13 @@ import { afterAll, beforeAll } from 'vitest';
 export const testUser = { name: 'vitest-user', email: 'vitest@example.com' };
 
 const agent = axios.create();
+const baseURL = `http://127.0.0.1:${PORT}${API_BASE_PATH}`;
 
-export const apiClient = api(
-  aspida(agent, { baseURL: `http://127.0.0.1:${PORT}${API_BASE_PATH}` }),
+export const noCookieClient = api(
+  aspida(undefined, { baseURL, headers: { 'Content-Type': 'text/plain' } }),
 );
+
+export const apiClient = api(aspida(agent, { baseURL }));
 
 try {
   getAuth();

@@ -7,7 +7,7 @@ import fastify from 'fastify';
 import { taskIdParser } from 'service/idParsers';
 import { expect, test } from 'vitest';
 
-test('依存性注入', async () => {
+test('Dependency Injection', async () => {
   const res1 = await controller(fastify()).get({
     user: { id: 'dummy-userId' } as UserEntity,
   });

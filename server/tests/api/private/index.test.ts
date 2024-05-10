@@ -1,7 +1,16 @@
 import { expect, test } from 'vitest';
-import { apiClient, testUser } from '../apiClient';
+import { apiClient, noCookieClient, testUser } from '../apiClient';
+import { GET } from '../utils';
 
-test('認証確認', async () => {
+test(GET(apiClient.private), async () => {
+  const res = await apiClient.private.$get();
+
+  expect(res).toEqual('');
+
+  await expect(noCookieClient.private.get()).rejects.toHaveProperty('response.status', 401);
+});
+
+test(GET(apiClient.private.me), async () => {
   const res = await apiClient.private.me.$get();
 
   expect(res.email).toBe(testUser.email);
