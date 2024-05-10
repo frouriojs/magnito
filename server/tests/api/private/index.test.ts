@@ -13,5 +13,5 @@ test(GET(apiClient.private), async () => {
 test(GET(apiClient.private.me), async () => {
   const res = await apiClient.private.me.$get();
 
-  expect(res.email).toBe(testUser.email);
+  expect(res.email).toEqual(testUser.email);
 });

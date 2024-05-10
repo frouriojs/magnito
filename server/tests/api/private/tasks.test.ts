@@ -1,35 +1,43 @@
-import type { Prisma } from '@prisma/client';
-import type { UserId } from 'api/@types/brandedId';
-import type { TaskEntity } from 'api/@types/task';
-import type { UserEntity } from 'api/@types/user';
-import controller from 'api/private/tasks/di/controller';
-import fastify from 'fastify';
-import { taskIdParser } from 'service/idParsers';
 import { expect, test } from 'vitest';
+import { apiClient } from '../apiClient';
+import { DELETE, GET, PATCH, POST } from '../utils';
 
-test('Dependency Injection', async () => {
-  const res1 = await controller(fastify()).get({
-    user: { id: 'dummy-userId' } as UserEntity,
-  });
+test(GET(apiClient.private.tasks), async () => {
+  const res = await apiClient.private.tasks.get();
 
-  expect(res1.body).toHaveLength(0);
+  expect(res.status).toEqual(200);
+});
 
-  const mockedFindManyTask = async (
-    _: Prisma.TransactionClient,
-    authorId: UserId,
-  ): Promise<TaskEntity[]> => [
-    {
-      id: taskIdParser.parse('foo'),
-      label: 'baz',
-      done: false,
-      createdTime: Date.now(),
-      author: { id: authorId, displayName: undefined },
-    },
-  ];
+test(POST(apiClient.private.tasks), async () => {
+  const res = await apiClient.private.tasks.post({ body: { label: 'a' } });
 
-  const res2 = await controller
-    .inject({ findManyByAuthorId: mockedFindManyTask })(fastify())
-    .get({ user: { id: 'dummy-userId' } as UserEntity });
+  expect(res.status).toEqual(201);
+});
 
-  expect(res2.body).toHaveLength(1);
+test(PATCH(apiClient.private.tasks), async () => {
+  const task = await apiClient.private.tasks.$post({ body: { label: 'a' } });
+  const res = await apiClient.private.tasks.patch({ body: { taskId: task.id, label: 'b' } });
+
+  expect(res.status).toEqual(204);
+});
+
+test(DELETE(apiClient.private.tasks), async () => {
+  const task = await apiClient.private.tasks.$post({ body: { label: 'a' } });
+  const res = await apiClient.private.tasks.delete({ body: { taskId: task.id } });
+
+  expect(res.status).toEqual(204);
+});
+
+test(PATCH(apiClient.private.tasks._taskId('_taskId')), async () => {
+  const task = await apiClient.private.tasks.$post({ body: { label: 'a' } });
+  const res = await apiClient.private.tasks._taskId(task.id).patch({ body: { label: 'b' } });
+
+  expect(res.status).toEqual(204);
+});
+
+test(DELETE(apiClient.private.tasks._taskId('_taskId')), async () => {
+  const task = await apiClient.private.tasks.$post({ body: { label: 'a' } });
+  const res = await apiClient.private.tasks._taskId(task.id).delete();
+
+  expect(res.status).toEqual(204);
 });
