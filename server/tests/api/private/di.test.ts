@@ -22,6 +22,7 @@ test('Dependency Injection', async () => {
       id: taskIdParser.parse('foo'),
       label: 'baz',
       done: false,
+      image: undefined,
       createdTime: Date.now(),
       author: { id: authorId, displayName: undefined },
     },

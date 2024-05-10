@@ -2,12 +2,17 @@ import type { Prisma, Task, User } from '@prisma/client';
 import type { Maybe, TaskId, UserId } from 'api/@types/brandedId';
 import type { TaskEntity } from 'api/@types/task';
 import { taskIdParser, userIdParser } from 'service/idParsers';
+import { s3 } from 'service/s3Client';
 import { depend } from 'velona';
 
-const toModel = (prismaTask: Task & { Author: User }): TaskEntity => ({
+const toModel = async (prismaTask: Task & { Author: User }): Promise<TaskEntity> => ({
   id: taskIdParser.parse(prismaTask.id),
   label: prismaTask.label,
   done: prismaTask.done,
+  image:
+    prismaTask.imageKey === null
+      ? undefined
+      : { url: await s3.getSignedUrl(prismaTask.imageKey), s3Key: prismaTask.imageKey },
   author: {
     id: userIdParser.parse(prismaTask.authorId),
     displayName: prismaTask.Author.displayName ?? undefined,
@@ -27,7 +32,7 @@ const findManyByAuthorId = async (
     include: { Author: true },
   });
 
-  return prismaTasks.map(toModel);
+  return Promise.all(prismaTasks.map(toModel));
 };
 
 export const taskQuery = {
