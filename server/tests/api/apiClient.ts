@@ -1,4 +1,5 @@
 import aspida from '@aspida/axios';
+import api from 'api/$api';
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import {
@@ -10,20 +11,25 @@ import {
 import { firebaseAdmin } from 'middleware/firebaseAdmin';
 import { API_BASE_PATH, FIREBASE_AUTH_EMULATOR_HOST, PORT } from 'service/envValues';
 import { afterAll, beforeAll } from 'vitest';
-import api from '../../api/$api';
 
 export const testUser = { name: 'vitest-user', email: 'vitest@example.com' };
 
 const agent = axios.create();
+
 export const apiClient = api(
   aspida(agent, { baseURL: `http://127.0.0.1:${PORT}${API_BASE_PATH}` }),
 );
 
-beforeAll(async () => {
+try {
+  getAuth();
+} catch (e) {
   const auth = getAuth(initializeApp({ apiKey: 'fake-api-key', authDomain: 'localhost' }));
   connectAuthEmulator(auth, `http://${FIREBASE_AUTH_EMULATOR_HOST}`, { disableWarnings: true });
+}
+
+beforeAll(async () => {
   const result = await signInWithCredential(
-    auth,
+    getAuth(),
     GithubAuthProvider.credential(JSON.stringify({ sub: testUser.name, email: testUser.email })),
   );
   const idToken = await result.user.getIdToken();

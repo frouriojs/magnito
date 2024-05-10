@@ -2,11 +2,14 @@ import admin from 'firebase-admin';
 import type { UserRecord } from 'firebase-admin/lib/auth/user-record';
 import { FIREBASE_AUTH_EMULATOR_HOST, FIREBASE_SERVER_KEY } from 'service/envValues';
 
-export const firebaseAdmin = admin.initializeApp(
-  FIREBASE_AUTH_EMULATOR_HOST !== undefined
-    ? { projectId: 'emulator' }
-    : { credential: admin.credential.cert(JSON.parse(FIREBASE_SERVER_KEY)) },
-);
+export const firebaseAdmin =
+  admin.apps.length === 0
+    ? admin.initializeApp(
+        FIREBASE_AUTH_EMULATOR_HOST !== undefined
+          ? { projectId: 'emulator' }
+          : { credential: admin.credential.cert(JSON.parse(FIREBASE_SERVER_KEY)) },
+      )
+    : admin.app();
 
 export const getUserRecord = async (cookieVal: string | undefined): Promise<UserRecord | null> => {
   const auth = firebaseAdmin.auth();
