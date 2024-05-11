@@ -40,9 +40,4 @@ test(DELETE(apiClient.private.tasks._taskId('_taskId')), async () => {
   const res = await apiClient.private.tasks._taskId(task.id).delete();
 
   expect(res.status).toEqual(204);
-
-  const task2 = await apiClient.private.tasks.$post({ body: { label: 'b', image: new Blob([]) } });
-  const res2 = await apiClient.private.tasks._taskId(task2.id).delete();
-
-  expect(res2.status === 204).toBeTruthy();
 });

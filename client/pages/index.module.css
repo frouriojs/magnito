@@ -15,7 +15,6 @@
 }
 
 .card {
-  overflow: hidden;
   background: #fff;
   border-radius: 8px;
   box-shadow: 2px 2px 12px #0004;
@@ -65,9 +64,4 @@
   margin-left: auto;
   cursor: pointer;
   border-radius: 4px;
-}
-
-.taskImage {
-  width: 100%;
-  vertical-align: bottom;
 }

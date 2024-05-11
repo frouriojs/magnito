@@ -11,7 +11,6 @@ export type Methods = DefineMethods<{
   };
 
   post: {
-    reqFormat: FormData;
     reqBody: TaskCreateVal;
     resBody: TaskEntity;
   };
