@@ -37,7 +37,6 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: |
-          cp client/.env.example client/.env
           cp server/.env.example server/.env
           docker compose up -d
       - run: npm test

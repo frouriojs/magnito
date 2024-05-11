@@ -25,7 +25,6 @@ $ npm i --prefix server
 ### 環境変数ファイルの作成
 
 ```sh
-$ cp client/.env.example client/.env
 $ cp server/.env.example server/.env
 ```
 
@@ -50,14 +49,6 @@ Web ブラウザで http://localhost:3000 を開く
 [Node.js モノレポ開発のターミナルログ混雑解消のための新作 CLI ツール notios](https://zenn.dev/luma/articles/nodejs-new-cli-tool-notios)
 
 閉じるときは `Ctrl + C` を 2 回連続で入力
-
-#### Firebase Emulator
-
-http://localhost:4000/auth
-
-#### MinIO Console
-
-http://localhost:9001/
 
 #### PostgreSQL UI
 
