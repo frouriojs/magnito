@@ -1,35 +1,31 @@
 import type { Maybe, TaskId } from 'api/@types/brandedId';
 import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
-import { transaction } from 'service/prismaClient';
 import { taskMethod } from '../model/taskMethod';
 import { taskCommand } from '../repository/taskCommand';
 import { taskQuery } from '../repository/taskQuery';
 
 export const taskUseCase = {
-  create: (val: TaskCreateVal): Promise<TaskEntity> =>
-    transaction('RepeatableRead', async (tx) => {
-      const created = await taskMethod.create(val);
+  create: (val: TaskCreateVal): TaskEntity => {
+    const created = taskMethod.create(val);
 
-      await taskCommand.save(tx, created);
+    taskCommand.save(created);
 
-      return created;
-    }),
-  update: (val: TaskUpdateVal): Promise<TaskEntity> =>
-    transaction('RepeatableRead', async (tx) => {
-      const task = await taskQuery.findById(tx, val.taskId);
-      const updated = await taskMethod.update(task, val);
+    return created;
+  },
+  update: (val: TaskUpdateVal): TaskEntity => {
+    const task = taskQuery.findById(val.taskId);
+    const updated = taskMethod.update(task, val);
 
-      await taskCommand.save(tx, updated);
+    taskCommand.save(updated);
 
-      return updated;
-    }),
-  delete: (taskId: Maybe<TaskId>): Promise<TaskEntity> =>
-    transaction('RepeatableRead', async (tx) => {
-      const task = await taskQuery.findById(tx, taskId);
-      const deleted = taskMethod.delete(task);
+    return updated;
+  },
+  delete: (taskId: Maybe<TaskId>): TaskEntity => {
+    const task = taskQuery.findById(taskId);
+    const deleted = taskMethod.delete(task);
 
-      await taskCommand.delete(tx, deleted);
+    taskCommand.delete(deleted);
 
-      return task;
-    }),
+    return task;
+  },
 };

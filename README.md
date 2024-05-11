@@ -28,12 +28,6 @@ $ npm i --prefix server
 $ cp server/.env.example server/.env
 ```
 
-### ミドルウェアのセットアップ
-
-```sh
-$ docker compose up -d
-```
-
 ### 開発サーバー起動
 
 次回以降は以下のコマンドだけで開発できる
@@ -49,10 +43,3 @@ Web ブラウザで http://localhost:3000 を開く
 [Node.js モノレポ開発のターミナルログ混雑解消のための新作 CLI ツール notios](https://zenn.dev/luma/articles/nodejs-new-cli-tool-notios)
 
 閉じるときは `Ctrl + C` を 2 回連続で入力
-
-#### PostgreSQL UI
-
-```sh
-$ cd server
-$ npx prisma studio
-```

@@ -5,7 +5,7 @@ import { deletableTaskIdParser, taskIdParser } from 'service/idParsers';
 import type { TaskDeleteVal } from './taskEntity';
 
 export const taskMethod = {
-  create: async (val: TaskCreateVal): Promise<TaskEntity> => {
+  create: (val: TaskCreateVal): TaskEntity => {
     return {
       id: taskIdParser.parse(randomUUID()),
       done: false,

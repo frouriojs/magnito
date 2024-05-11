@@ -2,7 +2,7 @@ import type { TaskEntity } from 'api/@types/task';
 import { Loading } from 'components/Loading/Loading';
 import { BasicHeader } from 'pages/@components/BasicHeader/BasicHeader';
 import type { ChangeEvent, FormEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiClient } from 'utils/apiClient';
 import { returnNull } from 'utils/returnNull';
 import styles from './index.module.css';
@@ -36,6 +36,10 @@ const Home = () => {
     await apiClient.tasks._taskId(task.id).delete().catch(returnNull);
     await fetchTasks();
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   if (!tasks) return <Loading visible />;
 
