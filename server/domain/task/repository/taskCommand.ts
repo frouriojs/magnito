@@ -12,7 +12,6 @@ export const taskCommand = {
         label: task.label,
         done: task.done,
         createdAt: new Date(task.createdTime),
-        authorId: task.author.id,
       },
     });
   },

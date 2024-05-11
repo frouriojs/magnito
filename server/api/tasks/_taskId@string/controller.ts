@@ -6,8 +6,8 @@ import { defineController } from './$relay';
 export default defineController(() => ({
   patch: {
     validators: { body: z.object({ label: z.string().optional(), done: z.boolean().optional() }) },
-    handler: async ({ user, body, params }) => {
-      const task = await taskUseCase.update(user, {
+    handler: async ({ body, params }) => {
+      const task = await taskUseCase.update({
         ...body,
         taskId: taskIdParser.parse(params.taskId),
       });
@@ -15,8 +15,8 @@ export default defineController(() => ({
       return { status: 204, body: task };
     },
   },
-  delete: async ({ user, params }) => {
-    const task = await taskUseCase.delete(user, taskIdParser.parse(params.taskId));
+  delete: async ({ params }) => {
+    const task = await taskUseCase.delete(taskIdParser.parse(params.taskId));
 
     return { status: 204, body: task };
   },

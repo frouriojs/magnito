@@ -1,44 +1,4 @@
 services:
-  firebase:
-    build: ./docker/firebase
-    restart: always
-    ports:
-      - 9099:9099 # Auth
-      - 4000:4000 # Emulator Suite UI
-    working_dir: /opt/workspace
-    command: firebase emulators:start --only=auth --project=emulator --import ./firebase-export --export-on-exit
-
-  minio:
-    image: minio/minio:RELEASE.2023-08-23T10-07-06Z
-    restart: always
-    ports:
-      - 9000:9000 # Storage
-      - 9001:9001 # Console
-    env_file:
-      - ./server/.env
-    volumes:
-      - minio:/data
-    entrypoint: []
-    command: minio server /data --address :9000 --console-address :9001
-    healthcheck:
-      test: timeout 5s bash -c ':> /dev/tcp/127.0.0.1/9000' || exit 1
-      interval: 5s
-
-  mc:
-    image: minio/mc:RELEASE.2023-08-18T21-57-55Z
-    depends_on:
-      minio:
-        condition: service_healthy
-    env_file:
-      - ./server/.env
-    entrypoint: []
-    command: |
-      sh -c "
-        mc alias set myminio http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
-        mc mb myminio/$$S3_BUCKET --region=$$S3_REGION || true
-        mc mb myminio/$$TEST_S3_BUCKET --region=$$S3_REGION || true
-      "
-
   postgres:
     image: postgres:13
     restart: always
@@ -53,7 +13,5 @@ services:
       - postgres:/var/lib/postgresql/data
 
 volumes:
-  minio:
-    driver: local
   postgres:
     driver: local

@@ -7,29 +7,29 @@ import { z } from 'zod';
 import { defineController } from './$relay';
 
 export default defineController(() => ({
-  get: async ({ user, query }) => ({
+  get: async ({ query }) => ({
     status: 200,
-    body: await taskQuery.findManyByAuthorId(prismaClient, user.id, query?.limit),
+    body: await taskQuery.findMany(prismaClient, query?.limit),
   }),
   post: {
     validators: { body: taskValidator.taskCreate },
-    handler: async ({ user, body }) => ({
+    handler: async ({ body }) => ({
       status: 201,
-      body: await taskUseCase.create(user, body),
+      body: await taskUseCase.create(body),
     }),
   },
   patch: {
     validators: { body: taskValidator.taskUpdate },
-    handler: async ({ user, body }) => {
-      const task = await taskUseCase.update(user, body);
+    handler: async ({ body }) => {
+      const task = await taskUseCase.update(body);
 
       return { status: 204, body: task };
     },
   },
   delete: {
     validators: { body: z.object({ taskId: taskIdParser }) },
-    handler: async ({ user, body }) => {
-      const task = await taskUseCase.delete(user, body.taskId);
+    handler: async ({ body }) => {
+      const task = await taskUseCase.delete(body.taskId);
 
       return { status: 204, body: task };
     },

@@ -1,11 +1,10 @@
-import type { Maybe, TaskId, UserId } from './brandedId';
+import type { Maybe, TaskId } from './brandedId';
 
 export type TaskEntity = {
   id: TaskId;
   label: string;
   done: boolean;
   createdTime: number;
-  author: { id: UserId; displayName: string | undefined };
 };
 
 export type TaskCreateVal = { label: string };

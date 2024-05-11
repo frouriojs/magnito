@@ -7,20 +7,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id          String   @id
-  email       String
-  displayName String?
-  photoURL    String?
-  createdAt   DateTime
-  tasks       Task[]
-}
-
 model Task {
   id        String   @id
   label     String
   done      Boolean
   createdAt DateTime
-  Author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
 }

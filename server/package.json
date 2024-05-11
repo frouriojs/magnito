@@ -37,7 +37,6 @@
     "aspida": "^1.14.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
-    "firebase-admin": "^12.1.0",
     "velona": "^0.8.0",
     "zod": "^3.23.6"
   },
@@ -49,7 +48,6 @@
     "esbuild": "^0.20.2",
     "esbuild-node-externals": "^1.13.0",
     "esbuild-register": "^3.5.0",
-    "firebase": "^10.11.1",
     "frourio": "^1.0.1",
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",

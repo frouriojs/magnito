@@ -15,29 +15,3 @@
   padding: 0 16px;
   margin: 0 auto;
 }
-
-.userBtn {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 8px 16px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  transition: 0.2s;
-}
-
-.userBtn:hover {
-  background: white;
-  border-color: #eee;
-}
-
-.userIcon {
-  border-radius: 50%;
-}
-
-.userName {
-  font-size: 14px;
-  font-weight: bold;
-  color: #555;
-}
