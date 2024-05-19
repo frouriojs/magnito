@@ -1,6 +1,5 @@
 {
   "name": "server",
-  "version": "0.1.0",
   "scripts": {
     "dev": "npm run generate && run-p dev:*",
     "dev:build": "node ./scripts/build.dev.js",
