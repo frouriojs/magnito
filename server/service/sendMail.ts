@@ -1,10 +1,10 @@
 import { APP_NAME } from 'api/@constants';
 import assert from 'assert';
-import { randomUUID } from 'crypto';
 import { InbucketAPIClient } from 'inbucket-js-client';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { ulid } from 'ulid';
 import { SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER } from './envValues';
 
 const transport = createTransport({
@@ -33,7 +33,7 @@ if (import.meta.vitest) {
   const inbucketClient = new InbucketAPIClient(process.env.INBUCKET_URL);
 
   test('sendMail', async () => {
-    const from = `${randomUUID()}@localhost`;
+    const from = `${ulid()}@localhost`;
     const text = 'aaa';
 
     await sendMail({ to: { name: 'hoge', address: 'aa@example.com' }, subject: 'test', text });

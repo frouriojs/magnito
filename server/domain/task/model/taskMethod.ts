@@ -1,13 +1,13 @@
 import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import assert from 'assert';
-import { randomUUID } from 'crypto';
 import { deletableTaskIdParser, taskIdParser } from 'service/idParsers';
+import { ulid } from 'ulid';
 import type { TaskDeleteVal } from './taskEntity';
 
 export const taskMethod = {
   create: (val: TaskCreateVal): TaskEntity => {
     return {
-      id: taskIdParser.parse(randomUUID()),
+      id: taskIdParser.parse(ulid()),
       done: false,
       label: val.label,
       createdTime: Date.now(),
