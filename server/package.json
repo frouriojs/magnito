@@ -23,6 +23,7 @@
     "aspida": "^1.14.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
+    "nodemailer": "^6.9.13",
     "velona": "^0.8.0",
     "zod": "^3.23.6"
   },
@@ -30,11 +31,14 @@
     "@aspida/axios": "^1.14.0",
     "@types/busboy": "^1.5.4",
     "@types/node": "^20.12.10",
+    "@types/nodemailer": "^6.4.15",
+    "@types/request-promise-native": "^1.0.21",
     "axios": "^1.6.8",
     "esbuild": "^0.20.2",
     "esbuild-node-externals": "^1.13.0",
     "esbuild-register": "^3.5.0",
     "frourio": "^1.0.1",
+    "inbucket-js-client": "^1.0.1",
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",
     "typescript": "^5.4.5"

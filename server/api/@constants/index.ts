@@ -1,1 +1,1 @@
-export const APP_NAME = 'magnito';
+export const APP_NAME = 'Magnito';

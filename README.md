@@ -1,4 +1,4 @@
-# Next frourio starter
+# Magnito
 
 フロントエンドは client ディレクトリの [Next.js](https://nextjs.org/) 、バックエンドは server ディレクトリの [frourio](https://frourio.com/) で構築された TypeScript で一気通貫開発が可能なモノレポサービス
 
@@ -28,6 +28,12 @@ $ npm i --prefix server
 $ cp server/.env.example server/.env
 ```
 
+### ミドルウェアのセットアップ
+
+```sh
+$ docker compose up -d
+```
+
 ### 開発サーバー起動
 
 次回以降は以下のコマンドだけで開発できる
@@ -43,3 +49,11 @@ Web ブラウザで http://localhost:3000 を開く
 [Node.js モノレポ開発のターミナルログ混雑解消のための新作 CLI ツール notios](https://zenn.dev/luma/articles/nodejs-new-cli-tool-notios)
 
 閉じるときは `Ctrl + C` を 2 回連続で入力
+
+### SMTPサーバー
+
+Docker の Inbucket が SMTP サーバーのスタブを提供している
+
+http://localhost:9000/
+
+serverからsendMailするとInbucketヘッダー中央の「Recent Mailboxes」に仮想メールが届く

@@ -12,6 +12,7 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "target": "es6",
+    "types": ["vitest/importMeta"],
     "incremental": true
   },
   "include": ["**/*.ts", "**/*.js"],
