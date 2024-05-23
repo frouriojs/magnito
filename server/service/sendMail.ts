@@ -3,7 +3,6 @@ import assert from 'assert';
 import { InbucketAPIClient } from 'inbucket-js-client';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
-import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { ulid } from 'ulid';
 import { SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER } from './envValues';
 
@@ -12,7 +11,7 @@ const transport = createTransport({
   port: SMTP_PORT,
   secure: SMTP_PORT === 465,
   auth: { user: SMTP_USER, pass: SMTP_PASS },
-} as SMTPTransport.Options);
+});
 
 export const sendMail = async (options: {
   to: Mail.Address;
@@ -33,16 +32,16 @@ if (import.meta.vitest) {
   const inbucketClient = new InbucketAPIClient(process.env.INBUCKET_URL);
 
   test('sendMail', async () => {
-    const from = `${ulid()}@localhost`;
+    const toAddress = `${ulid()}@example.com`;
     const text = 'aaa';
 
-    await sendMail({ to: { name: 'hoge', address: 'aa@example.com' }, subject: 'test', text });
+    await sendMail({ to: { name: 'hoge', address: toAddress }, subject: 'test', text });
 
-    const inbox = await inbucketClient.mailbox(from);
-    const message = await inbucketClient.message(from, inbox[0].id);
-    await inbucketClient.deleteMessage(from, inbox[0].id);
+    const inbox = await inbucketClient.mailbox(toAddress);
+    const message = await inbucketClient.message(toAddress, inbox[0].id);
+    await inbucketClient.deleteMessage(toAddress, inbox[0].id);
 
     expect(inbox.length === 1).toBeTruthy();
-    expect(message.body.text).toBe(text);
+    expect(message.body.text).toBe(`${text}\n`);
   });
 }
