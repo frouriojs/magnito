@@ -15,3 +15,16 @@
   padding: 0 16px;
   margin: 0 auto;
 }
+
+.userBtn {
+  padding: 6px 12px;
+  margin-left: auto;
+  cursor: pointer;
+  border: 1px solid #333;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.userBtn:hover {
+  background: #3333;
+}

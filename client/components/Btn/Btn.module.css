@@ -1,0 +1,35 @@
+.btn {
+  max-width: 100%;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.1em;
+  background: blue;
+  border: none;
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+
+.small {
+  height: 28px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.large {
+  height: 40px;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+.enabled {
+  cursor: pointer;
+}
+
+.enabled:hover {
+  transform: scale(1.05);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

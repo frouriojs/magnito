@@ -44,8 +44,10 @@ jobs:
         if: steps.server-npm-cache.outputs.cache-hit != 'true'
       - run: npm run build --prefix client
         env:
-          API_BASE_PATH: ${{ vars.API_BASE_PATH }}
           API_ORIGIN: ${{ vars.API_ORIGIN }}
+          NEXT_PUBLIC_COGNITO_POOL_ENDPOINT: ${{ vars.NEXT_PUBLIC_COGNITO_POOL_ENDPOINT }}
+          NEXT_PUBLIC_COGNITO_POOL_ID: ${{ vars.NEXT_PUBLIC_COGNITO_POOL_ID }}
+          NEXT_PUBLIC_COGNITO_CLIENT_ID: ${{ vars.NEXT_PUBLIC_COGNITO_CLIENT_ID }}
       - run: touch ./client/out/.nojekyll
       - uses: peaceiris/actions-gh-pages@v3
         with:

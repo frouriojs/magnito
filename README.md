@@ -25,8 +25,11 @@ $ npm i --prefix server
 ### 環境変数ファイルの作成
 
 ```sh
+$ cp client/.env.example client/.env
 $ cp server/.env.example server/.env
 ```
+
+`client/.env` にCognito関連の値をセットする
 
 ### ミドルウェアのセットアップ
 
