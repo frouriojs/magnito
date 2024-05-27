@@ -13,6 +13,8 @@ const transport = createTransport({
   auth: { user: SMTP_USER, pass: SMTP_PASS },
 });
 
+export const checkSmtpHealth = (): Promise<boolean> => transport.verify().then(() => true);
+
 export const sendMail = async (options: {
   to: Mail.Address;
   subject: string;
