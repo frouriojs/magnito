@@ -11,4 +11,5 @@ module.exports = {
   transpilePackages: ['api', 'commonConstantsWithClient'],
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+  env: { APP_VERSION: `v${require('../package.json').version}` },
 };

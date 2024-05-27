@@ -1,11 +1,12 @@
-import { staticPath } from 'utils/$path';
+import { APP_NAME } from 'api/@constants';
+import { APP_VERSION } from 'utils/envValues';
 import styles from './BasicHeader.module.css';
 
 export const BasicHeader = () => {
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-        <img src={staticPath.frourio_svg} height={36} alt="frourio logo" />
+        {APP_NAME} {APP_VERSION}
       </div>
     </div>
   );

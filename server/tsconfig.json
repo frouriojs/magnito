@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
     "target": "es6",
     "types": ["vitest/importMeta"],
     "incremental": true
