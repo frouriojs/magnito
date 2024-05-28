@@ -11,6 +11,10 @@ export const init = (serverFactory?: FastifyServerFactory): FastifyInstance => {
   app.register(helmet);
   app.register(cors, { origin: CORS_ORIGIN, credentials: true });
   app.register(cookie);
+  app.addContentTypeParser('application/x-amz-json-1.1', { parseAs: 'string' }, (_, body, done) => {
+    done(null, JSON.parse(body as string));
+  });
+
   server(app);
 
   return app;

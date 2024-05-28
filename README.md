@@ -29,8 +29,6 @@ $ cp client/.env.example client/.env
 $ cp server/.env.example server/.env
 ```
 
-`client/.env` にCognito関連の値をセットする
-
 ### ミドルウェアのセットアップ
 
 ```sh
