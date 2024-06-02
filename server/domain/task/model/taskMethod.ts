@@ -1,6 +1,6 @@
 import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import assert from 'assert';
-import { deletableTaskIdParser, taskIdParser } from 'service/idParsers';
+import { taskIdParser } from 'service/idParsers';
 import { ulid } from 'ulid';
 import type { TaskDeleteVal } from './taskEntity';
 
@@ -19,6 +19,6 @@ export const taskMethod = {
     return { ...task, ...val };
   },
   delete: (task: TaskEntity): TaskDeleteVal => {
-    return { task, deletableId: deletableTaskIdParser.parse(task.id) };
+    return { deletable: true, task };
   },
 };
