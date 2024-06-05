@@ -3,6 +3,7 @@
     "bierner.markdown-mermaid",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
+    "prisma.prisma",
     "stylelint.vscode-stylelint",
     "styled-components.vscode-styled-components",
     "yoavbls.pretty-ts-errors"

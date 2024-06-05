@@ -5,6 +5,8 @@ node_modules/
 .DS_Store
 *.pem
 tsconfig.tsbuildinfo
+data/*
+!data/.gitkeep
 .env
 
 # debug

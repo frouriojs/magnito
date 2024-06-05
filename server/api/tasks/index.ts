@@ -5,6 +5,9 @@ import type { DefineMethods } from 'aspida';
 export type Methods = DefineMethods<{
   get: {
     resBody: TaskEntity[];
+    query?: {
+      limit?: number;
+    };
   };
 
   post: {

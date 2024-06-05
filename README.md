@@ -51,6 +51,13 @@ Web ブラウザで http://localhost:3000 を開く
 
 閉じるときは `Ctrl + C` を 2 回連続で入力
 
+#### SQLite UI
+
+```sh
+$ cd server
+$ npx prisma studio
+```
+
 ### SMTPサーバー
 
 Docker の Inbucket が SMTP サーバーのスタブを提供している

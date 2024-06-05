@@ -2,21 +2,36 @@ import { taskQuery } from 'domain/task/repository/taskQuery';
 import { taskValidator } from 'domain/task/service/taskValidator';
 import { taskUseCase } from 'domain/task/useCase/taskUseCase';
 import { taskIdParser } from 'service/idParsers';
+import { prismaClient } from 'service/prismaClient';
 import { z } from 'zod';
 import { defineController } from './$relay';
 
 export default defineController(() => ({
-  get: () => ({ status: 200, body: taskQuery.findMany() }),
+  get: async ({ query }) => ({
+    status: 200,
+    body: await taskQuery.findMany(prismaClient, query?.limit),
+  }),
   post: {
     validators: { body: taskValidator.taskCreate },
-    handler: ({ body }) => ({ status: 201, body: taskUseCase.create(body) }),
+    handler: async ({ body }) => ({
+      status: 201,
+      body: await taskUseCase.create(body),
+    }),
   },
   patch: {
     validators: { body: taskValidator.taskUpdate },
-    handler: ({ body }) => ({ status: 204, body: taskUseCase.update(body) }),
+    handler: async ({ body }) => {
+      const task = await taskUseCase.update(body);
+
+      return { status: 204, body: task };
+    },
   },
   delete: {
     validators: { body: z.object({ taskId: taskIdParser }) },
-    handler: ({ body }) => ({ status: 204, body: taskUseCase.delete(body.taskId) }),
+    handler: async ({ body }) => {
+      const task = await taskUseCase.delete(body.taskId);
+
+      return { status: 204, body: task };
+    },
   },
 }));
