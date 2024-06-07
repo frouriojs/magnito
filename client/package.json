@@ -2,11 +2,12 @@
   "name": "client",
   "scripts": {
     "dev": "run-p dev:*",
-    "dev:client": "next dev -p 3000",
+    "dev:client": "next dev -p 5001",
     "dev:hcm": "hcm '**/*.module.css' -w",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath .gitignore -s -w",
     "build": "npm run generate && next build",
+    "start": "next start -p 5001",
     "lint": "run-p lint:js lint:prettier lint:style",
     "lint:js": "eslint --ext .ts,.tsx,.js --ignore-path .gitignore .",
     "lint:prettier": "prettier --check \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore",
