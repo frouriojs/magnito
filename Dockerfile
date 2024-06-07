@@ -30,7 +30,7 @@ RUN npm run batch:writeVersion -- $VERSION
 RUN npm run build
 RUN apk --no-cache add curl
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f $API_ORIGIN/health || exit 1
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f $API_ORIGIN/health && curl -f $CORS_ORIGIN || exit 1
 
 EXPOSE 5000 5001
 VOLUME ["/usr/src/app/data"]

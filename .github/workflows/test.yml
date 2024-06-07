@@ -37,5 +37,12 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: cp server/.env.example server/.env
-      - run: docker compose up -d
+      - run: docker compose -p magnito-test up -d
       - run: npm test
+
+      - run: docker build . -t magnito --build-arg VERSION=0.0.0
+      - run: docker images
+      - run: docker run -d --name test --network magnito-test_default magnito
+      - run: count=0 && until [ "$(docker inspect --format='{{json .State.Health.Status}}' test)" == "\"healthy\"" ] || [ $count -eq 30 ]; do sleep 1; count=$((count + 1)); done && [ $count -ne 30 ]
+      - run: docker ps
+      - run: docker stop test
