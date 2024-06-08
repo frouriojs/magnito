@@ -1,6 +1,5 @@
 import { APP_NAME } from 'api/@constants';
 import assert from 'assert';
-import { InbucketAPIClient } from 'inbucket-js-client';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import { ulid } from 'ulid';
@@ -30,10 +29,11 @@ export const sendMail = async (options: {
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
 
-  assert(process.env.INBUCKET_URL);
-  const inbucketClient = new InbucketAPIClient(process.env.INBUCKET_URL);
-
   test('sendMail', async () => {
+    assert(process.env.INBUCKET_URL);
+
+    const { InbucketAPIClient } = await import('inbucket-js-client');
+    const inbucketClient = new InbucketAPIClient(process.env.INBUCKET_URL);
     const toAddress = `${ulid()}@example.com`;
     const text = 'aaa';
 
