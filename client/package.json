@@ -7,7 +7,6 @@
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath .gitignore -s -w",
     "build": "npm run generate && next build",
-    "start": "next start -p 5001",
     "lint": "run-p lint:js lint:prettier lint:style",
     "lint:js": "eslint --ext .ts,.tsx,.js --ignore-path .gitignore .",
     "lint:prettier": "prettier --check \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore",
