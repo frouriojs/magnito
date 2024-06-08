@@ -15,7 +15,6 @@ COPY . .
 
 ARG SERVER_PORT=5000
 ARG VERSION
-ARG API_ORIGIN=http://localhost:$SERVER_PORT
 ARG NEXT_PUBLIC_COGNITO_POOL_ENDPOINT=http://localhost:$SERVER_PORT
 ARG NEXT_PUBLIC_COGNITO_POOL_ID=ap-northeast-1_randomPoolId
 ARG NEXT_PUBLIC_COGNITO_CLIENT_ID=random-client-id
@@ -28,12 +27,10 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-ARG SERVER_PORT=5000
 ARG CLIENT_PORT=5001
 
-ENV PORT=$SERVER_PORT
+ENV PORT=5000
 ENV CLIENT_PORT=$CLIENT_PORT
-ENV API_ORIGIN=http://localhost:$SERVER_PORT
 ENV CORS_ORIGIN=http://localhost:$CLIENT_PORT
 ENV DATABASE_URL=file:../../data/app.db
 ENV SMTP_HOST=inbucket
@@ -53,9 +50,9 @@ COPY --from=builder /usr/src/app/server/prisma ./server/prisma
 RUN apk --no-cache add curl
 COPY --from=builder /usr/src/app/data ./data
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f $API_ORIGIN/health && curl -f $CORS_ORIGIN || exit 1
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f http://localhost:$PORT/health && curl -f $CORS_ORIGIN || exit 1
 
-EXPOSE ${SERVER_PORT} ${CLIENT_PORT}
+EXPOSE ${PORT} ${CLIENT_PORT}
 VOLUME ["/usr/src/app/data"]
 
 CMD ["npm", "start"]
