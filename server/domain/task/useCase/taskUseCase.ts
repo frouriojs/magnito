@@ -1,4 +1,4 @@
-import type { Maybe, TaskId } from 'api/@types/brandedId';
+import type { MaybeId } from 'api/@types/brandedId';
 import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import { transaction } from 'service/prismaClient';
 import { taskMethod } from '../model/taskMethod';
@@ -23,7 +23,7 @@ export const taskUseCase = {
 
       return updated;
     }),
-  delete: (taskId: Maybe<TaskId>): Promise<TaskEntity> =>
+  delete: (taskId: MaybeId['task']): Promise<TaskEntity> =>
     transaction(async (tx) => {
       const task = await taskQuery.findById(tx, taskId);
       const deleted = taskMethod.delete(task);

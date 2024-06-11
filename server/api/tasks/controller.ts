@@ -1,7 +1,7 @@
 import { taskQuery } from 'domain/task/repository/taskQuery';
 import { taskValidator } from 'domain/task/service/taskValidator';
 import { taskUseCase } from 'domain/task/useCase/taskUseCase';
-import { taskIdParser } from 'service/idParsers';
+import { brandedId } from 'service/brandedId';
 import { prismaClient } from 'service/prismaClient';
 import { z } from 'zod';
 import { defineController } from './$relay';
@@ -27,7 +27,7 @@ export default defineController(() => ({
     },
   },
   delete: {
-    validators: { body: z.object({ taskId: taskIdParser }) },
+    validators: { body: z.object({ taskId: brandedId.task.maybe }) },
     handler: async ({ body }) => {
       const task = await taskUseCase.delete(body.taskId);
 

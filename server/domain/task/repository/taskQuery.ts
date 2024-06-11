@@ -1,10 +1,10 @@
 import type { Prisma, Task } from '@prisma/client';
-import type { Maybe, TaskId } from 'api/@types/brandedId';
+import type { MaybeId } from 'api/@types/brandedId';
 import type { TaskEntity } from 'api/@types/task';
-import { taskIdParser } from 'service/idParsers';
+import { brandedId } from 'service/brandedId';
 
 const toEntity = async (prismaTask: Task): Promise<TaskEntity> => ({
-  id: taskIdParser.parse(prismaTask.id),
+  id: brandedId.task.entity.parse(prismaTask.id),
   label: prismaTask.label,
   done: prismaTask.done,
   createdTime: prismaTask.createdAt.getTime(),
@@ -19,6 +19,6 @@ export const taskQuery = {
 
     return Promise.all(prismaTasks.map(toEntity));
   },
-  findById: async (tx: Prisma.TransactionClient, taskId: Maybe<TaskId>): Promise<TaskEntity> =>
+  findById: async (tx: Prisma.TransactionClient, taskId: MaybeId['task']): Promise<TaskEntity> =>
     tx.task.findUniqueOrThrow({ where: { id: taskId } }).then(toEntity),
 };

@@ -1,7 +1,7 @@
-import type { Maybe, TaskId } from './brandedId';
+import type { EntityId, MaybeId } from './brandedId';
 
 export type TaskEntity = {
-  id: TaskId;
+  id: EntityId['task'];
   label: string;
   done: boolean;
   createdTime: number;
@@ -9,4 +9,4 @@ export type TaskEntity = {
 
 export type TaskCreateVal = { label: string };
 
-export type TaskUpdateVal = { taskId: Maybe<TaskId>; label?: string; done?: boolean };
+export type TaskUpdateVal = { taskId: MaybeId['task']; label?: string; done?: boolean };

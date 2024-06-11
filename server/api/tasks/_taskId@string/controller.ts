@@ -1,5 +1,5 @@
 import { taskUseCase } from 'domain/task/useCase/taskUseCase';
-import { taskIdParser } from 'service/idParsers';
+import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 import { defineController } from './$relay';
 
@@ -9,14 +9,14 @@ export default defineController(() => ({
     handler: async ({ body, params }) => {
       const task = await taskUseCase.update({
         ...body,
-        taskId: taskIdParser.parse(params.taskId),
+        taskId: brandedId.task.maybe.parse(params.taskId),
       });
 
       return { status: 204, body: task };
     },
   },
   delete: async ({ params }) => {
-    const task = await taskUseCase.delete(taskIdParser.parse(params.taskId));
+    const task = await taskUseCase.delete(brandedId.task.maybe.parse(params.taskId));
 
     return { status: 204, body: task };
   },

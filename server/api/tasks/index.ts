@@ -1,4 +1,4 @@
-import type { Maybe, TaskId } from 'api/@types/brandedId';
+import type { MaybeId } from 'api/@types/brandedId';
 import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import type { DefineMethods } from 'aspida';
 
@@ -23,7 +23,7 @@ export type Methods = DefineMethods<{
 
   delete: {
     reqBody: {
-      taskId: Maybe<TaskId>;
+      taskId: MaybeId['task'];
     };
     status: 204;
     resBody: TaskEntity;
