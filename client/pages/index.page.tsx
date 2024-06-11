@@ -14,7 +14,7 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user.data !== null) router.replace(pagesPath[user.data.role].$url());
+    if (user.data !== null) router.replace(pagesPath.console.$url());
   }, [user, router]);
 
   return user.inited && user.data === null ? (

@@ -1,8 +1,8 @@
+import type { UserEntity } from 'api/@types/user';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import type { UserDto } from 'utils/types';
 
-const userAtom = atom<{ inited: false; data: null } | { inited: true; data: UserDto | null }>({
+const userAtom = atom<{ inited: false; data: null } | { inited: true; data: UserEntity | null }>({
   inited: false,
   data: null,
 });
@@ -13,7 +13,7 @@ export const useUser = () => {
   return {
     user,
     setUser: useCallback(
-      (user: UserDto | null) => setUser({ inited: true, data: user }),
+      (user: UserEntity | null) => setUser({ inited: true, data: user }),
       [setUser],
     ),
   };

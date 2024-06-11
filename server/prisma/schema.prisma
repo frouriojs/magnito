@@ -8,11 +8,43 @@ generator client {
 }
 
 model User {
-  id          String   @id
-  email       String
-  displayName String?
-  photoURL    String?
-  createdAt   DateTime
+  id                String             @id
+  name              String
+  email             String
+  verified          Boolean
+  createdAt         DateTime
+  UserPool          UserPool           @relation(fields: [userPoolId], references: [id])
+  userPoolId        String
+  verificationCodes VerificationCode[]
+}
+
+model VerificationCode {
+  id        String   @id
+  code      String
+  createdAt DateTime
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model UserPool {
+  id              String           @id
+  createdAt       DateTime
+  users           User[]
+  userPoolClients UserPoolClient[]
+  privateKeys     PrivateKey[]
+}
+
+model UserPoolClient {
+  id         String   @id
+  createdAt  DateTime
+  UserPool   UserPool @relation(fields: [userPoolId], references: [id])
+  userPoolId String
+}
+
+model PrivateKey {
+  id         String   @id
+  UserPool   UserPool @relation(fields: [userPoolId], references: [id])
+  userPoolId String
 }
 
 model Task {

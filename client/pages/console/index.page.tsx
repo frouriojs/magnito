@@ -7,7 +7,7 @@ import { apiClient } from 'utils/apiClient';
 import { returnNull } from 'utils/returnNull';
 import styles from './index.module.css';
 
-const General = () => {
+const Console = () => {
   const [tasks, setTasks] = useState<TaskEntity[]>();
   const [label, setLabel] = useState('');
   const fetchTasks = async () => {
@@ -42,11 +42,10 @@ const General = () => {
 
   return (
     <Layout
-      pageRole="general"
       content={(user) => (
         <div className={styles.container}>
+          <div>Todo list of {user.name}</div>
           <div className={styles.main}>
-            <div>Todo list of {user.name}</div>
             <div className={styles.card}>
               <form onSubmit={createTask}>
                 <div className={styles.controls}>
@@ -82,4 +81,4 @@ const General = () => {
   );
 };
 
-export default General;
+export default Console;
