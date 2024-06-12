@@ -17,7 +17,7 @@ const targets: {
       UserAttributes: z.tuple([z.object({ Name: z.literal('email'), Value: z.string().email() })]),
       ClientId: brandedId.userPoolClient.maybe,
     }),
-    useCase: authUseCase.SignUp,
+    useCase: authUseCase.signUp,
   },
   'AWSCognitoIdentityProviderService.ConfirmSignUp': {
     validator: z.object({
@@ -25,7 +25,7 @@ const targets: {
       ConfirmationCode: z.string(),
       Username: z.string(),
     }),
-    useCase: authUseCase.ConfirmSignUp,
+    useCase: authUseCase.confirmSignUp,
   },
   'AWSCognitoIdentityProviderService.InitiateAuth': {
     validator: z
@@ -43,8 +43,8 @@ const targets: {
       ),
     useCase: (req) =>
       req.AuthFlow === 'USER_SRP_AUTH'
-        ? authUseCase.UserSrpAuth(req)
-        : authUseCase.ResreshTokenAuth(req),
+        ? authUseCase.userSrpAuth(req)
+        : authUseCase.resreshTokenAuth(req),
   },
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': {
     validator: z.object({
@@ -57,15 +57,15 @@ const targets: {
       }),
       ClientId: brandedId.userPoolClient.maybe,
     }),
-    useCase: authUseCase.RespondToAuthChallenge,
+    useCase: authUseCase.respondToAuthChallenge,
   },
   'AWSCognitoIdentityProviderService.GetUser': {
     validator: z.object({ AccessToken: z.string() }),
-    useCase: authUseCase.GetUser,
+    useCase: authUseCase.getUser,
   },
   'AWSCognitoIdentityProviderService.RevokeToken': {
     validator: z.object({ ClientId: brandedId.userPoolClient.maybe, Token: z.string() }),
-    useCase: authUseCase.RevokeToken,
+    useCase: authUseCase.revokeToken,
   },
 };
 

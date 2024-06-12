@@ -19,7 +19,7 @@ import { userQuery } from '../repository/userQuery';
 import { genTokens } from '../service/genTokens';
 
 export const authUseCase = {
-  SignUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
+  signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const user = userMethod.createUser({
         name: req.Username,
@@ -42,7 +42,7 @@ export const authUseCase = {
         UserSub: user.id,
       };
     }),
-  ConfirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
+  confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
       const verified = userMethod.verifyUser(user, req.ConfirmationCode);
@@ -51,7 +51,7 @@ export const authUseCase = {
 
       return {};
     }),
-  UserSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
+  userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
       assert(user.verified);
@@ -67,7 +67,7 @@ export const authUseCase = {
         },
       };
     }),
-  ResreshTokenAuth: (
+  resreshTokenAuth: (
     req: RefreshTokenAuthTarget['reqBody'],
   ): Promise<RefreshTokenAuthTarget['resBody']> =>
     transaction(async (tx) => {
@@ -92,7 +92,7 @@ export const authUseCase = {
         ChallengeParameters: {},
       };
     }),
-  RespondToAuthChallenge: (
+  respondToAuthChallenge: (
     req: RespondToAuthChallengeTarget['reqBody'],
   ): Promise<RespondToAuthChallengeTarget['resBody']> =>
     transaction(async (tx) => {
@@ -118,7 +118,7 @@ export const authUseCase = {
         ChallengeParameters: {},
       };
     }),
-  GetUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
+  getUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
     transaction(async (tx) => {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
@@ -132,7 +132,7 @@ export const authUseCase = {
         Username: user.name,
       };
     }),
-  RevokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
+  revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
     transaction(async (tx) => {
       await userQuery.findByRefreshToken(tx, req.Token);
 
