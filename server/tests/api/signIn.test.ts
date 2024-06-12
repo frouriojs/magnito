@@ -1,4 +1,4 @@
-import type { RespondToAuthChallengeTarget } from 'api/@types/auth';
+import assert from 'assert';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
 import { createUserClient, noCookieClient } from './apiClient';
@@ -14,7 +14,7 @@ test('signIn', async () => {
     },
   });
 
-  const res1 = (await noCookieClient.$post({
+  const res1 = await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.RespondToAuthChallenge' },
     body: {
       ChallengeName: 'PASSWORD_VERIFIER',
@@ -26,7 +26,10 @@ test('signIn', async () => {
       },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
-  })) as unknown as RespondToAuthChallengeTarget['resBody'];
+  });
+
+  assert('AuthenticationResult' in res1);
+  assert('RefreshToken' in res1.AuthenticationResult);
 
   await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.GetUser' },

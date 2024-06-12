@@ -1,11 +1,14 @@
 import type { DefineMethods } from 'aspida';
 import type { AmzTargets } from './@types/auth';
 
+type TargetKey = keyof AmzTargets;
+type Target = AmzTargets[TargetKey];
+
 export type Methods = DefineMethods<{
   post: {
-    reqHeaders: { 'x-amz-target': keyof AmzTargets };
+    reqHeaders: { 'x-amz-target': TargetKey };
     resHeaders: { 'content-type': 'application/x-amz-json-1.1' };
-    reqBody: AmzTargets[keyof AmzTargets]['reqBody'];
-    resBody: AmzTargets[keyof AmzTargets]['resBody'];
+    reqBody: Target['reqBody'];
+    resBody: Target['resBody'];
   };
 }>;
