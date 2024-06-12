@@ -14,12 +14,9 @@ const transport = createTransport({
 
 export const checkSmtpHealth = (): Promise<boolean> => transport.verify().then(() => true);
 
-export const sendMail = async (options: {
-  to: Mail.Address;
-  subject: string;
-  text?: string;
-  html?: string;
-}): Promise<void> => {
+export const sendMail = async (
+  options: { to: Mail.Address; subject: string } & ({ text: string } | { html: string }),
+): Promise<void> => {
   await transport.sendMail({
     from: { name: APP_NAME, address: `no-reply@${SMTP_HOST}` },
     ...options,

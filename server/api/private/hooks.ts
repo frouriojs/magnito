@@ -3,11 +3,11 @@ import assert from 'assert';
 import { userQuery } from 'domain/user/repository/userQuery';
 import type { JWT_PROP_NAME } from 'service/constants';
 import { prismaClient } from 'service/prismaClient';
-import type { JwtUser } from 'service/types';
+import type { IdTokenJwt } from 'service/types';
 import { defineHooks } from './$relay';
 
 export type AdditionalRequest = {
-  [Key in typeof JWT_PROP_NAME]: JwtUser;
+  [Key in typeof JWT_PROP_NAME]: IdTokenJwt;
 } & { user: UserEntity };
 
 export default defineHooks(() => ({
@@ -18,8 +18,8 @@ export default defineHooks(() => ({
       res.status(401).send();
     }
 
-    assert(req.jwtUser);
+    assert(req.idToken);
 
-    req.user = await userQuery.findById(prismaClient, req.jwtUser.sub);
+    req.user = await userQuery.findById(prismaClient, req.idToken.sub);
   },
 }));

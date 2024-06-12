@@ -1,4 +1,6 @@
-import type { MaybeId } from './brandedId';
+import type { EntityId, MaybeId } from './brandedId';
+
+export type Jwks = { keys: [{ kid: string; alg: string }] };
 
 type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
@@ -9,10 +11,27 @@ export type SignUpTarget = TargetBody<
     UserAttributes: [{ Name: 'email'; Value: string }];
     ClientId: MaybeId['userPoolClient'];
   },
+  {
+    CodeDeliveryDetails: {
+      AttributeName: 'email';
+      DeliveryMedium: 'EMAIL';
+      Destination: string;
+    };
+    UserConfirmed: boolean;
+    UserSub: EntityId['user'];
+  }
+>;
+
+export type ConfirmSignUpTarget = TargetBody<
+  {
+    ClientId: MaybeId['userPoolClient'];
+    ConfirmationCode: string;
+    Username: string;
+  },
   Record<string, never>
 >;
 
-export type InitiateAuthTarget = TargetBody<
+export type UserSrpAuthTarget = TargetBody<
   {
     AuthFlow: 'USER_SRP_AUTH';
     AuthParameters: { USERNAME: string; SRP_A: string };
@@ -20,7 +39,7 @@ export type InitiateAuthTarget = TargetBody<
   },
   {
     ChallengeName: 'PASSWORD_VERIFIER';
-    challengeParameters: {
+    ChallengeParameters: {
       SALT: string;
       SECRET_BLOCK: string;
       SRP_B: string;
@@ -30,7 +49,24 @@ export type InitiateAuthTarget = TargetBody<
   }
 >;
 
-export type VerifierAuthTarget = TargetBody<
+export type RefreshTokenAuthTarget = TargetBody<
+  {
+    AuthFlow: 'REFRESH_TOKEN_AUTH';
+    AuthParameters: { REFRESH_TOKEN: string };
+    ClientId: MaybeId['userPoolClient'];
+  },
+  {
+    AuthenticationResult: {
+      AccessToken: string;
+      ExpiresIn: number;
+      IdToken: string;
+      TokenType: 'Bearer';
+    };
+    ChallengeParameters: Record<string, never>;
+  }
+>;
+
+export type RespondToAuthChallengeTarget = TargetBody<
   {
     ChallengeName: 'PASSWORD_VERIFIER';
     ChallengeResponses: {
@@ -39,7 +75,7 @@ export type VerifierAuthTarget = TargetBody<
       TIMESTAMP: string;
       USERNAME: string;
     };
-    ClientId: string;
+    ClientId: MaybeId['userPoolClient'];
   },
   {
     AuthenticationResult: {
@@ -53,11 +89,11 @@ export type VerifierAuthTarget = TargetBody<
   }
 >;
 
-export type AttributesTarget = TargetBody<
+export type GetUserTarget = TargetBody<
   { AccessToken: string },
   {
     UserAttributes: [
-      { Name: 'sub'; Value: string },
+      { Name: 'sub'; Value: EntityId['user'] },
       { Name: 'email'; Value: string },
       { Name: 'email_verified'; Value: 'true' | 'false' },
     ];
@@ -67,7 +103,8 @@ export type AttributesTarget = TargetBody<
 
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
-  'AWSCognitoIdentityProviderService.InitiateAuth': InitiateAuthTarget;
-  'AWSCognitoIdentityProviderService.VerifierAuth': VerifierAuthTarget;
-  'AWSCognitoIdentityProviderService.Attributes': AttributesTarget;
+  'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
+  'AWSCognitoIdentityProviderService.InitiateAuth': UserSrpAuthTarget | RefreshTokenAuthTarget;
+  'AWSCognitoIdentityProviderService.RespondToAuthChallenge': RespondToAuthChallengeTarget;
+  'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
 };

@@ -19,15 +19,34 @@ const targets: {
     }),
     useCase: authUseCase.SignUp,
   },
-  'AWSCognitoIdentityProviderService.InitiateAuth': {
+  'AWSCognitoIdentityProviderService.ConfirmSignUp': {
     validator: z.object({
-      AuthFlow: z.literal('USER_SRP_AUTH'),
-      AuthParameters: z.object({ USERNAME: z.string(), SRP_A: z.string() }),
       ClientId: brandedId.userPoolClient.maybe,
+      ConfirmationCode: z.string(),
+      Username: z.string(),
     }),
-    useCase: authUseCase.InitiateAuth,
+    useCase: authUseCase.ConfirmSignUp,
   },
-  'AWSCognitoIdentityProviderService.VerifierAuth': {
+  'AWSCognitoIdentityProviderService.InitiateAuth': {
+    validator: z
+      .object({
+        AuthFlow: z.literal('USER_SRP_AUTH'),
+        AuthParameters: z.object({ USERNAME: z.string(), SRP_A: z.string() }),
+        ClientId: brandedId.userPoolClient.maybe,
+      })
+      .or(
+        z.object({
+          AuthFlow: z.literal('REFRESH_TOKEN_AUTH'),
+          AuthParameters: z.object({ REFRESH_TOKEN: z.string() }),
+          ClientId: brandedId.userPoolClient.maybe,
+        }),
+      ),
+    useCase: (req) =>
+      req.AuthFlow === 'USER_SRP_AUTH'
+        ? authUseCase.UserSrpAuth(req)
+        : authUseCase.ResreshTokenAuth(req),
+  },
+  'AWSCognitoIdentityProviderService.RespondToAuthChallenge': {
     validator: z.object({
       ChallengeName: z.literal('PASSWORD_VERIFIER'),
       ChallengeResponses: z.object({
@@ -38,15 +57,16 @@ const targets: {
       }),
       ClientId: brandedId.userPoolClient.maybe,
     }),
-    useCase: authUseCase.VerifierAuth,
+    useCase: authUseCase.RespondToAuthChallenge,
   },
-  'AWSCognitoIdentityProviderService.Attributes': {
+  'AWSCognitoIdentityProviderService.GetUser': {
     validator: z.object({ AccessToken: z.string() }),
-    useCase: authUseCase.Attributes,
+    useCase: authUseCase.GetUser,
   },
 };
 
 export default defineController(() => ({
+  // eslint-disable-next-line complexity
   post: async (req) => {
     const target = req.headers['x-amz-target'];
 
@@ -54,21 +74,31 @@ export default defineController(() => ({
       case 'AWSCognitoIdentityProviderService.SignUp':
         return {
           status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
+          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
+        };
+      case 'AWSCognitoIdentityProviderService.ConfirmSignUp':
+        return {
+          status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
           body: await targets[target].useCase(targets[target].validator.parse(req.body)),
         };
       case 'AWSCognitoIdentityProviderService.InitiateAuth':
         return {
           status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
           body: await targets[target].useCase(targets[target].validator.parse(req.body)),
         };
-      case 'AWSCognitoIdentityProviderService.VerifierAuth':
+      case 'AWSCognitoIdentityProviderService.RespondToAuthChallenge':
         return {
           status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
           body: await targets[target].useCase(targets[target].validator.parse(req.body)),
         };
-      case 'AWSCognitoIdentityProviderService.Attributes':
+      case 'AWSCognitoIdentityProviderService.GetUser':
         return {
           status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
           body: await targets[target].useCase(targets[target].validator.parse(req.body)),
         };
       /* v8 ignore next 2 */

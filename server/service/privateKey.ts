@@ -1,3 +1,4 @@
+import type { Jwks } from 'api/@types/auth';
 import { createPublicKey, generateKeyPairSync } from 'crypto';
 import { JWK } from 'node-jose';
 
@@ -11,7 +12,7 @@ export const genPrivatekey = (): string => {
   return privateKey;
 };
 
-export const genJwks = async (privateKey: string): Promise<object> => {
+export const genJwks = async (privateKey: string): Promise<Jwks> => {
   const keystore = JWK.createKeyStore();
   const publicKey = createPublicKey(privateKey);
   await keystore.add(publicKey.export({ type: 'spki', format: 'pem' }), 'pem', {
@@ -19,5 +20,5 @@ export const genJwks = async (privateKey: string): Promise<object> => {
     use: 'sig',
   });
 
-  return keystore.toJSON(true);
+  return keystore.toJSON(true) as Jwks;
 };

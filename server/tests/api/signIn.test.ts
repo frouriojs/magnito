@@ -1,9 +1,10 @@
+import type { RespondToAuthChallengeTarget } from 'api/@types/auth';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
 
-test('InitiateAuth', async () => {
-  const res = await noCookieClient.$post({
+test('signIn', async () => {
+  await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
       AuthFlow: 'USER_SRP_AUTH',
@@ -12,12 +13,8 @@ test('InitiateAuth', async () => {
     },
   });
 
-  expect(res).toHaveProperty('ChallengeName');
-});
-
-test('VerifierAuth', async () => {
-  const res = await noCookieClient.$post({
-    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.VerifierAuth' },
+  const res2 = (await noCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.RespondToAuthChallenge' },
     body: {
       ChallengeName: 'PASSWORD_VERIFIER',
       ChallengeResponses: {
@@ -28,16 +25,12 @@ test('VerifierAuth', async () => {
       },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
+  })) as unknown as RespondToAuthChallengeTarget['resBody'];
+
+  const res3 = await noCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.GetUser' },
+    body: { AccessToken: res2.AuthenticationResult.AccessToken },
   });
 
-  expect(res).toHaveProperty('AuthenticationResult');
-});
-
-test('Attributes', async () => {
-  const res = await noCookieClient.$post({
-    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.Attributes' },
-    body: { AccessToken: 'string' },
-  });
-
-  expect(res).toHaveProperty('UserAttributes');
+  expect(res3).toHaveProperty('UserAttributes');
 });

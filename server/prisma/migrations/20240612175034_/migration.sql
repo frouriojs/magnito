@@ -3,20 +3,13 @@
 
   - You are about to drop the column `displayName` on the `User` table. All the data in the column will be lost.
   - You are about to drop the column `photoURL` on the `User` table. All the data in the column will be lost.
+  - Added the required column `confirmationCode` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `name` to the `User` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `refreshToken` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `userPoolId` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `verified` to the `User` table without a default value. This is not possible if the table is not empty.
 
 */
--- CreateTable
-CREATE TABLE "VerificationCode" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "code" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL,
-    "userId" TEXT NOT NULL,
-    CONSTRAINT "VerificationCode_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
 -- CreateTable
 CREATE TABLE "UserPool" (
     "id" TEXT NOT NULL PRIMARY KEY,
@@ -40,6 +33,8 @@ CREATE TABLE "new_User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "verified" BOOLEAN NOT NULL,
+    "confirmationCode" TEXT NOT NULL,
+    "refreshToken" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL,
     "userPoolId" TEXT NOT NULL,
     CONSTRAINT "User_userPoolId_fkey" FOREIGN KEY ("userPoolId") REFERENCES "UserPool" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
