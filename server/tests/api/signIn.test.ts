@@ -1,19 +1,20 @@
 import type { RespondToAuthChallengeTarget } from 'api/@types/auth';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import { noCookieClient } from './apiClient';
+import { createUserClient, noCookieClient } from './apiClient';
 
 test('signIn', async () => {
+  await createUserClient();
   await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
       AuthFlow: 'USER_SRP_AUTH',
-      AuthParameters: { USERNAME: 'user', SRP_A: 'string' },
+      AuthParameters: { USERNAME: 'test-client', SRP_A: 'string' },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });
 
-  const res2 = (await noCookieClient.$post({
+  const res1 = (await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.RespondToAuthChallenge' },
     body: {
       ChallengeName: 'PASSWORD_VERIFIER',
@@ -21,16 +22,33 @@ test('signIn', async () => {
         PASSWORD_CLAIM_SECRET_BLOCK: 'string',
         PASSWORD_CLAIM_SIGNATURE: 'string',
         TIMESTAMP: 'string',
-        USERNAME: 'user',
+        USERNAME: 'test-client',
       },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   })) as unknown as RespondToAuthChallengeTarget['resBody'];
 
-  const res3 = await noCookieClient.$post({
+  await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.GetUser' },
-    body: { AccessToken: res2.AuthenticationResult.AccessToken },
+    body: { AccessToken: res1.AuthenticationResult.AccessToken },
   });
 
-  expect(res3).toHaveProperty('UserAttributes');
+  await noCookieClient.post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
+    body: {
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      AuthParameters: { REFRESH_TOKEN: res1.AuthenticationResult.RefreshToken },
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  const res2 = await noCookieClient.post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.RevokeToken' },
+    body: {
+      Token: res1.AuthenticationResult.RefreshToken,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  expect(res2.status).toBe(200);
 });
