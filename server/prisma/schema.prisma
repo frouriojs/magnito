@@ -28,21 +28,15 @@ model VerificationCode {
 
 model UserPool {
   id              String           @id
+  privateKey      String
   createdAt       DateTime
   users           User[]
   userPoolClients UserPoolClient[]
-  privateKeys     PrivateKey[]
 }
 
 model UserPoolClient {
   id         String   @id
   createdAt  DateTime
-  UserPool   UserPool @relation(fields: [userPoolId], references: [id])
-  userPoolId String
-}
-
-model PrivateKey {
-  id         String   @id
   UserPool   UserPool @relation(fields: [userPoolId], references: [id])
   userPoolId String
 }

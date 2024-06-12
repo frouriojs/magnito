@@ -48,7 +48,7 @@ const targets: {
 
 export default defineController(() => ({
   post: async (req) => {
-    const target = req.headers['X-Amz-Target'];
+    const target = req.headers['x-amz-target'];
 
     switch (target) {
       case 'AWSCognitoIdentityProviderService.SignUp':

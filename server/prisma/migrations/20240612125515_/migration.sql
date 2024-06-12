@@ -20,6 +20,7 @@ CREATE TABLE "VerificationCode" (
 -- CreateTable
 CREATE TABLE "UserPool" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "privateKey" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL
 );
 
@@ -29,13 +30,6 @@ CREATE TABLE "UserPoolClient" (
     "createdAt" DATETIME NOT NULL,
     "userPoolId" TEXT NOT NULL,
     CONSTRAINT "UserPoolClient_userPoolId_fkey" FOREIGN KEY ("userPoolId") REFERENCES "UserPool" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "PrivateKey" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "userPoolId" TEXT NOT NULL,
-    CONSTRAINT "PrivateKey_userPoolId_fkey" FOREIGN KEY ("userPoolId") REFERENCES "UserPool" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- RedefineTables

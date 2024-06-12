@@ -1,5 +1,6 @@
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { prismaClient } from 'service/prismaClient';
+import { genPrivatekey } from 'service/privateKey';
 
 async function main(): Promise<void> {
   const pool = await prismaClient.userPool.findUnique({ where: { id: DEFAULT_USER_POOL_ID } });
@@ -10,7 +11,7 @@ async function main(): Promise<void> {
 
   if (!pool) {
     await prismaClient.userPool.create({
-      data: { id: DEFAULT_USER_POOL_ID, createdAt: now },
+      data: { id: DEFAULT_USER_POOL_ID, privateKey: genPrivatekey(), createdAt: now },
     });
   }
 

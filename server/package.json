@@ -48,6 +48,7 @@
     "@aspida/axios": "^1.14.0",
     "@types/busboy": "^1.5.4",
     "@types/node": "^20.12.10",
+    "@types/node-jose": "^1.1.13",
     "@types/nodemailer": "^6.4.15",
     "@types/request-promise-native": "^1.0.21",
     "axios": "^1.6.8",
@@ -57,6 +58,7 @@
     "frourio": "^1.0.1",
     "inbucket-js-client": "^1.0.1",
     "node-dev": "^8.0.0",
+    "node-jose": "^2.2.0",
     "notios": "^0.4.1",
     "prisma": "^5.15.0",
     "typescript": "^5.4.5"

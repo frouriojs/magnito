@@ -1,10 +1,10 @@
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import { apiClient } from './apiClient';
+import { noCookieClient } from './apiClient';
 
 test('InitiateAuth', async () => {
-  const res = await apiClient.$post({
-    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
+  const res = await noCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
       AuthFlow: 'USER_SRP_AUTH',
       AuthParameters: { USERNAME: 'user', SRP_A: 'string' },
@@ -16,8 +16,8 @@ test('InitiateAuth', async () => {
 });
 
 test('VerifierAuth', async () => {
-  const res = await apiClient.$post({
-    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.VerifierAuth' },
+  const res = await noCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.VerifierAuth' },
     body: {
       ChallengeName: 'PASSWORD_VERIFIER',
       ChallengeResponses: {
@@ -34,8 +34,8 @@ test('VerifierAuth', async () => {
 });
 
 test('Attributes', async () => {
-  const res = await apiClient.$post({
-    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.Attributes' },
+  const res = await noCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.Attributes' },
     body: { AccessToken: 'string' },
   });
 
