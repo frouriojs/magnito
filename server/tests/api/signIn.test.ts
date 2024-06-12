@@ -1,20 +1,23 @@
+import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import { apiClient } from '../apiClient';
+import { apiClient } from './apiClient';
 
-test('SrpAuth', async () => {
+test('InitiateAuth', async () => {
   const res = await apiClient.$post({
+    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
       AuthFlow: 'USER_SRP_AUTH',
       AuthParameters: { USERNAME: 'user', SRP_A: 'string' },
-      ClientId: 'user',
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });
 
   expect(res).toHaveProperty('ChallengeName');
 });
 
-test('PasswordVerifier', async () => {
+test('VerifierAuth', async () => {
   const res = await apiClient.$post({
+    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.VerifierAuth' },
     body: {
       ChallengeName: 'PASSWORD_VERIFIER',
       ChallengeResponses: {
@@ -23,7 +26,7 @@ test('PasswordVerifier', async () => {
         TIMESTAMP: 'string',
         USERNAME: 'user',
       },
-      ClientId: 'string',
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });
 
@@ -32,6 +35,7 @@ test('PasswordVerifier', async () => {
 
 test('Attributes', async () => {
   const res = await apiClient.$post({
+    headers: { 'X-Amz-Target': 'AWSCognitoIdentityProviderService.Attributes' },
     body: { AccessToken: 'string' },
   });
 

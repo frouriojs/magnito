@@ -1,11 +1,11 @@
 import { APP_NAME } from 'api/@constants';
+import type { UserEntity } from 'api/@types/user';
 import { signOut } from 'aws-amplify/auth';
 import { useConfirm } from 'components/Confirm/useConfirm';
 import { APP_VERSION } from 'utils/envValues';
-import type { UserDto } from 'utils/types';
 import styles from './BasicHeader.module.css';
 
-export const BasicHeader = (props: { user: UserDto }) => {
+export const BasicHeader = (props: { user: UserEntity }) => {
   const { setConfirm } = useConfirm();
   const onClick = async () => {
     const confirmed = await setConfirm(

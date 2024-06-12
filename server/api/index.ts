@@ -1,12 +1,10 @@
 import type { DefineMethods } from 'aspida';
-import type { SingInParams } from './@types/signIn';
+import type { AmzTargets } from './@types/auth';
 
 export type Methods = DefineMethods<{
-  get: {
-    resBody: string;
-  };
   post: {
-    reqBody: SingInParams['reqBody'];
-    resBody: SingInParams['resBody'];
+    reqHeaders: { 'X-Amz-Target': keyof AmzTargets };
+    reqBody: AmzTargets[keyof AmzTargets]['reqBody'];
+    resBody: AmzTargets[keyof AmzTargets]['resBody'];
   };
 }>;
