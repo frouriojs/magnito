@@ -3,6 +3,7 @@ import type {
   GetUserTarget,
   RefreshTokenAuthTarget,
   RespondToAuthChallengeTarget,
+  RevokeTokenTarget,
   SignUpTarget,
   UserSrpAuthTarget,
 } from 'api/@types/auth';
@@ -130,5 +131,11 @@ export const authUseCase = {
         ],
         Username: user.name,
       };
+    }),
+  RevokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
+    transaction(async (tx) => {
+      await userQuery.findByRefreshToken(tx, req.Token);
+
+      return {};
     }),
 };

@@ -63,6 +63,10 @@ const targets: {
     validator: z.object({ AccessToken: z.string() }),
     useCase: authUseCase.GetUser,
   },
+  'AWSCognitoIdentityProviderService.RevokeToken': {
+    validator: z.object({ ClientId: brandedId.userPoolClient.maybe, Token: z.string() }),
+    useCase: authUseCase.RevokeToken,
+  },
 };
 
 export default defineController(() => ({
@@ -96,6 +100,12 @@ export default defineController(() => ({
           body: await targets[target].useCase(targets[target].validator.parse(req.body)),
         };
       case 'AWSCognitoIdentityProviderService.GetUser':
+        return {
+          status: 200,
+          headers: { 'content-type': 'application/x-amz-json-1.1' },
+          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
+        };
+      case 'AWSCognitoIdentityProviderService.RevokeToken':
         return {
           status: 200,
           headers: { 'content-type': 'application/x-amz-json-1.1' },

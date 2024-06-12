@@ -101,10 +101,16 @@ export type GetUserTarget = TargetBody<
   }
 >;
 
+export type RevokeTokenTarget = TargetBody<
+  { ClientId: MaybeId['userPoolClient']; Token: string },
+  Record<string, never>
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
   'AWSCognitoIdentityProviderService.InitiateAuth': UserSrpAuthTarget | RefreshTokenAuthTarget;
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': RespondToAuthChallengeTarget;
   'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
+  'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
 };
