@@ -9,7 +9,6 @@ import type { FastifyInstance, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
 import buildGetJwks from 'get-jwks';
 import { join } from 'path';
-import { CORS_ORIGIN } from 'service/envValues';
 import server from '../$server';
 import { COOKIE_NAME, JWT_PROP_NAME } from './constants';
 
@@ -18,7 +17,7 @@ export const init = (): FastifyInstance => {
   const getJwks = buildGetJwks();
 
   fastify.register(helmet);
-  fastify.register(cors, { origin: CORS_ORIGIN, credentials: true });
+  fastify.register(cors, { origin: true, credentials: true });
   fastify.register(cookie);
   fastify.addContentTypeParser(
     'application/x-amz-json-1.1',

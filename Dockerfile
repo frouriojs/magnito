@@ -29,7 +29,6 @@ ARG CLIENT_PORT=5001
 
 ENV PORT=5000
 ENV CLIENT_PORT=$CLIENT_PORT
-ENV CORS_ORIGIN=http://localhost:$CLIENT_PORT
 ENV DEFAULT_USER_POOL_ID=ap-northeast-1_default
 ENV DEFAULT_USER_POOL_CLIENT_ID=default-client-id
 ENV DATABASE_URL=file:../../data/app.db
@@ -50,7 +49,7 @@ COPY --from=builder /usr/src/app/server/prisma ./server/prisma
 RUN apk --no-cache add curl
 COPY --from=builder /usr/src/app/data ./data
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f http://localhost:$PORT/health && curl -f $CORS_ORIGIN || exit 1
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f http://localhost:$PORT/health && curl -f http://localhost:$CLIENT_PORT || exit 1
 
 EXPOSE ${PORT} ${CLIENT_PORT}
 VOLUME ["/usr/src/app/data"]
