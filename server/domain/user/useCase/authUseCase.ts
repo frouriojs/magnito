@@ -10,20 +10,29 @@ import type {
 import assert from 'assert';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
+import { DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { transaction } from 'service/prismaClient';
 import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
 import { userMethod } from '../model/userMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
+import { genCredentials } from '../service/genCredentials';
 import { genTokens } from '../service/genTokens';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
     transaction(async (tx) => {
+      const { salt, verifier } = genCredentials({
+        poolId: DEFAULT_USER_POOL_ID,
+        username: req.Username,
+        password: req.Password,
+      });
       const user = userMethod.createUser({
         name: req.Username,
         email: req.UserAttributes[0].Value,
+        salt,
+        verifier,
       });
       await userCommand.save(tx, user);
       await sendMail({
