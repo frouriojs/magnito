@@ -16,6 +16,7 @@ export default defineHooks(() => ({
       await req.jwtVerify({ onlyCookie: true });
     } catch (e) {
       res.status(401).send();
+      return;
     }
 
     assert(req.idToken);
