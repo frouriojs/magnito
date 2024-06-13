@@ -6,6 +6,8 @@ export type UserEntity = {
   email: string;
   verified: boolean;
   confirmationCode: string;
+  salt: string;
+  verifier: string;
   refreshToken: string;
   userPoolId: EntityId['userPool'];
   createdTime: number;
