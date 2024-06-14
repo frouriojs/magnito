@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 import { assert } from 'vitest';
-import { N, calculatePrivateKey, g } from './srp';
-import { toBuffer } from './srp/util';
+import { g, N } from './srp/constants';
+import { calculatePrivateKey, toBuffer } from './srp/util';
+
 export const genCredentials = (params: {
   poolId: string;
   username: string;
