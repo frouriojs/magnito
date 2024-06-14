@@ -1,7 +1,7 @@
+import type { EntityId } from 'api/@types/brandedId';
 import type { UserEntity } from 'api/@types/user';
 import assert from 'assert';
 import { brandedId } from 'service/brandedId';
-import { DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { ulid } from 'ulid';
 import { genConfirmationCode } from '../service/genConfirmationCode';
 
@@ -11,12 +11,13 @@ export const userMethod = {
     email: string;
     salt: string;
     verifier: string;
+    userPoolId: EntityId['userPool'];
   }): UserEntity => ({
     id: brandedId.user.entity.parse(val.name),
     email: val.email,
     name: val.name,
     refreshToken: ulid(),
-    userPoolId: DEFAULT_USER_POOL_ID,
+    userPoolId: val.userPoolId,
     verified: false,
     confirmationCode: genConfirmationCode(),
     salt: val.salt,

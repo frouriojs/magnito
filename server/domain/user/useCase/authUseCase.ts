@@ -23,6 +23,7 @@ import { genTokens } from '../service/genTokens';
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
     transaction(async (tx) => {
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const { salt, verifier } = genCredentials({
         poolId: DEFAULT_USER_POOL_ID,
         username: req.Username,
@@ -33,6 +34,7 @@ export const authUseCase = {
         email: req.UserAttributes[0].Value,
         salt,
         verifier,
+        userPoolId: poolClient.userPoolId,
       });
       await userCommand.save(tx, user);
       await sendMail({
