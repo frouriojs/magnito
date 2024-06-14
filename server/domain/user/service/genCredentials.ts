@@ -1,5 +1,5 @@
+import assert from 'assert';
 import crypto from 'crypto';
-import { assert } from 'vitest';
 import { g, N } from './srp/constants';
 import { calculatePrivateKey, toBuffer } from './srp/util';
 
