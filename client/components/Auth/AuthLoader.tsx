@@ -37,8 +37,10 @@ export const AuthLoader = () => {
   useEffect(() => {
     const useId = apiAxios.interceptors.response.use(undefined, async (err) => {
       if (user.data && isAxiosError(err) && err.response?.status === 401 && err.config) {
-        await updateCookie();
-        return apiAxios.request(err.config);
+        const { config } = err;
+        return updateCookie()
+          .then(() => apiAxios.request(config))
+          .catch(() => Promise.reject(err));
       }
 
       return Promise.reject(err);
@@ -65,7 +67,7 @@ export const AuthLoader = () => {
             break;
           case 'signedIn':
           case 'tokenRefresh':
-            await updateCookie();
+            await updateCookie().catch(catchApiErr);
             break;
           case 'tokenRefresh_failure':
             await setAlert('トークンの有効期限が切れました。再度サインインしてください。');
