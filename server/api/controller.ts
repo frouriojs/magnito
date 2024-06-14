@@ -44,7 +44,7 @@ const targets: {
     useCase: (req) =>
       req.AuthFlow === 'USER_SRP_AUTH'
         ? authUseCase.userSrpAuth(req)
-        : authUseCase.resreshTokenAuth(req),
+        : authUseCase.refreshTokenAuth(req),
   },
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': {
     validator: z.object({

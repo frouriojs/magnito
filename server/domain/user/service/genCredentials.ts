@@ -1,10 +1,11 @@
+import type { EntityId } from 'api/@types/brandedId';
 import assert from 'assert';
 import crypto from 'crypto';
 import { g, N } from './srp/constants';
 import { calculatePrivateKey, toBuffer } from './srp/util';
 
 export const genCredentials = (params: {
-  poolId: string;
+  poolId: EntityId['userPool'];
   username: string;
   password: string;
 }): { salt: string; verifier: string } => {

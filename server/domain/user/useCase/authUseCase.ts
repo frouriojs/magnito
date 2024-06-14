@@ -10,7 +10,6 @@ import type {
 import assert from 'assert';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
-import { DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { transaction } from 'service/prismaClient';
 import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
@@ -25,7 +24,7 @@ export const authUseCase = {
     transaction(async (tx) => {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const { salt, verifier } = genCredentials({
-        poolId: DEFAULT_USER_POOL_ID,
+        poolId: poolClient.userPoolId,
         username: req.Username,
         password: req.Password,
       });
@@ -78,7 +77,7 @@ export const authUseCase = {
         },
       };
     }),
-  resreshTokenAuth: (
+  refreshTokenAuth: (
     req: RefreshTokenAuthTarget['reqBody'],
   ): Promise<RefreshTokenAuthTarget['resBody']> =>
     transaction(async (tx) => {
