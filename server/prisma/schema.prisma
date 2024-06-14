@@ -13,6 +13,8 @@ model User {
   email            String
   verified         Boolean
   confirmationCode String
+  salt             String
+  verifier         String
   refreshToken     String
   createdAt        DateTime
   UserPool         UserPool @relation(fields: [userPoolId], references: [id])

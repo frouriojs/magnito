@@ -7,6 +7,8 @@ export const toUserEntity = (prismaUser: User): UserEntity => {
     id: brandedId.user.entity.parse(prismaUser.id),
     name: prismaUser.name,
     email: prismaUser.email,
+    salt: prismaUser.salt,
+    verifier: prismaUser.verifier,
     refreshToken: prismaUser.refreshToken,
     verified: prismaUser.verified,
     confirmationCode: prismaUser.confirmationCode,
