@@ -1,5 +1,6 @@
 import { APP_VERSION } from 'service/envValues';
 import { prismaClient } from 'service/prismaClient';
+import { returnGetError, returnSuccess } from 'service/returnStatus';
 import { checkSmtpHealth } from 'service/sendMail';
 import { defineController } from './$relay';
 
@@ -11,5 +12,5 @@ const check = async () => ({
 });
 
 export default defineController(() => ({
-  get: () => check().then((body) => ({ status: 200, body })),
+  get: () => check().then(returnSuccess).catch(returnGetError),
 }));

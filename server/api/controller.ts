@@ -1,5 +1,6 @@
 import { authUseCase } from 'domain/user/useCase/authUseCase';
 import { brandedId } from 'service/brandedId';
+import { returnPostError } from 'service/returnStatus';
 import { z } from 'zod';
 import { defineController } from './$relay';
 import type { AmzTargets } from './@types/auth';
@@ -69,51 +70,16 @@ const targets: {
   },
 };
 
-export default defineController(() => ({
-  // eslint-disable-next-line complexity
-  post: async (req) => {
-    const target = req.headers['x-amz-target'];
+const main = async <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) =>
+  targets[target].useCase(targets[target].validator.parse(body));
 
-    switch (target) {
-      case 'AWSCognitoIdentityProviderService.SignUp':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      case 'AWSCognitoIdentityProviderService.ConfirmSignUp':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      case 'AWSCognitoIdentityProviderService.InitiateAuth':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      case 'AWSCognitoIdentityProviderService.RespondToAuthChallenge':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      case 'AWSCognitoIdentityProviderService.GetUser':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      case 'AWSCognitoIdentityProviderService.RevokeToken':
-        return {
-          status: 200,
-          headers: { 'content-type': 'application/x-amz-json-1.1' },
-          body: await targets[target].useCase(targets[target].validator.parse(req.body)),
-        };
-      /* v8 ignore next 2 */
-      default:
-        throw new Error(target satisfies never);
-    }
-  },
+export default defineController(() => ({
+  post: (req) =>
+    main(req.headers['x-amz-target'], req.body)
+      .then((body) => ({
+        status: 200 as const,
+        headers: { 'content-type': 'application/x-amz-json-1.1' } as const,
+        body,
+      }))
+      .catch(returnPostError),
 }));

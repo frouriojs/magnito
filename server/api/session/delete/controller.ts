@@ -10,8 +10,6 @@ export default defineController(() => ({
         done();
       },
     },
-    handler: () => {
-      return { status: 200, body: { status: 'success' } };
-    },
+    handler: () => ({ status: 200, body: { status: 'success' } }),
   },
 }));
