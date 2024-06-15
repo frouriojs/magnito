@@ -36,6 +36,14 @@ model UserPoolClient {
   userPoolId String
 }
 
+model Challenge {
+  id          String @id
+  secretBlock String
+  pubA        String
+  pubB        String
+  secB        String
+}
+
 model Task {
   id        String   @id
   label     String
