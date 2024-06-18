@@ -21,11 +21,7 @@ export const calculatePrivateKey = (
 };
 
 export const padHex = (hex: string): string => {
-  if ('89ABCDEFabcdef'.includes(hex[0])) {
-    return `00${hex}`;
-  } else {
-    return hex;
-  }
+  return hex.replace(/^([89A-Fa-f])/, '00$1');
 };
 
 export const padBufferToHex = (buffer: Buffer): string => {
