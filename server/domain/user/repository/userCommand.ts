@@ -11,6 +11,10 @@ export const userCommand = {
         verified: user.verified,
         refreshToken: user.refreshToken,
         confirmationCode: user.confirmationCode,
+        secretBlock: user.challenge?.secretBlock,
+        pubA: user.challenge?.pubA,
+        pubB: user.challenge?.pubB,
+        secB: user.challenge?.secB,
       },
       create: {
         id: user.id,

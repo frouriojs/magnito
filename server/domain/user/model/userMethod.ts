@@ -1,9 +1,20 @@
+import type { Jwks } from 'api/@types/auth';
 import type { EntityId } from 'api/@types/brandedId';
-import type { UserEntity } from 'api/@types/user';
+import type { ChallengeVal, UserEntity } from 'api/@types/user';
+import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
 import assert from 'assert';
+import crypto from 'crypto';
+import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
+import { genTokens } from 'domain/user/service/genTokens';
+import {
+  calculateScramblingParameter,
+  calculateSessionKey,
+} from 'domain/user/service/srp/calcSessionKey';
+import { calculateSignature } from 'domain/user/service/srp/calcSignature';
+import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
+import { getPoolName } from 'domain/user/service/srp/util';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
-import { genConfirmationCode } from '../service/genConfirmationCode';
 
 export const userMethod = {
   createUser: (val: {
@@ -28,5 +39,53 @@ export const userMethod = {
     assert(user.confirmationCode === confirmationCode);
 
     return { ...user, verified: true };
+  },
+  createChallenge: (user: UserEntity, pubA: string): UserEntity => {
+    const { B, b } = calculateSrpB(user.verifier);
+    const secretBlock = crypto.randomBytes(64).toString('base64');
+
+    const challenge: ChallengeVal = {
+      pubB: B,
+      secB: b,
+      pubA,
+      secretBlock,
+    };
+    return {
+      ...user,
+      challenge,
+    };
+  },
+  srpAuth: (params: {
+    user: UserEntity;
+    timestamp: string;
+    clientSignature: string;
+    jwks: Jwks;
+    pool: UserPoolEntity;
+    poolClient: UserPoolClientEntity;
+  }): {
+    AccessToken: string;
+    IdToken: string;
+  } => {
+    assert(params.user.challenge);
+    const { pubA: A, pubB: B, secB: b } = params.user.challenge;
+    const poolname = getPoolName(params.user.userPoolId);
+    const scramblingParameter = calculateScramblingParameter(A, B);
+    const sessionKey = calculateSessionKey({ A, B, b, v: params.user.verifier });
+    const signature = calculateSignature({
+      poolname,
+      username: params.user.name,
+      secretBlock: params.user.challenge.secretBlock,
+      timestamp: params.timestamp,
+      scramblingParameter,
+      key: sessionKey,
+    });
+    assert(signature === params.clientSignature);
+
+    return genTokens({
+      privateKey: params.pool.privateKey,
+      userPoolClientId: params.poolClient.id,
+      jwks: params.jwks,
+      user: params.user,
+    });
   },
 };

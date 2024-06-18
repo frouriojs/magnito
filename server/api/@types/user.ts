@@ -1,5 +1,12 @@
 import type { EntityId } from './brandedId';
 
+export type ChallengeVal = {
+  secretBlock: string;
+  pubA: string;
+  pubB: string;
+  secB: string;
+};
+
 export type UserEntity = {
   id: EntityId['user'];
   name: string;
@@ -11,4 +18,5 @@ export type UserEntity = {
   refreshToken: string;
   userPoolId: EntityId['userPool'];
   createdTime: number;
+  challenge?: ChallengeVal;
 };

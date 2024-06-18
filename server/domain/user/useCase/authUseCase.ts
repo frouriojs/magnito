@@ -8,22 +8,12 @@ import type {
   UserSrpAuthTarget,
 } from 'api/@types/auth';
 import assert from 'assert';
-import crypto from 'crypto';
-import { challengeMethod } from 'domain/user/model/challengeMethod';
 import { userMethod } from 'domain/user/model/userMethod';
-import { challengeCommand } from 'domain/user/repository/challengeCommand';
-import { challengeQuery } from 'domain/user/repository/challengeQuery';
+
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { genCredentials } from 'domain/user/service/genCredentials';
 import { genTokens } from 'domain/user/service/genTokens';
-import {
-  calculateScramblingParameter,
-  calculateSessionKey,
-} from 'domain/user/service/srp/calcSessionKey';
-import { calculateSignature } from 'domain/user/service/srp/calcSignature';
-import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
-import { getPoolName } from 'domain/user/service/srp/util';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { transaction } from 'service/prismaClient';
@@ -76,24 +66,19 @@ export const authUseCase = {
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
       assert(user.verified);
-      const { B, b } = calculateSrpB(user.verifier);
-      const secretBlock = crypto.randomBytes(64).toString('base64');
 
-      const challenge = challengeMethod.createChallenge({
-        secretBlock,
-        pubA: req.AuthParameters.SRP_A,
-        pubB: B,
-        secB: b,
-      });
+      const challenge = userMethod.createChallenge(user, req.AuthParameters.SRP_A);
 
-      await challengeCommand.save(tx, challenge);
+      await userCommand.save(tx, challenge);
+
+      assert(challenge.challenge);
 
       return {
         ChallengeName: 'PASSWORD_VERIFIER',
         ChallengeParameters: {
           SALT: user.salt,
-          SECRET_BLOCK: secretBlock,
-          SRP_B: B,
+          SECRET_BLOCK: challenge.challenge.secretBlock,
+          SRP_B: challenge.challenge.pubB,
           USERNAME: req.AuthParameters.USERNAME,
           USER_ID_FOR_SRP: req.AuthParameters.USERNAME,
         },
@@ -130,40 +115,24 @@ export const authUseCase = {
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.ChallengeResponses.USERNAME);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
-      const challenge = await challengeQuery.findBySecretBlock(
-        tx,
-        req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK,
-      );
-      const { pubA: A, pubB: B, secB: b } = challenge;
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
+      assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
 
-      const poolname = getPoolName(pool.id);
-      const scramblingParameter = calculateScramblingParameter(A, B);
-      const sessionKey = calculateSessionKey({ A, B, b, v: user.verifier });
-
-      const signature = calculateSignature({
-        poolname,
-        username: user.name,
-        secretBlock: req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK,
+      const tokens = userMethod.srpAuth({
+        user,
         timestamp: req.ChallengeResponses.TIMESTAMP,
-        scramblingParameter,
-        key: sessionKey,
+        clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,
+        jwks,
+        pool,
+        poolClient,
       });
-      await challengeCommand.delete(tx, challenge.id);
-
-      assert(signature === req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE);
 
       return {
         AuthenticationResult: {
-          ...genTokens({
-            privateKey: pool.privateKey,
-            userPoolClientId: poolClient.id,
-            jwks,
-            user,
-          }),
+          ...tokens,
           ExpiresIn: 3600,
           RefreshToken: user.refreshToken,
           TokenType: 'Bearer',
