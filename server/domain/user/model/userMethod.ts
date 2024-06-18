@@ -1,4 +1,4 @@
-import type { Jwks } from 'api/@types/auth';
+import type { Jwks, UserSrpAuthTarget } from 'api/@types/auth';
 import type { EntityId } from 'api/@types/brandedId';
 import type { ChallengeVal, UserEntity } from 'api/@types/user';
 import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
@@ -40,19 +40,31 @@ export const userMethod = {
 
     return { ...user, verified: true };
   },
-  createChallenge: (user: UserEntity, pubA: string): UserEntity => {
+  createChallenge: (
+    user: UserEntity,
+    params: UserSrpAuthTarget['reqBody']['AuthParameters'],
+  ): {
+    userWithChallenge: UserEntity;
+    ChallengeParameters: UserSrpAuthTarget['resBody']['ChallengeParameters'];
+  } => {
     const { B, b } = calculateSrpB(user.verifier);
     const secretBlock = crypto.randomBytes(64).toString('base64');
 
     const challenge: ChallengeVal = {
       pubB: B,
       secB: b,
-      pubA,
+      pubA: params.SRP_A,
       secretBlock,
     };
     return {
-      ...user,
-      challenge,
+      userWithChallenge: { ...user, challenge },
+      ChallengeParameters: {
+        SALT: user.salt,
+        SECRET_BLOCK: secretBlock,
+        SRP_B: B,
+        USERNAME: user.name,
+        USER_ID_FOR_SRP: user.name,
+      },
     };
   },
   srpAuth: (params: {

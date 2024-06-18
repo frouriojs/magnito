@@ -9,7 +9,6 @@ import type {
 } from 'api/@types/auth';
 import assert from 'assert';
 import { userMethod } from 'domain/user/model/userMethod';
-
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { genCredentials } from 'domain/user/service/genCredentials';
@@ -67,21 +66,16 @@ export const authUseCase = {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
       assert(user.verified);
 
-      const challenge = userMethod.createChallenge(user, req.AuthParameters.SRP_A);
+      const { userWithChallenge, ChallengeParameters } = userMethod.createChallenge(
+        user,
+        req.AuthParameters,
+      );
 
-      await userCommand.save(tx, challenge);
-
-      assert(challenge.challenge);
+      await userCommand.save(tx, userWithChallenge);
 
       return {
         ChallengeName: 'PASSWORD_VERIFIER',
-        ChallengeParameters: {
-          SALT: user.salt,
-          SECRET_BLOCK: challenge.challenge.secretBlock,
-          SRP_B: challenge.challenge.pubB,
-          USERNAME: req.AuthParameters.USERNAME,
-          USER_ID_FOR_SRP: req.AuthParameters.USERNAME,
-        },
+        ChallengeParameters,
       };
     }),
   refreshTokenAuth: (
