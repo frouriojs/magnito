@@ -21,9 +21,8 @@ export const genCredentials = (params: {
   poolId: EntityId['userPool'];
   username: string;
   password: string;
-  salt?: string;
 }): { salt: string; verifier: string } => {
-  const salt = params.salt || crypto.randomBytes(16).toString('hex');
+  const salt = crypto.randomBytes(16).toString('hex');
   const verifier = genVerifier({ ...params, salt });
   return { salt, verifier };
 };
