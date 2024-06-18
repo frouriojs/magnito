@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { infoBits } from './constants';
-import { padHex } from './util';
+import { padBufferToHex } from './util';
 
 export const calculateSignature = (params: {
   poolname: string;
@@ -13,8 +13,8 @@ export const calculateSignature = (params: {
   const secretBlockBuffer = Buffer.from(params.secretBlock, 'base64');
 
   const prk = crypto
-    .createHmac('sha256', Buffer.from(padHex(params.scramblingParameter), 'hex'))
-    .update(Buffer.from(padHex(params.key), 'hex'))
+    .createHmac('sha256', Buffer.from(padBufferToHex(params.scramblingParameter), 'hex'))
+    .update(Buffer.from(padBufferToHex(params.key), 'hex'))
     .digest();
 
   const hmac = crypto.createHmac('sha256', prk).update(infoBits).digest();

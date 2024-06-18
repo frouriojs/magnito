@@ -28,6 +28,10 @@ export const padHex = (hex: string): string => {
   }
 };
 
+export const padBufferToHex = (buffer: Buffer): string => {
+  return padHex(buffer.toString('hex'));
+};
+
 export const toBuffer = (bigInt: BigInteger): Buffer => {
   const str = bigInt.toString(16);
   return Buffer.from(str, 'hex');
