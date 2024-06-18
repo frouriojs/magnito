@@ -14,9 +14,9 @@ const SMTP_HOST = z.string().parse(process.env.SMTP_HOST);
 const SMTP_PASS = z.string().parse(process.env.SMTP_PASS);
 const SMTP_PORT = +z.string().regex(/^\d+$/).parse(process.env.SMTP_PORT);
 const SMTP_USER = z.string().parse(process.env.SMTP_USER);
-const DEFAULT_USER_POOL_ID = brandedId.userPool.entity.parse(process.env.DEFAULT_USER_POOL_ID);
+const DEFAULT_USER_POOL_ID = brandedId.userPool.entity.parse(process.env.COGNITO_USER_POOL_ID);
 const DEFAULT_USER_POOL_CLIENT_ID = brandedId.userPoolClient.entity.parse(
-  process.env.DEFAULT_USER_POOL_CLIENT_ID,
+  process.env.COGNITO_USER_POOL_CLIENT_ID,
 );
 
 export {
