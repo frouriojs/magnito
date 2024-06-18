@@ -38,9 +38,7 @@ export const toBuffer = (bigInt: BigInteger): Buffer => {
 };
 
 export const toBufferWithLength = (bigInt: BigInteger, length: number): Buffer => {
-  let str = bigInt.toString(16);
-  str = str.padStart(length * 2, '0');
-
+  const str = bigInt.toString(16).padStart(length * 2, '0');
   return Buffer.from(str, 'hex');
 };
 
