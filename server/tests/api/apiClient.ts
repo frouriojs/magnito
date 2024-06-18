@@ -3,6 +3,7 @@ import api from 'api/$api';
 import type { UserEntity } from 'api/@types/user';
 import axios from 'axios';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
+import { genVerifier } from 'domain/user/service/genCredentials';
 import { genTokens } from 'domain/user/service/genTokens';
 import { brandedId } from 'service/brandedId';
 import { COOKIE_NAME } from 'service/constants';
@@ -18,14 +19,21 @@ export const noCookieClient = api(
 );
 
 export const createUserClient = async (): Promise<typeof noCookieClient> => {
+  const salt = 'test-client-salt';
+  const verifier = genVerifier({
+    poolId: DEFAULT_USER_POOL_ID,
+    username: 'test-client',
+    password: 'test-client-password',
+    salt,
+  });
   const user: UserEntity = {
     id: brandedId.user.entity.parse(ulid()),
     email: `${ulid()}@example.com`,
     name: 'test-client',
     verified: true,
     confirmationCode: genConfirmationCode(),
-    salt: 'salt',
-    verifier: 'verifier',
+    salt,
+    verifier,
     refreshToken: ulid(),
     userPoolId: DEFAULT_USER_POOL_ID,
     createdTime: Date.now(),

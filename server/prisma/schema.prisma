@@ -17,6 +17,10 @@ model User {
   verifier         String
   refreshToken     String
   createdAt        DateTime
+  secretBlock      String?
+  pubA             String?
+  pubB             String?
+  secB             String?
   UserPool         UserPool @relation(fields: [userPoolId], references: [id])
   userPoolId       String
 }

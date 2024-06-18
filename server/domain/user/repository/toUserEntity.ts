@@ -12,6 +12,15 @@ export const toUserEntity = (prismaUser: User): UserEntity => {
     refreshToken: prismaUser.refreshToken,
     verified: prismaUser.verified,
     confirmationCode: prismaUser.confirmationCode,
+    challenge:
+      prismaUser.secretBlock && prismaUser.pubA && prismaUser.pubB && prismaUser.secB
+        ? {
+            secretBlock: prismaUser.secretBlock,
+            pubA: prismaUser.pubA,
+            pubB: prismaUser.pubB,
+            secB: prismaUser.secB,
+          }
+        : undefined,
     userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
     createdTime: prismaUser.createdAt.getTime(),
   };

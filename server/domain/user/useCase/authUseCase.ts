@@ -8,16 +8,16 @@ import type {
   UserSrpAuthTarget,
 } from 'api/@types/auth';
 import assert from 'assert';
+import { userMethod } from 'domain/user/model/userMethod';
+import { userCommand } from 'domain/user/repository/userCommand';
+import { userQuery } from 'domain/user/repository/userQuery';
+import { genCredentials } from 'domain/user/service/genCredentials';
+import { genTokens } from 'domain/user/service/genTokens';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { transaction } from 'service/prismaClient';
 import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
-import { userMethod } from '../model/userMethod';
-import { userCommand } from '../repository/userCommand';
-import { userQuery } from '../repository/userQuery';
-import { genCredentials } from '../service/genCredentials';
-import { genTokens } from '../service/genTokens';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
@@ -66,15 +66,16 @@ export const authUseCase = {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
       assert(user.verified);
 
+      const { userWithChallenge, ChallengeParameters } = userMethod.createChallenge(
+        user,
+        req.AuthParameters,
+      );
+
+      await userCommand.save(tx, userWithChallenge);
+
       return {
         ChallengeName: 'PASSWORD_VERIFIER',
-        ChallengeParameters: {
-          SALT: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          SECRET_BLOCK: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-          SRP_B: 'ccccccccccccccccccccccccccccccccc',
-          USERNAME: req.AuthParameters.USERNAME,
-          USER_ID_FOR_SRP: req.AuthParameters.USERNAME,
-        },
+        ChallengeParameters,
       };
     }),
   refreshTokenAuth: (
@@ -112,15 +113,20 @@ export const authUseCase = {
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
+      assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
+
+      const tokens = userMethod.srpAuth({
+        user,
+        timestamp: req.ChallengeResponses.TIMESTAMP,
+        clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,
+        jwks,
+        pool,
+        poolClient,
+      });
 
       return {
         AuthenticationResult: {
-          ...genTokens({
-            privateKey: pool.privateKey,
-            userPoolClientId: poolClient.id,
-            jwks,
-            user,
-          }),
+          ...tokens,
           ExpiresIn: 3600,
           RefreshToken: user.refreshToken,
           TokenType: 'Bearer',
