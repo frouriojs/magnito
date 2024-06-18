@@ -20,9 +20,7 @@ export const calculatePrivateKey = (
   return new BigInteger(getHash(buffer, 32), 16);
 };
 
-export const padHex = (data: string | Buffer): string => {
-  const hex = data instanceof Buffer ? data.toString('hex') : data;
-
+export const padHex = (hex: string): string => {
   if ('89ABCDEFabcdef'.includes(hex[0])) {
     return `00${hex}`;
   } else {
