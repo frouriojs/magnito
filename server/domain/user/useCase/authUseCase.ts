@@ -8,16 +8,27 @@ import type {
   UserSrpAuthTarget,
 } from 'api/@types/auth';
 import assert from 'assert';
+import crypto from 'crypto';
+import { challengeMethod } from 'domain/user/model/challengeMethod';
+import { userMethod } from 'domain/user/model/userMethod';
+import { challengeCommand } from 'domain/user/repository/challengeCommand';
+import { challengeQuery } from 'domain/user/repository/challengeQuery';
+import { userCommand } from 'domain/user/repository/userCommand';
+import { userQuery } from 'domain/user/repository/userQuery';
+import { genCredentials } from 'domain/user/service/genCredentials';
+import { genTokens } from 'domain/user/service/genTokens';
+import {
+  calculateScramblingParameter,
+  calculateSessionKey,
+} from 'domain/user/service/srp/calcSessionKey';
+import { calculateSignature } from 'domain/user/service/srp/calcSignature';
+import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
+import { getPoolName } from 'domain/user/service/srp/util';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { transaction } from 'service/prismaClient';
 import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
-import { userMethod } from '../model/userMethod';
-import { userCommand } from '../repository/userCommand';
-import { userQuery } from '../repository/userQuery';
-import { genCredentials } from '../service/genCredentials';
-import { genTokens } from '../service/genTokens';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
@@ -65,13 +76,24 @@ export const authUseCase = {
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
       assert(user.verified);
+      const { B, b } = calculateSrpB(user.verifier);
+      const secretBlock = crypto.randomBytes(64).toString('base64');
+
+      const challenge = challengeMethod.createChallenge({
+        secretBlock,
+        pubA: req.AuthParameters.SRP_A,
+        pubB: B,
+        secB: b,
+      });
+
+      await challengeCommand.save(tx, challenge);
 
       return {
         ChallengeName: 'PASSWORD_VERIFIER',
         ChallengeParameters: {
-          SALT: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          SECRET_BLOCK: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-          SRP_B: 'ccccccccccccccccccccccccccccccccc',
+          SALT: user.salt,
+          SECRET_BLOCK: secretBlock,
+          SRP_B: B,
           USERNAME: req.AuthParameters.USERNAME,
           USER_ID_FOR_SRP: req.AuthParameters.USERNAME,
         },
@@ -108,10 +130,31 @@ export const authUseCase = {
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.ChallengeResponses.USERNAME);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
+      const challenge = await challengeQuery.findBySecretBlock(
+        tx,
+        req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK,
+      );
+      const { pubA: A, pubB: B, secB: b } = challenge;
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
+
+      const poolname = getPoolName(pool.id);
+      const scramblingParameter = calculateScramblingParameter(A, B);
+      const sessionKey = calculateSessionKey({ A, B, b, v: user.verifier });
+
+      const signature = calculateSignature({
+        poolname,
+        username: user.name,
+        secretBlock: req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK,
+        timestamp: req.ChallengeResponses.TIMESTAMP,
+        scramblingParameter,
+        key: sessionKey,
+      });
+      await challengeCommand.delete(tx, challenge.id);
+
+      assert(signature === req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE);
 
       return {
         AuthenticationResult: {

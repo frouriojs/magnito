@@ -9,4 +9,7 @@ export const challengeCommand = {
       create: challenge,
     });
   },
+  delete: async (tx: Prisma.TransactionClient, id: ChallengeEntity['id']): Promise<void> => {
+    await tx.challenge.delete({ where: { id } });
+  },
 };

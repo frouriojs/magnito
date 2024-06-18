@@ -1,9 +1,9 @@
+import assert from 'assert';
 import crypto from 'crypto';
 import { BigInteger } from 'jsbn';
-import { HASH_TYPE, Nbytes } from './constants';
 
 export const getHash = (data: Buffer | string, length: number): string => {
-  const hash = crypto.createHash(HASH_TYPE).update(data).digest('hex');
+  const hash = crypto.createHash('sha256').update(data).digest('hex');
 
   return hash.padStart(length * 2, '0');
 };
@@ -14,11 +14,40 @@ export const calculatePrivateKey = (
   password: string,
   salt: string,
 ): BigInteger => {
+  // x = H(s,p)
   const hash = getHash(`${poolname}${username}:${password}`, 32);
-  const buffer = Buffer.from(salt + hash, 'hex');
+  const buffer = Buffer.from(padHex(salt) + hash, 'hex');
   return new BigInteger(getHash(buffer, 32), 16);
 };
 
+export const padHex = (data: string | Buffer): string => {
+  const hex = data instanceof Buffer ? data.toString('hex') : data;
+
+  if ('89ABCDEFabcdef'.includes(hex[0])) {
+    return `00${hex}`;
+  } else {
+    return hex;
+  }
+};
+
 export const toBuffer = (bigInt: BigInteger): Buffer => {
-  return Buffer.from(bigInt.toString(16).padStart(Nbytes * 2, '0'), 'hex');
+  const str = bigInt.toString(16);
+  return Buffer.from(str, 'hex');
+};
+
+export const toBufferWithLength = (bigInt: BigInteger, length: number): Buffer => {
+  let str = bigInt.toString(16);
+  str = str.padStart(length * 2, '0');
+
+  return Buffer.from(str, 'hex');
+};
+
+export const fromBuffer = (buffer: Buffer): BigInteger => {
+  return new BigInteger(buffer.toString('hex'), 16);
+};
+
+export const getPoolName = (poolId: string): string => {
+  const name = poolId.split('_')[1];
+  assert(name, 'Invalid poolId');
+  return name;
 };
