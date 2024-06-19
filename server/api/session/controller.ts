@@ -9,7 +9,7 @@ export type AdditionalRequest = {
   body: Methods['post']['reqBody'];
 };
 
-export const options: CookieSerializeOptions = {
+const options: CookieSerializeOptions = {
   httpOnly: true,
   secure: true,
   path: '/',
@@ -30,6 +30,15 @@ export default defineController(() => ({
           expires: new Date(Date.now() + expiresIn),
         });
 
+        done();
+      },
+    },
+    handler: () => ({ status: 200, body: { status: 'success' } }),
+  },
+  delete: {
+    hooks: {
+      preHandler: (_, reply, done) => {
+        reply.clearCookie(COOKIE_NAME, options);
         done();
       },
     },

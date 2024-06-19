@@ -5,4 +5,7 @@ export type Methods = DefineMethods<{
     reqBody: { jwt: string };
     resBody: { status: 'success' };
   };
+  delete: {
+    resBody: { status: 'success' };
+  };
 }>;

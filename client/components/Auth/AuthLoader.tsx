@@ -62,7 +62,7 @@ export const AuthLoader = () => {
           case 'signInWithRedirect_failure':
             break;
           case 'signedOut':
-            await apiClient.session.delete.$post().catch(catchApiErr);
+            await apiClient.session.$delete().catch(catchApiErr);
             setUser(null);
             break;
           case 'signedIn':

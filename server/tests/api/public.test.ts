@@ -2,7 +2,7 @@ import { COOKIE_NAME } from 'service/constants';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
-import { GET, POST } from './utils';
+import { DELETE, GET, POST } from './utils';
 
 test(GET(noCookieClient._userPoolId('_userPoolId')), async () => {
   const res = await noCookieClient._userPoolId(DEFAULT_USER_POOL_ID).get();
@@ -39,8 +39,8 @@ test(POST(noCookieClient.session), async () => {
   expect(res.body.status === 'success').toBeTruthy();
 });
 
-test(POST(noCookieClient.session.delete), async () => {
-  const res = await noCookieClient.session.delete.post();
+test(DELETE(noCookieClient.session), async () => {
+  const res = await noCookieClient.session.delete();
 
   expect(res.headers['set-cookie'][0].startsWith(`${COOKIE_NAME}=;`)).toBeTruthy();
   expect(res.body.status === 'success').toBeTruthy();
