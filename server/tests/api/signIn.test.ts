@@ -5,10 +5,10 @@ import { N, g } from 'domain/user/service/srp/constants';
 import { fromBuffer, toBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import { createUserClient } from './apiClient';
+import { createUserClient, noCookieClient } from './apiClient';
 
 test('signIn', async () => {
-  const noCookieClient = await createUserClient();
+  const userClient = await createUserClient();
   const a = crypto.randomBytes(32);
   const A = toBuffer(g.modPow(fromBuffer(a), N));
   const res1 = await noCookieClient.$post({
@@ -26,7 +26,7 @@ test('signIn', async () => {
     secretBlock,
     username: 'test-client',
     password: 'test-client-password',
-    salt: 'test-client-salt',
+    salt: res1.ChallengeParameters.SALT,
     timestamp: 'Thu Jan 01 00:00:00 UTC 1970',
     A: A.toString('hex'),
     a: fromBuffer(a),
@@ -73,4 +73,6 @@ test('signIn', async () => {
   });
 
   expect(res3.status).toBe(200);
+
+  await userClient.private.backdoor.$delete();
 });

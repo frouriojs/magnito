@@ -9,6 +9,7 @@ test(GET(noCookieClient.private), async () => {
   expect(res).toEqual('');
 
   await expect(noCookieClient.private.get()).rejects.toHaveProperty('response.status', 401);
+  await userClient.private.backdoor.$delete();
 });
 
 test(GET(noCookieClient.private.me), async () => {
@@ -16,4 +17,5 @@ test(GET(noCookieClient.private.me), async () => {
   const res = await userClient.private.me.get();
 
   expect(res.status).toBe(200);
+  await userClient.private.backdoor.$delete();
 });

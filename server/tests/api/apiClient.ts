@@ -1,15 +1,8 @@
 import aspida from '@aspida/axios';
 import api from 'api/$api';
-import type { UserEntity } from 'api/@types/user';
 import axios from 'axios';
-import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
-import { genVerifier } from 'domain/user/service/genCredentials';
-import { genTokens } from 'domain/user/service/genTokens';
-import { brandedId } from 'service/brandedId';
 import { COOKIE_NAME } from 'service/constants';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID, PORT } from 'service/envValues';
-import { prismaClient } from 'service/prismaClient';
-import { genJwks } from 'service/privateKey';
+import { PORT } from 'service/envValues';
 import { ulid } from 'ulid';
 
 const baseURL = `http://127.0.0.1:${PORT}`;
@@ -19,52 +12,16 @@ export const noCookieClient = api(
 );
 
 export const createUserClient = async (): Promise<typeof noCookieClient> => {
-  const salt = 'test-client-salt';
-  const verifier = genVerifier({
-    poolId: DEFAULT_USER_POOL_ID,
-    username: 'test-client',
-    password: 'test-client-password',
-    salt,
-  });
-  const user: UserEntity = {
-    id: brandedId.user.entity.parse(ulid()),
-    email: `${ulid()}@example.com`,
-    name: 'test-client',
-    verified: true,
-    confirmationCode: genConfirmationCode(),
-    salt,
-    verifier,
-    refreshToken: ulid(),
-    userPoolId: DEFAULT_USER_POOL_ID,
-    createdTime: Date.now(),
-  };
-  await prismaClient.user.create({
-    data: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      verified: true,
-      confirmationCode: genConfirmationCode(),
-      salt: user.salt,
-      verifier: user.verifier,
-      refreshToken: user.refreshToken,
-      userPoolId: DEFAULT_USER_POOL_ID,
-      createdAt: new Date(user.createdTime),
+  const tokens = await noCookieClient.backdoor.$post({
+    body: {
+      username: 'test-client',
+      email: `${ulid()}@example.com`,
+      password: 'test-client-password',
     },
-  });
-  const pool = await prismaClient.userPool.findUniqueOrThrow({
-    where: { id: DEFAULT_USER_POOL_ID },
-  });
-  const jwks = await genJwks(pool.privateKey);
-  const { IdToken } = genTokens({
-    privateKey: pool.privateKey,
-    userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
-    jwks,
-    user,
   });
   const agent = axios.create({
     baseURL,
-    headers: { cookie: `${COOKIE_NAME}=${IdToken}`, 'Content-Type': 'text/plain' },
+    headers: { cookie: `${COOKIE_NAME}=${tokens.IdToken}`, 'Content-Type': 'text/plain' },
   });
 
   agent.interceptors.response.use(undefined, (err) =>
