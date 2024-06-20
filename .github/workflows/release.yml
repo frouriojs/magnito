@@ -18,9 +18,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
+          sbom: true
           push: true
+          provenance: mode=max
           build-args: |
             VERSION=${{ env.VERSION }}
           tags: frourio/magnito:latest,frourio/magnito:${{ env.VERSION }}

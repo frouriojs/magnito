@@ -25,6 +25,9 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
+RUN apk add sudo
+RUN echo '%node ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
 ARG CLIENT_PORT=5001
 
 ENV PORT=5000
@@ -49,9 +52,14 @@ COPY --from=builder /usr/src/app/server/prisma ./server/prisma
 RUN apk --no-cache add curl
 COPY --from=builder /usr/src/app/data ./data
 
+RUN chown -R node:node /usr/src/app
+
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f http://localhost:$PORT/health && curl -f http://localhost:$CLIENT_PORT || exit 1
 
 EXPOSE ${PORT} ${CLIENT_PORT}
 VOLUME ["/usr/src/app/data"]
+
+USER node
+ENTRYPOINT ["sh", "-c", "sudo chown -R node /usr/src/app/data && ls -l /usr/src/app && exec \"$@\"", "--"]
 
 CMD ["npm", "start"]
