@@ -17,7 +17,7 @@ export const AuthLoader = () => {
     const jwt = await fetchAuthSession().then((e) => e.tokens?.idToken?.toString());
 
     if (jwt !== undefined) {
-      await apiClient.session.$post({ body: { jwt } }).catch(catchApiErr);
+      await apiClient.public.session.$post({ body: { jwt } }).catch(catchApiErr);
       await apiClient.private.me.$get().catch(catchApiErr).then(setUser);
     } else {
       setUser(null);
@@ -62,7 +62,7 @@ export const AuthLoader = () => {
           case 'signInWithRedirect_failure':
             break;
           case 'signedOut':
-            await apiClient.session.$delete().catch(catchApiErr);
+            await apiClient.public.session.$delete().catch(catchApiErr);
             setUser(null);
             break;
           case 'signedIn':

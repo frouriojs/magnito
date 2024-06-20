@@ -11,26 +11,26 @@ const Console = () => {
   const [tasks, setTasks] = useState<TaskEntity[]>();
   const [label, setLabel] = useState('');
   const fetchTasks = async () => {
-    const tasks = await apiClient.tasks.$get().catch(returnNull);
+    const tasks = await apiClient.public.tasks.$get().catch(returnNull);
 
     if (tasks !== null) setTasks(tasks);
   };
   const createTask = async (e: FormEvent) => {
     e.preventDefault();
 
-    await apiClient.tasks.post({ body: { label } }).catch(returnNull);
+    await apiClient.public.tasks.post({ body: { label } }).catch(returnNull);
     setLabel('');
     await fetchTasks();
   };
   const toggleDone = async (task: TaskEntity) => {
-    await apiClient.tasks
+    await apiClient.public.tasks
       ._taskId(task.id)
       .patch({ body: { done: !task.done } })
       .catch(returnNull);
     await fetchTasks();
   };
   const deleteTask = async (task: TaskEntity) => {
-    await apiClient.tasks._taskId(task.id).delete().catch(returnNull);
+    await apiClient.public.tasks._taskId(task.id).delete().catch(returnNull);
     await fetchTasks();
   };
 

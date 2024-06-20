@@ -12,7 +12,7 @@ export const noCookieClient = api(
 );
 
 export const createUserClient = async (): Promise<typeof noCookieClient> => {
-  const tokens = await noCookieClient.backdoor.$post({
+  const tokens = await noCookieClient.public.backdoor.$post({
     body: {
       username: 'test-client',
       email: `${ulid()}@example.com`,

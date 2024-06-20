@@ -4,6 +4,12 @@ import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
 import { DELETE, GET, POST } from './utils';
 
+test(GET(noCookieClient.public), async () => {
+  const res = await noCookieClient.public.$get();
+
+  expect(res).toEqual('');
+});
+
 test(GET(noCookieClient._userPoolId('_userPoolId')), async () => {
   const res = await noCookieClient._userPoolId(DEFAULT_USER_POOL_ID).get();
 
@@ -16,31 +22,31 @@ test(GET(noCookieClient._userPoolId('_userPoolId')._well_known), async () => {
   expect(res.status).toEqual(200);
 });
 
-test(GET(noCookieClient.health), async () => {
-  const res = await noCookieClient.health.$get();
+test(GET(noCookieClient.public.health), async () => {
+  const res = await noCookieClient.public.health.$get();
 
   expect(res.server).toEqual('ok');
   expect(res.db).toEqual('ok');
   expect(res.smtp).toEqual('ok');
 });
 
-test(GET(noCookieClient.defaults), async () => {
-  const res = await noCookieClient.defaults.$get();
+test(GET(noCookieClient.public.defaults), async () => {
+  const res = await noCookieClient.public.defaults.$get();
 
   expect(res.userPoolId).toBe(DEFAULT_USER_POOL_ID);
   expect(res.userPoolClientId).toBe(DEFAULT_USER_POOL_CLIENT_ID);
 });
 
-test(POST(noCookieClient.session), async () => {
+test(POST(noCookieClient.public.session), async () => {
   const jwt = 'dummy-jwt';
-  const res = await noCookieClient.session.post({ body: { jwt } });
+  const res = await noCookieClient.public.session.post({ body: { jwt } });
 
   expect(res.headers['set-cookie'][0].startsWith(`${COOKIE_NAME}=${jwt};`)).toBeTruthy();
   expect(res.body.status === 'success').toBeTruthy();
 });
 
-test(DELETE(noCookieClient.session), async () => {
-  const res = await noCookieClient.session.delete();
+test(DELETE(noCookieClient.public.session), async () => {
+  const res = await noCookieClient.public.session.delete();
 
   expect(res.headers['set-cookie'][0].startsWith(`${COOKIE_NAME}=;`)).toBeTruthy();
   expect(res.body.status === 'success').toBeTruthy();

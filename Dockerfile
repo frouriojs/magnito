@@ -48,7 +48,7 @@ COPY --chown=node --from=builder /usr/src/app/server/node_modules/.prisma ./serv
 COPY --chown=node --from=builder /usr/src/app/server/prisma ./server/prisma
 COPY --chown=node --from=builder /usr/src/app/data ./data
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/health && wget --quiet --spider http://127.0.0.1:$CLIENT_PORT || exit 1
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/public/health && wget --quiet --spider http://127.0.0.1:$CLIENT_PORT || exit 1
 
 EXPOSE ${PORT} ${CLIENT_PORT}
 VOLUME ["/usr/src/app/data"]

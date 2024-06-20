@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const SafeHydrate = dynamic(() => import('../components/SafeHydrate'), { ssr: false });
 
   useEffect(() => {
-    apiClient.defaults.$get().then((defaults) => {
+    apiClient.public.defaults.$get().then((defaults) => {
       Amplify.configure({
         Auth: { Cognito: { ...defaults, userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN } },
       });
