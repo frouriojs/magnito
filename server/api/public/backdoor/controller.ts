@@ -1,6 +1,7 @@
 import type { UserEntity } from 'api/@types/user';
 import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
+import { userQuery } from 'domain/user/repository/userQuery';
 import { genCredentials } from 'domain/user/service/genCredentials';
 import { genTokens } from 'domain/user/service/genTokens';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
@@ -18,9 +19,11 @@ export default defineController(() => ({
       username: body.username,
       password: body.password,
     });
+    const idCount = await userQuery.countId(prismaClient, body.username);
     const user: UserEntity = {
-      ...userMethod.createUser({
+      ...userMethod.createUser(idCount, {
         name: body.username,
+        password: body.password,
         email: body.email,
         salt,
         verifier,

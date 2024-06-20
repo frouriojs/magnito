@@ -12,7 +12,7 @@ test('signUp', async () => {
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.SignUp' },
     body: {
       Username: 'user',
-      Password: 'pass',
+      Password: 'Test-client-password1',
       UserAttributes: [{ Name: 'email', Value: email }],
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },

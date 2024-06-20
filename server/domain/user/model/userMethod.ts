@@ -14,29 +14,67 @@ import { calculateSignature } from 'domain/user/service/srp/calcSignature';
 import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
 import { getPoolName } from 'domain/user/service/srp/util';
 import { brandedId } from 'service/brandedId';
+import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
+import { z } from 'zod';
 
 export const userMethod = {
-  createUser: (val: {
-    name: string;
-    email: string;
-    salt: string;
-    verifier: string;
-    userPoolId: EntityId['userPool'];
-  }): UserEntity => ({
-    id: brandedId.user.entity.parse(val.name),
-    email: val.email,
-    name: val.name,
-    refreshToken: ulid(),
-    userPoolId: val.userPoolId,
-    verified: false,
-    confirmationCode: genConfirmationCode(),
-    salt: val.salt,
-    verifier: val.verifier,
-    createdTime: Date.now(),
-  }),
+  createUser: (
+    idCount: number,
+    val: {
+      name: string;
+      password: string;
+      email: string;
+      salt: string;
+      verifier: string;
+      userPoolId: EntityId['userPool'];
+    },
+  ): UserEntity => {
+    cognitoAssert(idCount === 0, 'User already exists');
+    cognitoAssert(
+      /^[a-z][a-z\d_-]/.test(val.name),
+      "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+",
+    );
+    cognitoAssert(
+      val.password.length >= 8,
+      'Password did not conform with policy: Password not long enough',
+    );
+    cognitoAssert(
+      /[a-z]/.test(val.password),
+      'Password did not conform with policy: Password must have lowercase characters',
+    );
+    cognitoAssert(
+      /[A-Z]/.test(val.password),
+      'Password did not conform with policy: Password must have uppercase characters',
+    );
+    cognitoAssert(
+      /[0-9]/.test(val.password),
+      'Password did not conform with policy: Password must have numeric characters',
+    );
+    cognitoAssert(
+      /[!-/:-@[-`{-~]/.test(val.password),
+      'Password did not conform with policy: Password must have symbol characters',
+    );
+    cognitoAssert(z.string().email().parse(val.email), 'Invalid email address format.');
+
+    return {
+      id: brandedId.user.entity.parse(val.name),
+      email: val.email,
+      name: val.name,
+      refreshToken: ulid(),
+      userPoolId: val.userPoolId,
+      verified: false,
+      confirmationCode: genConfirmationCode(),
+      salt: val.salt,
+      verifier: val.verifier,
+      createdTime: Date.now(),
+    };
+  },
   verifyUser: (user: UserEntity, confirmationCode: string): UserEntity => {
-    assert(user.confirmationCode === confirmationCode);
+    cognitoAssert(
+      user.confirmationCode === confirmationCode,
+      'Invalid verification code provided, please try again.',
+    );
 
     return { ...user, verified: true };
   },
@@ -91,7 +129,7 @@ export const userMethod = {
       scramblingParameter,
       key: sessionKey,
     });
-    assert(signature === params.clientSignature);
+    cognitoAssert(signature === params.clientSignature, 'Incorrect username or password.');
 
     return genTokens({
       privateKey: params.pool.privateKey,

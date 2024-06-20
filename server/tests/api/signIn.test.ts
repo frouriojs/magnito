@@ -25,7 +25,7 @@ test('signIn', async () => {
   const signature = calcClientSignature({
     secretBlock,
     username: 'test-client',
-    password: 'test-client-password',
+    password: 'Test-client-password1',
     salt: res1.ChallengeParameters.SALT,
     timestamp: 'Thu Jan 01 00:00:00 UTC 1970',
     A: A.toString('hex'),

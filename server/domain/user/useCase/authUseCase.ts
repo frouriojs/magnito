@@ -15,6 +15,7 @@ import { genCredentials } from 'domain/user/service/genCredentials';
 import { genTokens } from 'domain/user/service/genTokens';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
+import { cognitoAssert } from 'service/cognitoAssert';
 import { transaction } from 'service/prismaClient';
 import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
@@ -28,8 +29,10 @@ export const authUseCase = {
         username: req.Username,
         password: req.Password,
       });
-      const user = userMethod.createUser({
+      const idCount = await userQuery.countId(tx, req.Username);
+      const user = userMethod.createUser(idCount, {
         name: req.Username,
+        password: req.Password,
         email: req.UserAttributes[0].Value,
         salt,
         verifier,
@@ -63,8 +66,8 @@ export const authUseCase = {
     }),
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
     transaction(async (tx) => {
-      const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME);
-      assert(user.verified);
+      const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME).catch(() => null);
+      cognitoAssert(user, 'Incorrect username or password.');
 
       const { userWithChallenge, ChallengeParameters } = userMethod.createChallenge(
         user,
@@ -114,6 +117,8 @@ export const authUseCase = {
 
       assert(pool.id === poolClient.userPoolId);
       assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
+
+      cognitoAssert(user.verified, 'User is not confirmed.');
 
       const tokens = userMethod.srpAuth({
         user,

@@ -16,7 +16,7 @@ export const createUserClient = async (): Promise<typeof noCookieClient> => {
     body: {
       username: 'test-client',
       email: `${ulid()}@example.com`,
-      password: 'test-client-password',
+      password: 'Test-client-password1',
     },
   });
   const agent = axios.create({

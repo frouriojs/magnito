@@ -4,6 +4,8 @@ import type { UserEntity } from 'api/@types/user';
 import { toUserEntity } from './toUserEntity';
 
 export const userQuery = {
+  countId: (tx: Prisma.TransactionClient, id: string): Promise<number> =>
+    tx.user.count({ where: { id } }),
   findById: (tx: Prisma.TransactionClient, id: EntityId['user']): Promise<UserEntity> =>
     tx.user.findUniqueOrThrow({ where: { id } }).then(toUserEntity),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserEntity> =>
