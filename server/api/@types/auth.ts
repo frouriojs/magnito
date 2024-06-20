@@ -4,6 +4,12 @@ export type Jwks = { keys: [{ kid: string; alg: string }] };
 
 type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
+export type CodeDeliveryDetails = {
+  AttributeName: 'email';
+  DeliveryMedium: 'EMAIL';
+  Destination: string;
+};
+
 export type SignUpTarget = TargetBody<
   {
     Username: string;
@@ -11,15 +17,7 @@ export type SignUpTarget = TargetBody<
     UserAttributes: [{ Name: 'email'; Value: string }];
     ClientId: MaybeId['userPoolClient'];
   },
-  {
-    CodeDeliveryDetails: {
-      AttributeName: 'email';
-      DeliveryMedium: 'EMAIL';
-      Destination: string;
-    };
-    UserConfirmed: boolean;
-    UserSub: EntityId['user'];
-  }
+  { CodeDeliveryDetails: CodeDeliveryDetails; UserConfirmed: boolean; UserSub: EntityId['user'] }
 >;
 
 export type ConfirmSignUpTarget = TargetBody<
@@ -106,6 +104,11 @@ export type RevokeTokenTarget = TargetBody<
   Record<string, never>
 >;
 
+export type ResendConfirmationCodeTarget = TargetBody<
+  { ClientId: MaybeId['userPoolClient']; Username: string },
+  { CodeDeliveryDetails: CodeDeliveryDetails }
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -113,4 +116,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': RespondToAuthChallengeTarget;
   'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
+  'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
 };

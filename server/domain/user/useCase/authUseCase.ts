@@ -2,6 +2,7 @@ import type {
   ConfirmSignUpTarget,
   GetUserTarget,
   RefreshTokenAuthTarget,
+  ResendConfirmationCodeTarget,
   RespondToAuthChallengeTarget,
   RevokeTokenTarget,
   SignUpTarget,
@@ -17,8 +18,9 @@ import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { transaction } from 'service/prismaClient';
-import { sendMail } from 'service/sendMail';
 import type { AccessTokenJwt } from 'service/types';
+import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
+import { sendConfirmationCode } from '../service/sendConfirmationCode';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
@@ -39,18 +41,10 @@ export const authUseCase = {
         userPoolId: poolClient.userPoolId,
       });
       await userCommand.save(tx, user);
-      await sendMail({
-        to: { name: user.name, address: user.email },
-        subject: 'Your verification code',
-        text: `Your confirmation code is ${user.confirmationCode}`,
-      });
+      await sendConfirmationCode(user);
 
       return {
-        CodeDeliveryDetails: {
-          AttributeName: 'email',
-          DeliveryMedium: 'EMAIL',
-          Destination: req.UserAttributes[0].Value.replace(/^(.).*@(.).+$/, '$1***@$2***'),
-        },
+        CodeDeliveryDetails: genCodeDeliveryDetails(user),
         UserConfirmed: false,
         UserSub: user.id,
       };
@@ -76,10 +70,7 @@ export const authUseCase = {
 
       await userCommand.save(tx, userWithChallenge);
 
-      return {
-        ChallengeName: 'PASSWORD_VERIFIER',
-        ChallengeParameters,
-      };
+      return { ChallengeName: 'PASSWORD_VERIFIER', ChallengeParameters };
     }),
   refreshTokenAuth: (
     req: RefreshTokenAuthTarget['reqBody'],
@@ -158,5 +149,18 @@ export const authUseCase = {
       await userQuery.findByRefreshToken(tx, req.Token);
 
       return {};
+    }),
+  resendConfirmationCode: (
+    req: ResendConfirmationCodeTarget['reqBody'],
+  ): Promise<ResendConfirmationCodeTarget['resBody']> =>
+    transaction(async (tx) => {
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const user = await userQuery.findByName(tx, req.Username);
+
+      assert(poolClient.userPoolId === user.userPoolId);
+
+      await sendConfirmationCode(user);
+
+      return { CodeDeliveryDetails: genCodeDeliveryDetails(user) };
     }),
 };

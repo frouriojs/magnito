@@ -18,6 +18,11 @@ test('signUp', async () => {
     },
   });
 
+  await noCookieClient.post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.ResendConfirmationCode' },
+    body: { ClientId: DEFAULT_USER_POOL_CLIENT_ID, Username: 'user' },
+  });
+
   assert(process.env.INBUCKET_URL);
 
   const inbucketClient = new InbucketAPIClient(process.env.INBUCKET_URL);

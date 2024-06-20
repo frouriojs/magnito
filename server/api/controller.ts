@@ -68,6 +68,10 @@ const targets: {
     validator: z.object({ ClientId: brandedId.userPoolClient.maybe, Token: z.string() }),
     useCase: authUseCase.revokeToken,
   },
+  'AWSCognitoIdentityProviderService.ResendConfirmationCode': {
+    validator: z.object({ ClientId: brandedId.userPoolClient.maybe, Username: z.string() }),
+    useCase: authUseCase.resendConfirmationCode,
+  },
 };
 
 const main = async <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) =>
