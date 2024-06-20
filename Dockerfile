@@ -20,6 +20,7 @@ ARG DATABASE_URL=file:../../data/app.db
 
 RUN npm run batch:writeVersion -- $VERSION
 RUN npm run build
+RUN npm ci --omit=dev --prefix server
 
 FROM node:20-alpine
 
@@ -40,11 +41,8 @@ ENV SMTP_PASS=fake_mail_password
 COPY --chown=node package.json .
 COPY --chown=node --from=builder /usr/src/app/client/out ./client/out
 COPY --chown=node server/package.json server/package-lock.json ./server/
-
-RUN npm ci --omit=dev --prefix server
-
+COPY --chown=node --from=builder /usr/src/app/server/node_modules ./server/node_modules
 COPY --chown=node --from=builder /usr/src/app/server/index.js ./server/index.js
-COPY --chown=node --from=builder /usr/src/app/server/node_modules/.prisma ./server/node_modules/.prisma
 COPY --chown=node --from=builder /usr/src/app/server/prisma ./server/prisma
 COPY --chown=node --from=builder /usr/src/app/data ./data
 
