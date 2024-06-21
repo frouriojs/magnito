@@ -52,11 +52,8 @@ export const AuthLoader = () => {
       async (data) => {
         switch (data.payload.event) {
           case 'customOAuthState':
-            break;
           case 'signInWithRedirect':
-            break;
           case 'signInWithRedirect_failure':
-            break;
           case 'tokenRefresh':
             break;
           case 'signedOut':

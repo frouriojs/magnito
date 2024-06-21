@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { pagesPath } from 'utils/$path';
 
-export const Layout = (props: { content: (user: UserEntity) => React.ReactNode }) => {
+export const Layout = (props: { render: (user: UserEntity) => React.ReactNode }) => {
   const router = useRouter();
   const { user } = useUser();
   const { loadingElm } = useLoading();
@@ -18,7 +18,7 @@ export const Layout = (props: { content: (user: UserEntity) => React.ReactNode }
 
   if (!user.inited) {
     return <Loading visible />;
-  } else if (!user.data) {
+  } else if (user.data === null) {
     void router.replace(pagesPath.$url());
 
     return <Loading visible />;
@@ -27,7 +27,7 @@ export const Layout = (props: { content: (user: UserEntity) => React.ReactNode }
   return (
     <div>
       <BasicHeader user={user.data} />
-      {props.content(user.data)}
+      {props.render(user.data)}
       {loadingElm}
       {alertElm}
       {confirmElm}
