@@ -1,4 +1,4 @@
-import { fetchAuthSession, signOut } from 'aws-amplify/auth';
+import { fetchAuthSession, getCurrentUser, signOut } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
 import { isAxiosError } from 'axios';
 import { useAlert } from 'components/Alert/useAlert';
@@ -25,14 +25,10 @@ export const AuthLoader = () => {
   }, [catchApiErr, setUser]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    apiClient.private.me
-      .$get({ config: { signal: controller.signal } })
-      .then(setUser)
-      .catch((e) => (isAxiosError(e) && e.response?.status === 401 ? setUser(null) : null));
-
-    return () => controller.abort();
-  }, [setUser]);
+    getCurrentUser()
+      .then(updateCookie)
+      .catch(() => setUser(null));
+  }, [setUser, updateCookie]);
 
   useEffect(() => {
     const useId = apiAxios.interceptors.response.use(undefined, async (err) => {
@@ -61,12 +57,13 @@ export const AuthLoader = () => {
             break;
           case 'signInWithRedirect_failure':
             break;
+          case 'tokenRefresh':
+            break;
           case 'signedOut':
             await apiClient.public.session.$delete().catch(catchApiErr);
             setUser(null);
             break;
           case 'signedIn':
-          case 'tokenRefresh':
             await updateCookie().catch(catchApiErr);
             break;
           case 'tokenRefresh_failure':

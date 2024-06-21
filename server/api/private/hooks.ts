@@ -15,7 +15,7 @@ export default defineHooks(() => ({
     try {
       await req.jwtVerify({ onlyCookie: true });
     } catch (e) {
-      res.status(401).send();
+      res.status(401).send((e as Error).message);
       return;
     }
 

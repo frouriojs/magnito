@@ -17,6 +17,7 @@ import { genTokens } from 'domain/user/service/genTokens';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { cognitoAssert } from 'service/cognitoAssert';
+import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
@@ -91,7 +92,7 @@ export const authUseCase = {
             jwks,
             user,
           }),
-          ExpiresIn: 3600,
+          ExpiresIn: EXPIRES_SEC,
           TokenType: 'Bearer',
         },
         ChallengeParameters: {},

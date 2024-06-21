@@ -2,6 +2,7 @@ import type { Jwks } from 'api/@types/auth';
 import type { EntityId } from 'api/@types/brandedId';
 import type { UserEntity } from 'api/@types/user';
 import { createSigner } from 'fast-jwt';
+import { EXPIRES_SEC } from 'service/constants';
 import { PORT } from 'service/envValues';
 import type { AccessTokenJwt, IdTokenJwt } from 'service/types';
 import { ulid } from 'ulid';
@@ -17,14 +18,14 @@ export const genTokens = (params: {
     aud: params.userPoolClientId,
     header: { kid: params.jwks.keys[0].kid, alg: params.jwks.keys[0].alg },
   });
-  const now = Date.now();
+  const now = Math.floor(Date.now() / 1000);
   const comomn = {
     sub: params.user.id,
     iss: `http://localhost:${PORT}/${params.user.userPoolId}`,
     origin_jti: ulid(),
     event_id: ulid(),
     auth_time: now,
-    exp: now + 3600 * 1000,
+    exp: now + EXPIRES_SEC,
     iat: now,
     jti: ulid(),
   };

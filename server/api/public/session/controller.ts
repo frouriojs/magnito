@@ -16,18 +16,21 @@ const options: CookieSerializeOptions = {
   sameSite: 'none',
 };
 
-export default defineController(() => ({
+export default defineController((fastify) => ({
   post: {
     validators: { body: z.object({ jwt: z.string() }) },
     hooks: {
       preHandler: (req, reply, done) => {
         assert(req.body);
 
-        const expiresIn = 60 * 60 * 24 * 5 * 1000;
+        const decoded = z
+          .object({ payload: z.object({ exp: z.number() }).passthrough() })
+          .passthrough()
+          .parse(fastify.jwt.decode(req.body.jwt));
 
         reply.setCookie(COOKIE_NAME, req.body.jwt, {
           ...options,
-          expires: new Date(Date.now() + expiresIn),
+          expires: new Date(decoded.payload.exp * 1000),
         });
 
         done();

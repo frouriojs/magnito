@@ -1,4 +1,5 @@
-import { COOKIE_NAME } from 'service/constants';
+import { createSigner } from 'fast-jwt';
+import { COOKIE_NAME, EXPIRES_SEC } from 'service/constants';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
@@ -38,7 +39,7 @@ test(GET(noCookieClient.public.defaults), async () => {
 });
 
 test(POST(noCookieClient.public.session), async () => {
-  const jwt = 'dummy-jwt';
+  const jwt = createSigner({ key: 'dummy' })({ exp: Math.floor(Date.now() / 1000) + EXPIRES_SEC });
   const res = await noCookieClient.public.session.post({ body: { jwt } });
 
   expect(res.headers['set-cookie'][0].startsWith(`${COOKIE_NAME}=${jwt};`)).toBeTruthy();
