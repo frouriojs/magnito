@@ -27,3 +27,16 @@ jobs:
             VERSION=${{ env.VERSION }}
           tags: frourio/magnito:${{ env.VERSION }},frourio/magnito:latest
           platforms: linux/amd64,linux/arm64
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REGISTRY_ALIAS: i9v2y6d7
+          REPOSITORY: magnito
+          IMAGE_TAG: ${{ env.VERSION }}
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:latest --push .
