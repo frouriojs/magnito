@@ -25,4 +25,5 @@ jobs:
           provenance: mode=max
           build-args: |
             VERSION=${{ env.VERSION }}
-          tags: frourio/magnito:latest,frourio/magnito:${{ env.VERSION }}
+          tags: frourio/magnito:${{ env.VERSION }},frourio/magnito:latest
+          platforms: linux/amd64,linux/arm64
