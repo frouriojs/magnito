@@ -1,67 +1,55 @@
 # Magnito
 
-フロントエンドは client ディレクトリの [Next.js](https://nextjs.org/) 、バックエンドは server ディレクトリの [frourio](https://frourio.com/) で構築された TypeScript で一気通貫開発が可能なモノレポサービス
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://frouriojs.github.io/magnito/logos/icon-text-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
+  <img alt="Magnito logo image" src="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
+</picture>
 
-最新のコミットによるデモ - https://solufa.github.io/next-frourio-starter/
+Amazon Cognito emulator for Amplify UI.
 
-## 開発手順
+## Images
 
-### Node.js のインストール
+Docker Hub - https://hub.docker.com/r/frourio/magnito
 
-ローカルマシンに直接インストールする
+Amazon ECR Public Gallery - https://gallery.ecr.aws/frourio/magnito
 
-https://nodejs.org/ja/ の左ボタン、LTS をダウンロードしてインストール
+## Usage
 
-### npm モジュールのインストール
+Docker compose
 
-ルートとフロントとバックエンドそれぞれに package.json があるので 3 回インストールが必要
+```yml
+services:
+  magnito:
+    image: frourio/magnito:latest
+    ports:
+      - 5050:5050 # Cognito API
+      - 5051:5051 # web interface
+    environment:
+      COGNITO_USER_POOL_ID: ap-northeast-1_example
+      COGNITO_USER_POOL_CLIENT_ID: example-client-name
+      ENV SMTP_HOST: inbucket
+      ENV SMTP_PORT: 2500
+      ENV SMTP_USER: fake_mail_user
+      ENV SMTP_PASS: fake_mail_password
+    volumes:
+      - magnito:/usr/src/app/data
 
-```sh
-$ npm i
-$ npm i --prefix client
-$ npm i --prefix server
+  inbucket:
+    image: inbucket/inbucket:3.0.3
+    ports:
+      - 2500:2500 # SMTP
+      - 9000:9000 # web interface
+    volumes:
+      - inbucket:/storage
+
+volumes:
+  magnito:
+    driver: local
+  inbucket:
+    driver: local
 ```
 
-### 環境変数ファイルの作成
+### SMTP Server UI
 
-```sh
-$ cp client/.env.example client/.env
-$ cp server/.env.example server/.env
-```
-
-### ミドルウェアのセットアップ
-
-```sh
-$ docker compose up -d
-```
-
-### 開発サーバー起動
-
-次回以降は以下のコマンドだけで開発できる
-
-```sh
-$ npm run notios
-```
-
-Web ブラウザで http://localhost:5051 を開く
-
-開発時のターミナル表示は [notios](https://github.com/frouriojs/notios) で制御している
-
-[Node.js モノレポ開発のターミナルログ混雑解消のための新作 CLI ツール notios](https://zenn.dev/luma/articles/nodejs-new-cli-tool-notios)
-
-閉じるときは `Ctrl + C` を 2 回連続で入力
-
-#### SQLite UI
-
-```sh
-$ cd server
-$ npx prisma studio
-```
-
-### SMTPサーバー
-
-Docker の Inbucket が SMTP サーバーのスタブを提供している
-
-http://localhost:9000/
-
-serverからsendMailするとInbucketヘッダー中央の「Recent Mailboxes」に仮想メールが届く
+[Inbucket](https://inbucket.org) - http://localhost:9000/
