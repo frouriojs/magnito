@@ -10,6 +10,8 @@ export const userCommand = {
         email: user.email,
         name: user.name,
         verified: user.verified,
+        salt: user.salt,
+        verifier: user.verifier,
         refreshToken: user.refreshToken,
         confirmationCode: user.confirmationCode,
         secretBlock: user.challenge?.secretBlock,
