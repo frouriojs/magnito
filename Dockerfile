@@ -30,6 +30,9 @@ ARG CLIENT_PORT=5051
 
 ENV PORT=5050
 ENV CLIENT_PORT=$CLIENT_PORT
+ENV COGNITO_ACCESS_KEY=magnito-access-key
+ENV COGNITO_SECRET_KEY=magnito-secret-key
+ENV COGNITO_REGION=ap-northeast-1
 ENV COGNITO_USER_POOL_ID=ap-northeast-1_default
 ENV COGNITO_USER_POOL_CLIENT_ID=default-client-id
 ENV DATABASE_URL=file:../../data/app.db

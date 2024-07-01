@@ -26,6 +26,9 @@ services:
       - 5050:5050 # Cognito API
       - 5051:5051 # web interface
     environment:
+      COGNITO_ACCESS_KEY: magnito-access-key
+      COGNITO_SECRET_KEY: magnito-secret-key
+      COGNITO_REGION: ap-northeast-1
       COGNITO_USER_POOL_ID: ap-northeast-1_example
       COGNITO_USER_POOL_CLIENT_ID: example-client-name
       ENV SMTP_HOST: inbucket

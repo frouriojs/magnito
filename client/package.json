@@ -24,6 +24,7 @@
   "dependencies": {
     "@aspida/axios": "^1.14.0",
     "@aws-amplify/ui-react": "^6.1.12",
+    "@aws-sdk/client-cognito-identity-provider": "^3.606.0",
     "aspida": "^1.14.0",
     "aws-amplify": "^6.3.4",
     "axios": "^1.6.8",

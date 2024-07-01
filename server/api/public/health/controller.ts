@@ -1,3 +1,4 @@
+import { cognito } from 'service/cognito';
 import { APP_VERSION } from 'service/envValues';
 import { prismaClient } from 'service/prismaClient';
 import { returnGetError, returnSuccess } from 'service/returnStatus';
@@ -9,6 +10,7 @@ const check = async () => ({
   server: 'ok' as const,
   db: await prismaClient.$queryRaw`SELECT CURRENT_TIMESTAMP;`.then(() => 'ok' as const),
   smtp: await checkSmtpHealth().then(() => 'ok' as const),
+  cognito: await cognito.health().then(() => 'ok' as const),
 });
 
 export default defineController(() => ({

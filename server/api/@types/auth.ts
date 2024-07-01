@@ -1,3 +1,7 @@
+import type {
+  ListUserPoolsRequest,
+  ListUserPoolsResponse,
+} from '@aws-sdk/client-cognito-identity-provider';
 import type { EntityId, MaybeId } from './brandedId';
 
 export type Jwks = { keys: [{ kid: string; alg: string }] };
@@ -109,6 +113,8 @@ export type ResendConfirmationCodeTarget = TargetBody<
   { CodeDeliveryDetails: CodeDeliveryDetails }
 >;
 
+export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -117,4 +123,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
+  'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
 };

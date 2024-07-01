@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { authUseCase } from 'domain/user/useCase/authUseCase';
 import { brandedId } from 'service/brandedId';
 import { returnPostError } from 'service/returnStatus';
@@ -72,10 +73,20 @@ const targets: {
     validator: z.object({ ClientId: brandedId.userPoolClient.maybe, Username: z.string() }),
     useCase: authUseCase.resendConfirmationCode,
   },
+  'AWSCognitoIdentityProviderService.ListUserPools': {
+    validator: z.object({
+      MaxResults: z.custom<number>((val) => z.number().optional().parse(val)),
+      NextToken: z.string().optional(),
+    }),
+    useCase: authUseCase.listUserPools,
+  },
 };
 
-const main = async <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) =>
-  targets[target].useCase(targets[target].validator.parse(body));
+const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {
+  assert(targets[target], JSON.stringify({ target, body }));
+
+  return targets[target].useCase(targets[target].validator.parse(body));
+};
 
 export default defineController(() => ({
   post: (req) =>

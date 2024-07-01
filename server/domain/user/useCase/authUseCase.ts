@@ -1,6 +1,7 @@
 import type {
   ConfirmSignUpTarget,
   GetUserTarget,
+  ListUserPoolsTarget,
   RefreshTokenAuthTarget,
   ResendConfirmationCodeTarget,
   RespondToAuthChallengeTarget,
@@ -163,5 +164,10 @@ export const authUseCase = {
       await sendConfirmationCode(user);
 
       return { CodeDeliveryDetails: genCodeDeliveryDetails(user) };
+    }),
+  listUserPools: (req: ListUserPoolsTarget['reqBody']): Promise<ListUserPoolsTarget['resBody']> =>
+    transaction(async (tx) => {
+      const pools = await userPoolQuery.listAll(tx, req.MaxResults);
+      return { UserPools: pools.map((p) => ({ Id: p.id })) };
     }),
 };

@@ -6,6 +6,8 @@ import { genJwks } from 'service/privateKey';
 import { toUserPoolClientEntity, toUserPoolEntity } from './toUserPoolEntity';
 
 export const userPoolQuery = {
+  listAll: (tx: Prisma.TransactionClient, limit?: number): Promise<UserPoolEntity[]> =>
+    tx.userPool.findMany({ take: limit }).then((pools) => pools.map(toUserPoolEntity)),
   findById: (tx: Prisma.TransactionClient, userPoolId: string): Promise<UserPoolEntity> =>
     tx.userPool.findUniqueOrThrow({ where: { id: userPoolId } }).then(toUserPoolEntity),
   findJwks: (tx: Prisma.TransactionClient, userPoolId: string): Promise<Jwks> =>
