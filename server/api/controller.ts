@@ -82,6 +82,14 @@ const targets: {
     validator: z.object({ UserPoolId: brandedId.userPool.maybe, Username: z.string() }),
     useCase: adminUseCase.deleteUser,
   },
+  'AWSCognitoIdentityProviderService.ChangePassword': {
+    validator: z.object({
+      AccessToken: z.string(),
+      PreviousPassword: z.string(),
+      ProposedPassword: z.string(),
+    }),
+    useCase: authUseCase.changePassword,
+  },
 };
 
 const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {
