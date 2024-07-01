@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { adminUseCase } from 'domain/user/useCase/adminUseCase';
 import { authUseCase } from 'domain/user/useCase/authUseCase';
 import { brandedId } from 'service/brandedId';
 import { returnPostError } from 'service/returnStatus';
@@ -74,11 +75,12 @@ const targets: {
     useCase: authUseCase.resendConfirmationCode,
   },
   'AWSCognitoIdentityProviderService.ListUserPools': {
-    validator: z.object({
-      MaxResults: z.custom<number>((val) => z.number().optional().parse(val)),
-      NextToken: z.string().optional(),
-    }),
+    validator: z.object({ MaxResults: z.number(), NextToken: z.string().optional() }),
     useCase: authUseCase.listUserPools,
+  },
+  'AWSCognitoIdentityProviderService.AdminDeleteUser': {
+    validator: z.object({ UserPoolId: brandedId.userPool.maybe, Username: z.string() }),
+    useCase: adminUseCase.deleteUser,
   },
 };
 

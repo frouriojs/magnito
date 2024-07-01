@@ -6,13 +6,14 @@ import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
 
 test('signUp', async () => {
+  const Username = 'user';
   const email = `${ulid()}@example.com`;
 
   await noCookieClient.post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.SignUp' },
     body: {
-      Username: 'user',
-      Password: 'Test-client-password1',
+      Username,
+      Password: 'Test-client-password2',
       UserAttributes: [{ Name: 'email', Value: email }],
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
@@ -20,7 +21,7 @@ test('signUp', async () => {
 
   await noCookieClient.post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.ResendConfirmationCode' },
-    body: { ClientId: DEFAULT_USER_POOL_CLIENT_ID, Username: 'user' },
+    body: { ClientId: DEFAULT_USER_POOL_CLIENT_ID, Username },
   });
 
   assert(process.env.INBUCKET_URL);
@@ -33,7 +34,7 @@ test('signUp', async () => {
     body: {
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
       ConfirmationCode: message.body.text.trim().split(' ').at(-1) ?? '',
-      Username: 'user',
+      Username,
     },
   });
 

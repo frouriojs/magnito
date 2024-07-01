@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client';
+import type { EntityId } from 'api/@types/brandedId';
 import type { UserEntity } from 'api/@types/user';
 
 export const userCommand = {
@@ -29,5 +30,11 @@ export const userCommand = {
         createdAt: new Date(user.createdTime),
       },
     });
+  },
+  delete: async (
+    tx: Prisma.TransactionClient,
+    deletableUserId: EntityId['deletableUser'],
+  ): Promise<void> => {
+    await tx.user.delete({ where: { id: deletableUserId } });
   },
 };

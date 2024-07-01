@@ -5,17 +5,24 @@ import { N, g } from 'domain/user/service/srp/constants';
 import { fromBuffer, toBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import { createUserClient, noCookieClient } from './apiClient';
+import {
+  createUserClient,
+  deleteUser,
+  noCookieClient,
+  testPassword,
+  testUserName,
+} from './apiClient';
 
 test('signIn', async () => {
-  const userClient = await createUserClient();
+  await createUserClient();
+
   const a = crypto.randomBytes(32);
   const A = toBuffer(g.modPow(fromBuffer(a), N));
   const res1 = await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
       AuthFlow: 'USER_SRP_AUTH',
-      AuthParameters: { USERNAME: 'test-client', SRP_A: A.toString('hex') },
+      AuthParameters: { USERNAME: testUserName, SRP_A: A.toString('hex') },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });
@@ -24,8 +31,8 @@ test('signIn', async () => {
   const secretBlock = res1.ChallengeParameters.SECRET_BLOCK;
   const signature = calcClientSignature({
     secretBlock,
-    username: 'test-client',
-    password: 'Test-client-password1',
+    username: testUserName,
+    password: testPassword,
     salt: res1.ChallengeParameters.SALT,
     timestamp: 'Thu Jan 01 00:00:00 UTC 1970',
     A: A.toString('hex'),
@@ -41,7 +48,7 @@ test('signIn', async () => {
         PASSWORD_CLAIM_SECRET_BLOCK: secretBlock,
         PASSWORD_CLAIM_SIGNATURE: signature,
         TIMESTAMP: 'Thu Jan 01 00:00:00 UTC 1970',
-        USERNAME: 'test-client',
+        USERNAME: testUserName,
       },
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
@@ -74,5 +81,5 @@ test('signIn', async () => {
 
   expect(res3.status).toBe(200);
 
-  await userClient.private.backdoor.$delete();
+  await deleteUser();
 });

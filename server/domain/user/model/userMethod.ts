@@ -138,4 +138,9 @@ export const userMethod = {
       user: params.user,
     });
   },
+  delete: (params: { user: UserEntity; userPoolId: string }): EntityId['deletableUser'] => {
+    assert(params.user.userPoolId === params.userPoolId);
+
+    return brandedId.deletableUser.entity.parse(params.user.id);
+  },
 };
