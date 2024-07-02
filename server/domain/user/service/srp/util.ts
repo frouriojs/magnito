@@ -30,7 +30,7 @@ export const padBufferToHex = (buffer: Buffer): string => {
 
 export const toBuffer = (bigInt: BigInteger): Buffer => {
   const str = bigInt.toString(16);
-  return Buffer.from(str, 'hex');
+  return Buffer.from(str.padStart(str.length + (str.length % 2), '0'), 'hex');
 };
 
 export const toBufferWithLength = (bigInt: BigInteger, length: number): Buffer => {
