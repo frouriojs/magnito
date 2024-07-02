@@ -117,6 +117,14 @@ export type ResendConfirmationCodeTarget = TargetBody<
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
 
 export type AdminDeleteUserTarget = TargetBody<AdminDeleteUserRequest, Record<string, never>>;
+export type ChangePasswordTarget = TargetBody<
+  {
+    AccessToken: string;
+    PreviousPassword: string;
+    ProposedPassword: string;
+  },
+  Record<string, never>
+>;
 
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
@@ -128,4 +136,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;
+  'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
 };

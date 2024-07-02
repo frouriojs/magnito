@@ -1,4 +1,5 @@
 import type {
+  ChangePasswordTarget,
   ConfirmSignUpTarget,
   GetUserTarget,
   ListUserPoolsTarget,
@@ -169,5 +170,20 @@ export const authUseCase = {
     transaction(async (tx) => {
       const pools = await userPoolQuery.listAll(tx, req.MaxResults);
       return { UserPools: pools.map((p) => ({ Id: p.id })) };
+    }),
+  changePassword: (
+    req: ChangePasswordTarget['reqBody'],
+  ): Promise<ChangePasswordTarget['resBody']> =>
+    transaction(async (tx) => {
+      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
+      const user = await userQuery.findById(tx, decoded.sub);
+      const { salt, verifier } = genCredentials({
+        poolId: user.userPoolId,
+        username: user.name,
+        password: req.ProposedPassword,
+      });
+
+      await userCommand.save(tx, userMethod.changePassword({ user, salt, verifier }));
+      return {};
     }),
 };
