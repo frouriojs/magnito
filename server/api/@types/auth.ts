@@ -1,5 +1,9 @@
 import type {
+  AdminCreateUserRequest,
+  AdminCreateUserResponse,
   AdminDeleteUserRequest,
+  AdminInitiateAuthRequest,
+  AdminInitiateAuthResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -116,7 +120,15 @@ export type ResendConfirmationCodeTarget = TargetBody<
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
 
+export type AdminCreateUserTarget = TargetBody<AdminCreateUserRequest, AdminCreateUserResponse>;
+
 export type AdminDeleteUserTarget = TargetBody<AdminDeleteUserRequest, Record<string, never>>;
+
+export type AdminInitiateAuthTarget = TargetBody<
+  AdminInitiateAuthRequest,
+  AdminInitiateAuthResponse
+>;
+
 export type ChangePasswordTarget = TargetBody<
   {
     AccessToken: string;
@@ -135,6 +147,8 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
+  'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;
+  'AWSCognitoIdentityProviderService.AdminInitiateAuth': AdminInitiateAuthTarget;
   'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
 };

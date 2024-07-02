@@ -27,6 +27,7 @@ test('changePassword', async () => {
   });
 
   assert('ChallengeParameters' in res1);
+  assert(res1.ChallengeParameters);
   const secretBlock1 = res1.ChallengeParameters.SECRET_BLOCK;
   const signature1 = calcClientSignature({
     secretBlock: secretBlock1,
@@ -54,6 +55,8 @@ test('changePassword', async () => {
   });
 
   assert('AuthenticationResult' in res2);
+  assert(res2.AuthenticationResult);
+  assert(res2.AuthenticationResult.AccessToken);
   assert('RefreshToken' in res2.AuthenticationResult);
 
   const newPassword = 'Test-client-password2';
@@ -77,6 +80,7 @@ test('changePassword', async () => {
   });
 
   assert('ChallengeParameters' in res3);
+  assert(res3.ChallengeParameters);
   const secretBlock2 = res3.ChallengeParameters.SECRET_BLOCK;
   const signature2 = calcClientSignature({
     secretBlock: secretBlock2,
@@ -104,6 +108,7 @@ test('changePassword', async () => {
   });
 
   assert('AuthenticationResult' in res4);
+  assert(res4.AuthenticationResult);
   assert('RefreshToken' in res4.AuthenticationResult);
 
   await deleteUser();

@@ -28,6 +28,7 @@ test('signIn', async () => {
   });
 
   assert('ChallengeParameters' in res1);
+  assert(res1.ChallengeParameters);
   const secretBlock = res1.ChallengeParameters.SECRET_BLOCK;
   const signature = calcClientSignature({
     secretBlock,
@@ -55,7 +56,10 @@ test('signIn', async () => {
   });
 
   assert('AuthenticationResult' in res2);
+  assert(res2.AuthenticationResult);
+  assert(res2.AuthenticationResult.AccessToken);
   assert('RefreshToken' in res2.AuthenticationResult);
+  assert(res2.AuthenticationResult.RefreshToken);
 
   await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.GetUser' },

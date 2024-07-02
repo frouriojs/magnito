@@ -18,18 +18,17 @@ import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 
+type CreateUserVal = {
+  name: string;
+  password: string;
+  email: string;
+  salt: string;
+  verifier: string;
+  userPoolId: EntityId['userPool'];
+};
+
 export const userMethod = {
-  createUser: (
-    idCount: number,
-    val: {
-      name: string;
-      password: string;
-      email: string;
-      salt: string;
-      verifier: string;
-      userPoolId: EntityId['userPool'];
-    },
-  ): UserEntity => {
+  createUser: (idCount: number, val: CreateUserVal): UserEntity => {
     cognitoAssert(idCount === 0, 'User already exists');
     cognitoAssert(
       /^[a-z][a-z\d_-]/.test(val.name),
@@ -70,6 +69,10 @@ export const userMethod = {
       createdTime: Date.now(),
     };
   },
+  createVerifiedUser: (idCount: number, val: CreateUserVal): UserEntity => ({
+    ...userMethod.createUser(idCount, val),
+    verified: true,
+  }),
   verifyUser: (user: UserEntity, confirmationCode: string): UserEntity => {
     cognitoAssert(
       user.confirmationCode === confirmationCode,

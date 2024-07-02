@@ -78,9 +78,36 @@ const targets: {
     validator: z.object({ MaxResults: z.number(), NextToken: z.string().optional() }),
     useCase: authUseCase.listUserPools,
   },
+  'AWSCognitoIdentityProviderService.AdminCreateUser': {
+    validator: z.object({
+      UserPoolId: brandedId.userPool.maybe,
+      Username: z.string(),
+      UserAttributes: z
+        .array(z.object({ Name: z.string(), Value: z.string().optional() }))
+        .optional(),
+      ValidationData: z
+        .array(z.object({ Name: z.string(), Value: z.string().optional() }))
+        .optional(),
+      TemporaryPassword: z.string().optional(),
+      ForceAliasCreation: z.boolean().optional(),
+      MessageAction: z.enum(['RESEND', 'SUPPRESS']).optional(),
+      DesiredDeliveryMediums: z.array(z.enum(['EMAIL', 'SMS'])).optional(),
+      ClientMetadata: z.record(z.string()).optional(),
+    }),
+    useCase: adminUseCase.createUser,
+  },
   'AWSCognitoIdentityProviderService.AdminDeleteUser': {
     validator: z.object({ UserPoolId: brandedId.userPool.maybe, Username: z.string() }),
     useCase: adminUseCase.deleteUser,
+  },
+  'AWSCognitoIdentityProviderService.AdminInitiateAuth': {
+    validator: z.object({
+      AuthFlow: z.literal('ADMIN_NO_SRP_AUTH'),
+      UserPoolId: brandedId.userPool.maybe,
+      ClientId: brandedId.userPoolClient.maybe,
+      AuthParameters: z.object({ USERNAME: z.string(), PASSWORD: z.string() }),
+    }),
+    useCase: adminUseCase.initiateAuth,
   },
   'AWSCognitoIdentityProviderService.ChangePassword': {
     validator: z.object({
