@@ -1,8 +1,7 @@
 import assert from 'assert';
-import crypto from 'crypto';
 import { calcClientSignature } from 'domain/user/service/srp/calcClientSignature';
-import { N, g } from 'domain/user/service/srp/constants';
-import { fromBuffer, toBuffer } from 'domain/user/service/srp/util';
+import { calculateSrpA } from 'domain/user/service/srp/calcSrpA';
+import { fromBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { test } from 'vitest';
 import {
@@ -15,8 +14,7 @@ import {
 
 test('changePassword', async () => {
   await createUserClient();
-  const a = crypto.randomBytes(32);
-  const A = toBuffer(g.modPow(fromBuffer(a), N));
+  const { a, A } = calculateSrpA();
   const res1 = await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
     body: {
