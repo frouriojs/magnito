@@ -18,9 +18,9 @@ export const noCookieClient = api(
   aspida(undefined, { baseURL, headers: { 'Content-Type': 'text/plain' } }),
 );
 
-export const testUserName = 'test-client';
+export const testUserName = 'test-user';
 
-export const testPassword = 'Test-client-password1';
+export const testPassword = 'Test-user-password1';
 
 export const createUserClient = async (): Promise<typeof noCookieClient> => {
   const command1 = new AdminCreateUserCommand({

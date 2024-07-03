@@ -11,6 +11,7 @@ model User {
   id               String   @id
   name             String
   email            String
+  password         String
   verified         Boolean
   confirmationCode String
   salt             String

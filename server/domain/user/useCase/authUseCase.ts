@@ -14,7 +14,6 @@ import assert from 'assert';
 import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
-import { genCredentials } from 'domain/user/service/genCredentials';
 import { genTokens } from 'domain/user/service/genTokens';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
@@ -29,18 +28,11 @@ export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
-      const { salt, verifier } = genCredentials({
-        poolId: poolClient.userPoolId,
-        username: req.Username,
-        password: req.Password,
-      });
       const idCount = await userQuery.countId(tx, req.Username);
       const user = userMethod.createUser(idCount, {
         name: req.Username,
         password: req.Password,
         email: req.UserAttributes[0].Value,
-        salt,
-        verifier,
         userPoolId: poolClient.userPoolId,
       });
       await userCommand.save(tx, user);
@@ -177,13 +169,9 @@ export const authUseCase = {
     transaction(async (tx) => {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
-      const { salt, verifier } = genCredentials({
-        poolId: user.userPoolId,
-        username: user.name,
-        password: req.ProposedPassword,
-      });
 
-      await userCommand.save(tx, userMethod.changePassword({ user, salt, verifier }));
+      await userCommand.save(tx, userMethod.changePassword({ user, req }));
+
       return {};
     }),
 };

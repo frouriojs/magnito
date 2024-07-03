@@ -9,6 +9,7 @@ export const userCommand = {
       update: {
         email: user.email,
         name: user.name,
+        password: user.password,
         verified: user.verified,
         salt: user.salt,
         verifier: user.verifier,
@@ -23,6 +24,7 @@ export const userCommand = {
         id: user.id,
         email: user.email,
         name: user.name,
+        password: user.password,
         verified: user.verified,
         salt: user.salt,
         verifier: user.verifier,

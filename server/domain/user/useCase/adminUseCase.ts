@@ -11,7 +11,6 @@ import { genJwks } from 'service/privateKey';
 import { userMethod } from '../model/userMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
-import { genCredentials } from '../service/genCredentials';
 import { genTokens } from '../service/genTokens';
 
 export const adminUseCase = {
@@ -25,18 +24,11 @@ export const adminUseCase = {
       assert(req.TemporaryPassword);
 
       const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
-      const { salt, verifier } = genCredentials({
-        poolId: userPool.id,
-        username: req.Username,
-        password: req.TemporaryPassword,
-      });
       const idCount = await userQuery.countId(tx, req.Username);
       const user = userMethod.createVerifiedUser(idCount, {
         name: req.Username,
         password: req.TemporaryPassword,
         email,
-        salt,
-        verifier,
         userPoolId: userPool.id,
       });
 

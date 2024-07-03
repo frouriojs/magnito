@@ -11,6 +11,7 @@ export type UserEntity = {
   id: EntityId['user'];
   name: string;
   email: string;
+  password: string;
   verified: boolean;
   confirmationCode: string;
   salt: string;

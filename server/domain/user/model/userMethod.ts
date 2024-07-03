@@ -1,4 +1,4 @@
-import type { Jwks, UserSrpAuthTarget } from 'api/@types/auth';
+import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'api/@types/auth';
 import type { EntityId } from 'api/@types/brandedId';
 import type { ChallengeVal, UserEntity } from 'api/@types/user';
 import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
@@ -17,15 +17,37 @@ import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import { genCredentials } from '../service/genCredentials';
 
 type CreateUserVal = {
   name: string;
   password: string;
   email: string;
-  salt: string;
-  verifier: string;
   userPoolId: EntityId['userPool'];
 };
+
+function validatePass(password: string): asserts password {
+  cognitoAssert(
+    password.length >= 8,
+    'Password did not conform with policy: Password not long enough',
+  );
+  cognitoAssert(
+    /[a-z]/.test(password),
+    'Password did not conform with policy: Password must have lowercase characters',
+  );
+  cognitoAssert(
+    /[A-Z]/.test(password),
+    'Password did not conform with policy: Password must have uppercase characters',
+  );
+  cognitoAssert(
+    /[0-9]/.test(password),
+    'Password did not conform with policy: Password must have numeric characters',
+  );
+  cognitoAssert(
+    /[!-/:-@[-`{-~]/.test(password),
+    'Password did not conform with policy: Password must have symbol characters',
+  );
+}
 
 export const userMethod = {
   createUser: (idCount: number, val: CreateUserVal): UserEntity => {
@@ -34,38 +56,19 @@ export const userMethod = {
       /^[a-z][a-z\d_-]/.test(val.name),
       "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+",
     );
-    cognitoAssert(
-      val.password.length >= 8,
-      'Password did not conform with policy: Password not long enough',
-    );
-    cognitoAssert(
-      /[a-z]/.test(val.password),
-      'Password did not conform with policy: Password must have lowercase characters',
-    );
-    cognitoAssert(
-      /[A-Z]/.test(val.password),
-      'Password did not conform with policy: Password must have uppercase characters',
-    );
-    cognitoAssert(
-      /[0-9]/.test(val.password),
-      'Password did not conform with policy: Password must have numeric characters',
-    );
-    cognitoAssert(
-      /[!-/:-@[-`{-~]/.test(val.password),
-      'Password did not conform with policy: Password must have symbol characters',
-    );
+    validatePass(val.password);
     cognitoAssert(z.string().email().parse(val.email), 'Invalid email address format.');
 
     return {
+      ...genCredentials({ poolId: val.userPoolId, username: val.name, password: val.password }),
       id: brandedId.user.entity.parse(val.name),
       email: val.email,
       name: val.name,
+      password: val.password,
       refreshToken: ulid(),
       userPoolId: val.userPoolId,
       verified: false,
       confirmationCode: genConfirmationCode(),
-      salt: val.salt,
-      verifier: val.verifier,
       createdTime: Date.now(),
     };
   },
@@ -90,13 +93,8 @@ export const userMethod = {
   } => {
     const { B, b } = calculateSrpB(user.verifier);
     const secretBlock = crypto.randomBytes(64).toString('base64');
+    const challenge: ChallengeVal = { pubB: B, secB: b, pubA: params.SRP_A, secretBlock };
 
-    const challenge: ChallengeVal = {
-      pubB: B,
-      secB: b,
-      pubA: params.SRP_A,
-      secretBlock,
-    };
     return {
       userWithChallenge: { ...user, challenge },
       ChallengeParameters: {
@@ -146,11 +144,26 @@ export const userMethod = {
 
     return brandedId.deletableUser.entity.parse(params.user.id);
   },
-  changePassword: (params: { user: UserEntity; salt: string; verifier: string }): UserEntity => ({
-    ...params.user,
-    verifier: params.verifier,
-    salt: params.salt,
-    refreshToken: ulid(),
-    challenge: undefined,
-  }),
+  changePassword: (params: {
+    user: UserEntity;
+    req: ChangePasswordTarget['reqBody'];
+  }): UserEntity => {
+    cognitoAssert(
+      params.user.password === params.req.PreviousPassword,
+      'Incorrect username or password.',
+    );
+    validatePass(params.req.ProposedPassword);
+
+    return {
+      ...params.user,
+      ...genCredentials({
+        poolId: params.user.userPoolId,
+        username: params.user.name,
+        password: params.req.ProposedPassword,
+      }),
+      password: params.req.ProposedPassword,
+      refreshToken: ulid(),
+      challenge: undefined,
+    };
+  },
 };
