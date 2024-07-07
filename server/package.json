@@ -17,7 +17,7 @@
     "generate": "run-s generate:prisma generate:frourio",
     "generate:prisma": "prisma generate",
     "generate:frourio": "frourio",
-    "migrate:dev": "prisma migrate dev && npx prisma db seed",
+    "migrate:dev": "prisma migrate dev",
     "migrate:dev:createonly": "prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
