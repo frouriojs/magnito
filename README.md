@@ -6,7 +6,7 @@
   <img alt="Magnito logo image" src="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
 </picture>
 
-Amazon Cognito emulator for Amplify UI.
+Amazon Cognito emulator for Amplify UI
 
 ## Images
 
@@ -26,15 +26,15 @@ services:
       - 5050:5050 # Cognito API
       - 5051:5051 # web interface
     environment:
+      COGNITO_USER_POOL_ID: ap-northeast-1_example
+      COGNITO_USER_POOL_CLIENT_ID: example-client-name
       COGNITO_ACCESS_KEY: magnito-access-key
       COGNITO_SECRET_KEY: magnito-secret-key
       COGNITO_REGION: ap-northeast-1
-      COGNITO_USER_POOL_ID: ap-northeast-1_example
-      COGNITO_USER_POOL_CLIENT_ID: example-client-name
-      ENV SMTP_HOST: inbucket
-      ENV SMTP_PORT: 2500
-      ENV SMTP_USER: fake_mail_user
-      ENV SMTP_PASS: fake_mail_password
+      SMTP_HOST: inbucket
+      SMTP_PORT: 2500
+      SMTP_USER: fake_mail_user
+      SMTP_PASS: fake_mail_password
     volumes:
       - magnito:/usr/src/app/data
 
