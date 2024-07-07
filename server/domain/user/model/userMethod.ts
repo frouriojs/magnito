@@ -61,7 +61,7 @@ export const userMethod = {
 
     return {
       ...genCredentials({ poolId: val.userPoolId, username: val.name, password: val.password }),
-      id: brandedId.user.entity.parse(val.name),
+      id: brandedId.user.entity.parse(ulid()),
       email: val.email,
       name: val.name,
       password: val.password,
