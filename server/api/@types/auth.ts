@@ -138,6 +138,24 @@ export type ChangePasswordTarget = TargetBody<
   Record<string, never>
 >;
 
+export type ForgotPasswordTarget = TargetBody<
+  {
+    ClientId: MaybeId['userPoolClient'];
+    Username: string;
+  },
+  { CodeDeliveryDetails: CodeDeliveryDetails }
+>;
+
+export type ConfirmForgotPasswordTarget = TargetBody<
+  {
+    ClientId: MaybeId['userPoolClient'];
+    ConfirmationCode: string;
+    Password: string;
+    Username: string;
+  },
+  Record<string, never>
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -151,4 +169,6 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': AdminInitiateAuthTarget;
   'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
+  'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
+  'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;
 };
