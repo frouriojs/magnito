@@ -1,19 +1,45 @@
+import { AccountSettings } from '@aws-amplify/ui-react';
 import { APP_NAME } from 'api/@constants';
 import type { UserEntity } from 'api/@types/user';
 import { signOut } from 'aws-amplify/auth';
-import { useConfirm } from 'components/Confirm/useConfirm';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
+import { Spacer } from 'components/Spacer';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { APP_VERSION } from 'utils/envValues';
 import styles from './BasicHeader.module.css';
 
-export const BasicHeader = (props: { user: UserEntity }) => {
-  const { setConfirm } = useConfirm();
-  const onClick = async () => {
-    const confirmed = await setConfirm(
-      `ユーザー名: ${props.user.name}\nメールアドレス: ${props.user.email}\n\nサインアウトしてよろしいですか？`,
-    );
+const Menu = ({
+  open,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) => {
+  useEffect(() => {
+    const handler = () => open && setTimeout(onClose, 0);
+    window.addEventListener('click', handler, true);
 
-    if (confirmed) await signOut();
-  };
+    return () => window.removeEventListener('click', handler, true);
+  }, [open, onClose]);
+
+  return open && <div className={styles.menu}>{children}</div>;
+};
+
+const MenuItem = (props: { onClick: () => void; children: ReactNode }) => {
+  return (
+    <div className={styles.menuItem} onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
+};
+
+export const BasicHeader = (props: { user: UserEntity }) => {
+  const [openProfile, setOpenProfile] = useState(false);
+  const [openPassword, setOpenPassword] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
   return (
     <div className={styles.container}>
@@ -21,10 +47,39 @@ export const BasicHeader = (props: { user: UserEntity }) => {
         <span>
           {APP_NAME} {APP_VERSION}
         </span>
-        <div className={styles.userBtn} onClick={onClick}>
+        <div className={styles.userBtn} onClick={(e) => setAnchorEl(e.currentTarget)}>
           {props.user.name}
         </div>
+        <Menu open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+          <MenuItem onClick={() => setOpenProfile(true)}>プロフィール</MenuItem>
+          <MenuItem onClick={() => setOpenPassword(true)}>パスワードを変更</MenuItem>
+          <MenuItem onClick={signOut}>ログアウト</MenuItem>
+        </Menu>
       </div>
+      <Modal open={openProfile} onClose={() => setOpenProfile(false)}>
+        <ModalHeader text="プロフィール" />
+        <ModalBody>
+          <div>ユーザー名: {props.user.name}</div>
+          <Spacer axis="y" size={8} />
+          <div>メールアドレス: {props.user.email}</div>
+        </ModalBody>
+        <ModalFooter cancelText="閉じる" cancel={() => setOpenProfile(false)} />
+      </Modal>
+      <Modal open={openPassword} onClose={() => setOpenPassword(false)}>
+        <ModalHeader text="パスワードの変更" />
+        <ModalBody>
+          <AccountSettings.ChangePassword
+            onSuccess={signOut}
+            displayText={{
+              currentPasswordFieldLabel: '現在のパスワード',
+              newPasswordFieldLabel: '新しいパスワード',
+              confirmPasswordFieldLabel: '新しいパスワードの確認',
+              updatePasswordButtonText: 'パスワードを変更',
+            }}
+          />
+        </ModalBody>
+        <ModalFooter cancelText="閉じる" cancel={() => setOpenPassword(false)} />
+      </Modal>
     </div>
   );
 };
