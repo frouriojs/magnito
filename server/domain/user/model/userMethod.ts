@@ -166,4 +166,30 @@ export const userMethod = {
       challenge: undefined,
     };
   },
+  forgotPassword: (user: UserEntity): UserEntity => {
+    const confirmationCode = genConfirmationCode();
+
+    return { ...user, confirmationCode };
+  },
+  confirmForgotPassword: (params: {
+    user: UserEntity;
+    confirmationCode: string;
+    password: string;
+  }): UserEntity => {
+    const { user, confirmationCode } = params;
+    cognitoAssert(
+      user.confirmationCode === confirmationCode,
+      'Invalid verification code provided, please try again.',
+    );
+
+    return {
+      ...user,
+      ...genCredentials({
+        poolId: user.userPoolId,
+        username: user.name,
+        password: params.password,
+      }),
+      confirmationCode: '',
+    };
+  },
 };

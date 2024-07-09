@@ -1,6 +1,9 @@
+/* eslint-disable max-lines */
 import type {
   ChangePasswordTarget,
+  ConfirmForgotPasswordTarget,
   ConfirmSignUpTarget,
+  ForgotPasswordTarget,
   GetUserTarget,
   ListUserPoolsTarget,
   RefreshTokenAuthTarget,
@@ -171,6 +174,37 @@ export const authUseCase = {
       const user = await userQuery.findById(tx, decoded.sub);
 
       await userCommand.save(tx, userMethod.changePassword({ user, req }));
+
+      return {};
+    }),
+  forgotPassword: (
+    req: ForgotPasswordTarget['reqBody'],
+  ): Promise<ForgotPasswordTarget['resBody']> =>
+    transaction(async (tx) => {
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const user = await userQuery.findByName(tx, req.Username);
+      assert(poolClient.userPoolId === user.userPoolId);
+
+      const forgotUser = userMethod.forgotPassword(user);
+      await userCommand.save(tx, forgotUser);
+      await sendConfirmationCode(forgotUser);
+
+      return { CodeDeliveryDetails: genCodeDeliveryDetails(forgotUser) };
+    }),
+  confirmForgotPassword: (
+    req: ConfirmForgotPasswordTarget['reqBody'],
+  ): Promise<ConfirmForgotPasswordTarget['resBody']> =>
+    transaction(async (tx) => {
+      const user = await userQuery.findByName(tx, req.Username);
+
+      await userCommand.save(
+        tx,
+        userMethod.confirmForgotPassword({
+          user,
+          confirmationCode: req.ConfirmationCode,
+          password: req.Password,
+        }),
+      );
 
       return {};
     }),

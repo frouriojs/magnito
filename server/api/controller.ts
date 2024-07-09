@@ -117,6 +117,22 @@ const targets: {
     }),
     useCase: authUseCase.changePassword,
   },
+  'AWSCognitoIdentityProviderService.ForgotPassword': {
+    validator: z.object({
+      ClientId: brandedId.userPoolClient.maybe,
+      Username: z.string(),
+    }),
+    useCase: authUseCase.forgotPassword,
+  },
+  'AWSCognitoIdentityProviderService.ConfirmForgotPassword': {
+    validator: z.object({
+      ClientId: brandedId.userPoolClient.maybe,
+      ConfirmationCode: z.string(),
+      Password: z.string(),
+      Username: z.string(),
+    }),
+    useCase: authUseCase.confirmForgotPassword,
+  },
 };
 
 const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {
