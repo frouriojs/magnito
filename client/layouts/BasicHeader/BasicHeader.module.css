@@ -7,6 +7,7 @@
 }
 
 .main {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,17 +15,42 @@
   height: 100%;
   padding: 0 16px;
   margin: 0 auto;
+  user-select: none;
 }
 
 .userBtn {
   padding: 6px 12px;
   margin-left: auto;
   cursor: pointer;
-  border: 1px solid #333;
+  border: 1px solid #eee;
   border-radius: 6px;
   transition: 0.2s;
 }
 
 .userBtn:hover {
   background: #3333;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+.menuItem {
+  width: 100%;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menuItem:hover {
+  background: #f0f0f0;
 }
