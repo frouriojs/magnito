@@ -181,6 +181,7 @@ export const userMethod = {
       user.confirmationCode === confirmationCode,
       'Invalid verification code provided, please try again.',
     );
+    validatePass(params.password);
 
     return {
       ...user,
