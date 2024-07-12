@@ -1,5 +1,5 @@
-import type { EntityId } from 'api/@types/brandedId';
 import type { DefineMethods } from 'aspida';
+import type { EntityId } from 'common/types/brandedId';
 
 export type Methods = DefineMethods<{
   get: {

@@ -16,6 +16,5 @@
     "jsx": "preserve",
     "types": ["vitest/importMeta"],
     "incremental": true
-  },
-  "include": ["**/*.ts", "**/*.tsx"]
+  }
 }

@@ -1,5 +1,5 @@
-import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import assert from 'assert';
+import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'common/types/task';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
 import type { TaskDeleteVal } from './taskEntity';

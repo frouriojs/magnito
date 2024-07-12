@@ -1,4 +1,4 @@
-import type { UserEntity } from 'api/@types/user';
+import type { UserEntity } from 'common/types/user';
 import { useAlert } from 'components/Alert/useAlert';
 import { useUser } from 'components/Auth/useUser';
 import { useConfirm } from 'components/Confirm/useConfirm';

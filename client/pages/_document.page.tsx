@@ -1,4 +1,4 @@
-import { APP_NAME } from 'api/@constants';
+import { APP_NAME } from 'common/constants';
 import { Head, Html, Main, NextScript } from 'next/document';
 import { staticPath } from 'utils/$path';
 

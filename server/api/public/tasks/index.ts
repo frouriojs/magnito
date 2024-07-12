@@ -1,6 +1,6 @@
-import type { MaybeId } from 'api/@types/brandedId';
-import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
 import type { DefineMethods } from 'aspida';
+import type { MaybeId } from 'common/types/brandedId';
+import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'common/types/task';
 
 export type Methods = DefineMethods<{
   get: {

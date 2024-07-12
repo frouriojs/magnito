@@ -1,5 +1,5 @@
-import type { UserEntity } from 'api/@types/user';
 import assert from 'assert';
+import type { UserEntity } from 'common/types/user';
 import { userQuery } from 'domain/user/repository/userQuery';
 import type { JWT_PROP_NAME } from 'service/constants';
 import { prismaClient } from 'service/prismaClient';

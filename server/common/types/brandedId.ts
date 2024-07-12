@@ -1,4 +1,4 @@
-import type { BRANDED_ID_NAMES } from 'api/@constants';
+import type { BRANDED_ID_NAMES } from 'common/constants';
 import type { z } from 'zod';
 
 export type IdName = (typeof BRANDED_ID_NAMES)[number];

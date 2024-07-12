@@ -1,4 +1,4 @@
-import type { TaskCreateVal, TaskUpdateVal } from 'api/@types/task';
+import type { TaskCreateVal, TaskUpdateVal } from 'common/types/task';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 

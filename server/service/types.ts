@@ -1,4 +1,4 @@
-import type { EntityId } from 'api/@types/brandedId';
+import type { EntityId } from 'common/types/brandedId';
 
 export type IdTokenJwt = {
   sub: EntityId['user'];

@@ -1,4 +1,4 @@
-import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
+import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { prismaClient } from 'service/prismaClient';
 
 export const userPoolCommand = {

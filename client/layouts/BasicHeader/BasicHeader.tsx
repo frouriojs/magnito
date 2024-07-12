@@ -1,7 +1,7 @@
 import { AccountSettings } from '@aws-amplify/ui-react';
-import { APP_NAME } from 'api/@constants';
-import type { UserEntity } from 'api/@types/user';
 import { signOut } from 'aws-amplify/auth';
+import { APP_NAME } from 'common/constants';
+import type { UserEntity } from 'common/types/user';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import { Spacer } from 'components/Spacer';
 import type { ReactNode } from 'react';

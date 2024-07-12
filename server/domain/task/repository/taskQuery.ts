@@ -1,6 +1,6 @@
 import type { Prisma, Task } from '@prisma/client';
-import type { MaybeId } from 'api/@types/brandedId';
-import type { TaskEntity } from 'api/@types/task';
+import type { MaybeId } from 'common/types/brandedId';
+import type { TaskEntity } from 'common/types/task';
 import { brandedId } from 'service/brandedId';
 
 const toEntity = async (prismaTask: Task): Promise<TaskEntity> => ({

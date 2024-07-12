@@ -1,4 +1,4 @@
-import type { Jwks } from 'api/@types/auth';
+import type { Jwks } from 'common/types/auth';
 import { createPublicKey, generateKeyPairSync } from 'crypto';
 import { JWK } from 'node-jose';
 

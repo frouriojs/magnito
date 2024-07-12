@@ -1,5 +1,5 @@
-import type { EntityId } from 'api/@types/brandedId';
-import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
+import type { EntityId } from 'common/types/brandedId';
+import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { genPrivatekey } from 'service/privateKey';
 
 export const userPoolMethod = {

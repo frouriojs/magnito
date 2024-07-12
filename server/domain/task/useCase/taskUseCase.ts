@@ -1,5 +1,5 @@
-import type { MaybeId } from 'api/@types/brandedId';
-import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'api/@types/task';
+import type { MaybeId } from 'common/types/brandedId';
+import type { TaskCreateVal, TaskEntity, TaskUpdateVal } from 'common/types/task';
 import { transaction } from 'service/prismaClient';
 import { taskMethod } from '../model/taskMethod';
 import { taskCommand } from '../repository/taskCommand';

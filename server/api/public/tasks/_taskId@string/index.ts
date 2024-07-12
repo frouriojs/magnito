@@ -1,5 +1,5 @@
-import type { TaskEntity } from 'api/@types/task';
 import type { DefineMethods } from 'aspida';
+import type { TaskEntity } from 'common/types/task';
 
 export type Methods = DefineMethods<{
   patch: {

@@ -4,8 +4,8 @@ import { authUseCase } from 'domain/user/useCase/authUseCase';
 import { brandedId } from 'service/brandedId';
 import { returnPostError } from 'service/returnStatus';
 import { z } from 'zod';
+import type { AmzTargets } from '../common/types/auth';
 import { defineController } from './$relay';
-import type { AmzTargets } from './@types/auth';
 
 const targets: {
   [Target in keyof AmzTargets]: {

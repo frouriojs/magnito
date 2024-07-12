@@ -1,5 +1,5 @@
 import type { DefineMethods } from 'aspida';
-import type { AmzTargets } from './@types/auth';
+import type { AmzTargets } from '../common/types/auth';
 
 type TargetKey = keyof AmzTargets;
 type Target = AmzTargets[TargetKey];

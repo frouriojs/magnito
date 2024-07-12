@@ -1,5 +1,5 @@
 import type { User } from '@prisma/client';
-import type { UserEntity } from 'api/@types/user';
+import type { UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 
 const getChallenge = (prismaUser: User): UserEntity['challenge'] =>

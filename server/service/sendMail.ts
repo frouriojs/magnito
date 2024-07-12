@@ -1,5 +1,5 @@
-import { APP_NAME } from 'api/@constants';
 import assert from 'assert';
+import { APP_NAME } from 'common/constants';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import { ulid } from 'ulid';

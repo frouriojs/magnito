@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
-import type { EntityId } from 'api/@types/brandedId';
-import type { UserEntity } from 'api/@types/user';
+import type { EntityId } from 'common/types/brandedId';
+import type { UserEntity } from 'common/types/user';
 import { toUserEntity } from './toUserEntity';
 
 export const userQuery = {

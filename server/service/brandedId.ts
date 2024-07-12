@@ -1,5 +1,5 @@
-import { BRANDED_ID_NAMES } from 'api/@constants';
-import type { EntityId, IdName, MaybeId } from 'api/@types/brandedId';
+import { BRANDED_ID_NAMES } from 'common/constants';
+import type { EntityId, IdName, MaybeId } from 'common/types/brandedId';
 import { z } from 'zod';
 
 export const brandedId = BRANDED_ID_NAMES.reduce(

@@ -1,4 +1,4 @@
-import type { UserEntity } from 'api/@types/user';
+import type { UserEntity } from 'common/types/user';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 

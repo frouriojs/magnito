@@ -1,5 +1,5 @@
 import type { UserPool, UserPoolClient } from '@prisma/client';
-import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
+import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { brandedId } from 'service/brandedId';
 
 export const toUserPoolEntity = (prismaPool: UserPool): UserPoolEntity => {

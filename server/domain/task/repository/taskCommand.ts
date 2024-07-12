@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
-import type { TaskEntity } from 'api/@types/task';
 import assert from 'assert';
+import type { TaskEntity } from 'common/types/task';
 import type { TaskDeleteVal } from '../model/taskEntity';
 
 export const taskCommand = {

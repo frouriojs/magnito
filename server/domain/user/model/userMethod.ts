@@ -1,8 +1,8 @@
-import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'api/@types/auth';
-import type { EntityId } from 'api/@types/brandedId';
-import type { ChallengeVal, UserEntity } from 'api/@types/user';
-import type { UserPoolClientEntity, UserPoolEntity } from 'api/@types/userPool';
 import assert from 'assert';
+import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'common/types/auth';
+import type { EntityId } from 'common/types/brandedId';
+import type { ChallengeVal, UserEntity } from 'common/types/user';
+import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
 import { genTokens } from 'domain/user/service/genTokens';

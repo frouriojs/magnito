@@ -1,5 +1,5 @@
-import type { TaskEntity } from 'api/@types/task';
-import type { UserEntity } from 'api/@types/user';
+import type { TaskEntity } from 'common/types/task';
+import type { UserEntity } from 'common/types/user';
 import { Loading } from 'components/Loading/Loading';
 import { Layout } from 'layouts/Layout';
 import type { FormEvent } from 'react';

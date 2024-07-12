@@ -15,7 +15,5 @@
     "target": "es6",
     "types": ["vitest/importMeta"],
     "incremental": true
-  },
-  "include": ["**/*.ts", "**/*.js"],
-  "exclude": ["node_modules", "api/@types/$relay.ts", "api/@constants/$relay.ts"]
+  }
 }

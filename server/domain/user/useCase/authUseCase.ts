@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import assert from 'assert';
 import type {
   ChangePasswordTarget,
   ConfirmForgotPasswordTarget,
@@ -12,8 +13,7 @@ import type {
   RevokeTokenTarget,
   SignUpTarget,
   UserSrpAuthTarget,
-} from 'api/@types/auth';
-import assert from 'assert';
+} from 'common/types/auth';
 import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';

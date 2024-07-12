@@ -1,9 +1,9 @@
+import assert from 'assert';
 import type {
   AdminCreateUserTarget,
   AdminDeleteUserTarget,
   AdminInitiateAuthTarget,
-} from 'api/@types/auth';
-import assert from 'assert';
+} from 'common/types/auth';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { brandedId } from 'service/brandedId';
 import { transaction } from 'service/prismaClient';

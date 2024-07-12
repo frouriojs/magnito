@@ -1,4 +1,4 @@
-import type { UserEntity } from 'api/@types/user';
+import type { UserEntity } from 'common/types/user';
 import { sendMail } from 'service/sendMail';
 
 export const sendConfirmationCode = (user: UserEntity): Promise<void> =>
