@@ -9,11 +9,11 @@ import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 let server: FastifyInstance;
 
-const unneededServer = (file: { filepath?: string } | undefined): boolean =>
+const unneededServer = (file: { filepath: string }): boolean =>
   !/\/tests\/.+\.test\.ts$/.test(file?.filepath ?? '');
 
 beforeAll(async (info) => {
-  if (unneededServer(info)) return;
+  if (unneededServer(info.file)) return;
 
   server = init();
   await server.listen({ port: PORT, host: '0.0.0.0' });
@@ -33,7 +33,7 @@ afterEach(async (info) => {
 });
 
 afterAll(async (info) => {
-  if (unneededServer(info)) return;
+  if (unneededServer(info.file)) return;
 
   await server.close();
 });

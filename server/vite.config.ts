@@ -11,7 +11,7 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     includeSource: ['**/*.ts'],
     // include: ['**/index.test.ts'],
-    poolOptions: { threads: { singleThread: true } },
+    poolOptions: { forks: { singleFork: true } },
     hookTimeout: 100000,
     testTimeout: 10000,
     coverage: {
