@@ -8,6 +8,19 @@ tsconfig.tsbuildinfo
 data/*
 !data/.gitkeep
 .env
+**/$*.ts
 
 # debug
 npm-debug.log*
+
+# client
+client/.next/
+client/out/
+client/api/*
+**/*.css.d.ts
+**/*.css.d.ts.map
+
+# server
+server/index.js
+server/index.js.map
+server/coverage/

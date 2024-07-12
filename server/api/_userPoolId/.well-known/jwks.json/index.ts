@@ -1,4 +1,4 @@
-import { Jwks } from 'api/@types/auth';
+import type { Jwks } from 'api/@types/auth';
 import type { DefineMethods } from 'aspida';
 
 export type Methods = DefineMethods<{
