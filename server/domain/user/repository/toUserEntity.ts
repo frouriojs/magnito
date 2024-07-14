@@ -1,5 +1,5 @@
+import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { User } from '@prisma/client';
-import { USER_STATUSES } from 'common/constants';
 import type { UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
@@ -19,7 +19,14 @@ export const toUserEntity = (prismaUser: User): UserEntity => {
     id: brandedId.user.entity.parse(prismaUser.id),
     name: prismaUser.name,
     enabled: z.boolean().parse(prismaUser.enabled),
-    status: z.enum(USER_STATUSES).parse(prismaUser.status),
+    status: z
+      .enum([
+        UserStatusType.UNCONFIRMED,
+        UserStatusType.CONFIRMED,
+        UserStatusType.FORCE_CHANGE_PASSWORD,
+        UserStatusType.RESET_REQUIRED,
+      ])
+      .parse(prismaUser.status),
     email: prismaUser.email,
     password: prismaUser.password,
     salt: prismaUser.salt,

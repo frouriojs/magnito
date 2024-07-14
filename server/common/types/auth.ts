@@ -2,6 +2,8 @@ import type {
   AdminCreateUserRequest,
   AdminCreateUserResponse,
   AdminDeleteUserRequest,
+  AdminGetUserRequest,
+  AdminGetUserResponse,
   AdminInitiateAuthRequest,
   AdminInitiateAuthResponse,
   ListUserPoolsRequest,
@@ -120,6 +122,8 @@ export type ResendConfirmationCodeTarget = TargetBody<
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
 
+export type AdminGetUserTarget = TargetBody<AdminGetUserRequest, AdminGetUserResponse>;
+
 export type AdminCreateUserTarget = TargetBody<AdminCreateUserRequest, AdminCreateUserResponse>;
 
 export type AdminDeleteUserTarget = TargetBody<AdminDeleteUserRequest, Record<string, never>>;
@@ -165,6 +169,7 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
+  'AWSCognitoIdentityProviderService.AdminGetUser': AdminGetUserTarget;
   'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': AdminInitiateAuthTarget;

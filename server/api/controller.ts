@@ -78,6 +78,10 @@ const targets: {
     validator: z.object({ MaxResults: z.number(), NextToken: z.string().optional() }),
     useCase: authUseCase.listUserPools,
   },
+  'AWSCognitoIdentityProviderService.AdminGetUser': {
+    validator: z.object({ UserPoolId: brandedId.userPool.maybe, Username: z.string() }),
+    useCase: adminUseCase.getUser,
+  },
   'AWSCognitoIdentityProviderService.AdminCreateUser': {
     validator: z.object({
       UserPoolId: brandedId.userPool.maybe,
