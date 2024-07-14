@@ -7,3 +7,10 @@ export const sendConfirmationCode = (user: UserEntity): Promise<void> =>
     subject: 'Your verification code',
     text: `Your confirmation code is ${user.confirmationCode}`,
   });
+
+export const sendTemporaryPassword = (user: UserEntity, password: string): Promise<void> =>
+  sendMail({
+    to: { name: user.name, address: user.email },
+    subject: 'Your temporary password',
+    text: `Your temporary password is ${password}`,
+  });

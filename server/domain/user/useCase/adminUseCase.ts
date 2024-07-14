@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import assert from 'assert';
 import type {
   AdminCreateUserTarget,
@@ -6,6 +7,7 @@ import type {
   AdminInitiateAuthTarget,
   AdminSetUserPasswordTarget,
 } from 'common/types/auth';
+import type { UserEntity } from 'common/types/user';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { brandedId } from 'service/brandedId';
 import { prismaClient, transaction } from 'service/prismaClient';
@@ -14,6 +16,45 @@ import { adminMethod } from '../model/adminMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
 import { genTokens } from '../service/genTokens';
+import { sendTemporaryPassword } from '../service/sendAuthMail';
+
+const resendTempPass = async (
+  tx: Prisma.TransactionClient,
+  req: AdminCreateUserTarget['reqBody'],
+): Promise<UserEntity> => {
+  assert(req.Username);
+
+  const user = await userQuery.findByName(tx, req.Username);
+  await sendTemporaryPassword(user, user.password);
+
+  return user;
+};
+
+const createUser = async (
+  tx: Prisma.TransactionClient,
+  req: AdminCreateUserTarget['reqBody'],
+): Promise<UserEntity> => {
+  const email = req.UserAttributes?.find((attr) => attr.Name === 'email')?.Value;
+
+  assert(req.Username);
+  assert(email);
+  assert(req.UserPoolId);
+
+  const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
+  const idCount = await userQuery.countId(tx, req.Username);
+  const password = req.TemporaryPassword ?? `TempPass-${Date.now()}`;
+  const user = adminMethod.createVerifiedUser(idCount, {
+    name: req.Username,
+    password,
+    email,
+    userPoolId: userPool.id,
+  });
+
+  await userCommand.save(tx, user);
+  if (req.MessageAction !== 'SUPPRESS') await sendTemporaryPassword(user, password);
+
+  return user;
+};
 
 export const adminUseCase = {
   getUser: async (req: AdminGetUserTarget['reqBody']): Promise<AdminGetUserTarget['resBody']> => {
@@ -29,22 +70,7 @@ export const adminUseCase = {
   },
   createUser: (req: AdminCreateUserTarget['reqBody']): Promise<AdminCreateUserTarget['resBody']> =>
     transaction(async (tx) => {
-      const email = req.UserAttributes?.find((attr) => attr.Name === 'email')?.Value;
-
-      assert(email);
-      assert(req.UserPoolId);
-      assert(req.Username);
-
-      const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
-      const idCount = await userQuery.countId(tx, req.Username);
-      const user = adminMethod.createVerifiedUser(idCount, {
-        name: req.Username,
-        password: req.TemporaryPassword ?? `TempPass-${Date.now()}`,
-        email,
-        userPoolId: userPool.id,
-      });
-
-      await userCommand.save(tx, user);
+      const user = await (req.MessageAction === 'RESEND' ? resendTempPass : createUser)(tx, req);
 
       return {
         User: {

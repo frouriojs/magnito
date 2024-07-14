@@ -25,7 +25,7 @@ import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
-import { sendConfirmationCode } from '../service/sendConfirmationCode';
+import { sendConfirmationCode } from '../service/sendAuthMail';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
