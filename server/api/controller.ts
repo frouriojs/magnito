@@ -113,6 +113,15 @@ const targets: {
     }),
     useCase: adminUseCase.initiateAuth,
   },
+  'AWSCognitoIdentityProviderService.AdminSetUserPassword': {
+    validator: z.object({
+      UserPoolId: brandedId.userPool.maybe,
+      Username: z.string(),
+      Password: z.string(),
+      Permanent: z.boolean().optional(),
+    }),
+    useCase: adminUseCase.setUserPassword,
+  },
   'AWSCognitoIdentityProviderService.ChangePassword': {
     validator: z.object({
       AccessToken: z.string(),

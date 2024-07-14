@@ -3,31 +3,46 @@ import {
   AdminDeleteUserCommand,
   AdminGetUserCommand,
   AdminInitiateAuthCommand,
+  AdminSetUserPasswordCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
-import { createUserClient, deleteUser, testPassword, testUserName } from 'tests/api/apiClient';
+import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 
 test('AdminCreateUserCommand', async () => {
+  const tmpPass = `TmpPass-${Date.now()}`;
+
   await cognitoClient.send(
     new AdminCreateUserCommand({
       UserPoolId: DEFAULT_USER_POOL_ID,
       Username: testUserName,
-      DesiredDeliveryMediums: ['EMAIL'],
-      TemporaryPassword: testPassword,
-      MessageAction: 'SUPPRESS',
+      TemporaryPassword: tmpPass,
       UserAttributes: [{ Name: 'email', Value: `${ulid()}@example.com` }],
     }),
   );
 
-  const res = await cognitoClient.send(
+  const res1 = await cognitoClient.send(
     new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
   );
 
-  expect(res.UserStatus).toBe(UserStatusType.FORCE_CHANGE_PASSWORD);
+  expect(res1.UserStatus).toBe(UserStatusType.FORCE_CHANGE_PASSWORD);
+
+  await cognitoClient.send(
+    new AdminSetUserPasswordCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      Password: testPassword,
+    }),
+  );
+
+  const res2 = await cognitoClient.send(
+    new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
+
+  expect(res2.UserStatus).toBe(UserStatusType.CONFIRMED);
 
   const tokens = await cognitoClient.send(
     new AdminInitiateAuthCommand({
@@ -39,8 +54,6 @@ test('AdminCreateUserCommand', async () => {
   );
 
   expect(tokens.AuthenticationResult).toBeTruthy();
-
-  await deleteUser();
 });
 
 test('AdminDeleteUserCommand', async () => {

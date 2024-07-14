@@ -3,7 +3,7 @@ import { InbucketAPIClient } from 'inbucket-js-client';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
-import { deleteUser, noCookieClient, testUserName } from './apiClient';
+import { noCookieClient, testUserName } from './apiClient';
 
 test('ForgotPassword', async () => {
   const email = `${ulid()}@example.com`;
@@ -67,6 +67,4 @@ test('ForgotPassword', async () => {
   await inbucketClient.deleteMessage(email, inbox2[0].id);
 
   expect(res3.status).toBe(200);
-
-  await deleteUser();
 });

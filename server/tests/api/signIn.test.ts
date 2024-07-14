@@ -4,13 +4,7 @@ import { calculateSrpA } from 'domain/user/service/srp/calcSrpA';
 import { fromBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { expect, test } from 'vitest';
-import {
-  createUserClient,
-  deleteUser,
-  noCookieClient,
-  testPassword,
-  testUserName,
-} from './apiClient';
+import { createUserClient, noCookieClient, testPassword, testUserName } from './apiClient';
 
 test('signIn', async () => {
   await createUserClient();
@@ -82,6 +76,4 @@ test('signIn', async () => {
   });
 
   expect(res3.status).toBe(200);
-
-  await deleteUser();
 });

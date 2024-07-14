@@ -4,12 +4,13 @@ import type {
   AdminDeleteUserTarget,
   AdminGetUserTarget,
   AdminInitiateAuthTarget,
+  AdminSetUserPasswordTarget,
 } from 'common/types/auth';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { brandedId } from 'service/brandedId';
 import { prismaClient, transaction } from 'service/prismaClient';
 import { genJwks } from 'service/privateKey';
-import { userMethod } from '../model/userMethod';
+import { adminMethod } from '../model/adminMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
 import { genTokens } from '../service/genTokens';
@@ -36,7 +37,7 @@ export const adminUseCase = {
 
       const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
       const idCount = await userQuery.countId(tx, req.Username);
-      const user = userMethod.createVerifiedUserByAdmin(idCount, {
+      const user = adminMethod.createVerifiedUser(idCount, {
         name: req.Username,
         password: req.TemporaryPassword ?? `TempPass-${Date.now()}`,
         email,
@@ -59,7 +60,7 @@ export const adminUseCase = {
       assert(req.UserPoolId);
 
       const user = await userQuery.findByName(tx, req.Username);
-      const deletableId = userMethod.delete({ user, userPoolId: req.UserPoolId });
+      const deletableId = adminMethod.deleteUser({ user, userPoolId: req.UserPoolId });
 
       await userCommand.delete(tx, deletableId);
 
@@ -94,5 +95,17 @@ export const adminUseCase = {
           TokenType: 'Bearer',
         },
       };
+    }),
+  setUserPassword: (
+    req: AdminSetUserPasswordTarget['reqBody'],
+  ): Promise<AdminSetUserPasswordTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.Username);
+
+      const user = await userQuery.findByName(tx, req.Username);
+
+      await userCommand.save(tx, adminMethod.setUserPassword({ user, req }));
+
+      return {};
     }),
 };

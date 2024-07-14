@@ -4,13 +4,7 @@ import { calculateSrpA } from 'domain/user/service/srp/calcSrpA';
 import { fromBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { test } from 'vitest';
-import {
-  createUserClient,
-  deleteUser,
-  noCookieClient,
-  testPassword,
-  testUserName,
-} from './apiClient';
+import { createUserClient, noCookieClient, testPassword, testUserName } from './apiClient';
 
 test('changePassword', async () => {
   await createUserClient();
@@ -108,6 +102,4 @@ test('changePassword', async () => {
   assert('AuthenticationResult' in res4);
   assert(res4.AuthenticationResult);
   assert('RefreshToken' in res4.AuthenticationResult);
-
-  await deleteUser();
 });

@@ -1,7 +1,6 @@
 import aspida from '@aspida/axios';
 import {
   AdminCreateUserCommand,
-  AdminDeleteUserCommand,
   AdminInitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import api from 'api/$api';
@@ -55,13 +54,4 @@ export const createUserClient = async (): Promise<typeof noCookieClient> => {
   );
 
   return api(aspida(agent));
-};
-
-export const deleteUser = async (): Promise<void> => {
-  const command = new AdminDeleteUserCommand({
-    UserPoolId: DEFAULT_USER_POOL_ID,
-    Username: testUserName,
-  });
-
-  await cognitoClient.send(command);
 };

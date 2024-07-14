@@ -1,6 +1,5 @@
 import assert from 'assert';
 import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'common/types/auth';
-import type { EntityId } from 'common/types/brandedId';
 import type { ChallengeVal, UserEntity } from 'common/types/user';
 import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';
@@ -49,11 +48,6 @@ export const userMethod = {
       updatedTime: now,
     };
   },
-  createVerifiedUserByAdmin: (idCount: number, val: CreateUserVal): UserEntity => ({
-    ...userMethod.createUser(idCount, val),
-    status: 'FORCE_CHANGE_PASSWORD',
-    verified: true,
-  }),
   verifyUser: (user: UserEntity, confirmationCode: string): UserEntity => {
     cognitoAssert(
       user.confirmationCode === confirmationCode,
@@ -113,11 +107,6 @@ export const userMethod = {
       jwks: params.jwks,
       user: params.user,
     });
-  },
-  delete: (params: { user: UserEntity; userPoolId: string }): EntityId['deletableUser'] => {
-    assert(params.user.userPoolId === params.userPoolId);
-
-    return brandedId.deletableUser.entity.parse(params.user.id);
   },
   changePassword: (params: {
     user: UserEntity;

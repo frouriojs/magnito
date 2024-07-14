@@ -6,6 +6,8 @@ import type {
   AdminGetUserResponse,
   AdminInitiateAuthRequest,
   AdminInitiateAuthResponse,
+  AdminSetUserPasswordRequest,
+  AdminSetUserPasswordResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -32,11 +34,7 @@ export type SignUpTarget = TargetBody<
 >;
 
 export type ConfirmSignUpTarget = TargetBody<
-  {
-    ClientId: MaybeId['userPoolClient'];
-    ConfirmationCode: string;
-    Username: string;
-  },
+  { ClientId: MaybeId['userPoolClient']; ConfirmationCode: string; Username: string },
   Record<string, never>
 >;
 
@@ -133,20 +131,18 @@ export type AdminInitiateAuthTarget = TargetBody<
   AdminInitiateAuthResponse
 >;
 
+export type AdminSetUserPasswordTarget = TargetBody<
+  AdminSetUserPasswordRequest,
+  AdminSetUserPasswordResponse
+>;
+
 export type ChangePasswordTarget = TargetBody<
-  {
-    AccessToken: string;
-    PreviousPassword: string;
-    ProposedPassword: string;
-  },
+  { AccessToken: string; PreviousPassword: string; ProposedPassword: string },
   Record<string, never>
 >;
 
 export type ForgotPasswordTarget = TargetBody<
-  {
-    ClientId: MaybeId['userPoolClient'];
-    Username: string;
-  },
+  { ClientId: MaybeId['userPoolClient']; Username: string },
   { CodeDeliveryDetails: CodeDeliveryDetails }
 >;
 
@@ -173,6 +169,7 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': AdminInitiateAuthTarget;
+  'AWSCognitoIdentityProviderService.AdminSetUserPassword': AdminSetUserPasswordTarget;
   'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
   'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;
