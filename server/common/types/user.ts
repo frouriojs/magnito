@@ -1,3 +1,4 @@
+import type { USER_STATUSES } from 'common/constants';
 import type { EntityId } from './brandedId';
 
 export type ChallengeVal = {
@@ -10,6 +11,8 @@ export type ChallengeVal = {
 export type UserEntity = {
   id: EntityId['user'];
   name: string;
+  enabled: boolean;
+  status: (typeof USER_STATUSES)[number];
   email: string;
   password: string;
   verified: boolean;
@@ -19,5 +22,6 @@ export type UserEntity = {
   refreshToken: string;
   userPoolId: EntityId['userPool'];
   createdTime: number;
+  updatedTime: number;
   challenge?: ChallengeVal;
 };

@@ -18,36 +18,8 @@ import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 import { genCredentials } from '../service/genCredentials';
-
-type CreateUserVal = {
-  name: string;
-  password: string;
-  email: string;
-  userPoolId: EntityId['userPool'];
-};
-
-function validatePass(password: string): asserts password {
-  cognitoAssert(
-    password.length >= 8,
-    'Password did not conform with policy: Password not long enough',
-  );
-  cognitoAssert(
-    /[a-z]/.test(password),
-    'Password did not conform with policy: Password must have lowercase characters',
-  );
-  cognitoAssert(
-    /[A-Z]/.test(password),
-    'Password did not conform with policy: Password must have uppercase characters',
-  );
-  cognitoAssert(
-    /[0-9]/.test(password),
-    'Password did not conform with policy: Password must have numeric characters',
-  );
-  cognitoAssert(
-    /[!-/:-@[-`{-~]/.test(password),
-    'Password did not conform with policy: Password must have symbol characters',
-  );
-}
+import { validatePass } from '../service/validatePass';
+import type { CreateUserVal } from './types';
 
 export const userMethod = {
   createUser: (idCount: number, val: CreateUserVal): UserEntity => {
@@ -59,21 +31,27 @@ export const userMethod = {
     validatePass(val.password);
     cognitoAssert(z.string().email().parse(val.email), 'Invalid email address format.');
 
+    const now = Date.now();
+
     return {
       ...genCredentials({ poolId: val.userPoolId, username: val.name, password: val.password }),
       id: brandedId.user.entity.parse(ulid()),
       email: val.email,
+      enabled: true,
+      status: 'UNCONFIRMED',
       name: val.name,
       password: val.password,
       refreshToken: ulid(),
       userPoolId: val.userPoolId,
       verified: false,
       confirmationCode: genConfirmationCode(),
-      createdTime: Date.now(),
+      createdTime: now,
+      updatedTime: now,
     };
   },
-  createVerifiedUser: (idCount: number, val: CreateUserVal): UserEntity => ({
+  createVerifiedUserByAdmin: (idCount: number, val: CreateUserVal): UserEntity => ({
     ...userMethod.createUser(idCount, val),
+    status: 'FORCE_CHANGE_PASSWORD',
     verified: true,
   }),
   verifyUser: (user: UserEntity, confirmationCode: string): UserEntity => {
@@ -82,7 +60,7 @@ export const userMethod = {
       'Invalid verification code provided, please try again.',
     );
 
-    return { ...user, verified: true };
+    return { ...user, status: 'CONFIRMED', verified: true, updatedTime: Date.now() };
   },
   createChallenge: (
     user: UserEntity,
@@ -113,10 +91,7 @@ export const userMethod = {
     jwks: Jwks;
     pool: UserPoolEntity;
     poolClient: UserPoolClientEntity;
-  }): {
-    AccessToken: string;
-    IdToken: string;
-  } => {
+  }): { AccessToken: string; IdToken: string } => {
     assert(params.user.challenge);
     const { pubA: A, pubB: B, secB: b } = params.user.challenge;
     const poolname = getPoolName(params.user.userPoolId);
@@ -164,12 +139,13 @@ export const userMethod = {
       password: params.req.ProposedPassword,
       refreshToken: ulid(),
       challenge: undefined,
+      updatedTime: Date.now(),
     };
   },
   forgotPassword: (user: UserEntity): UserEntity => {
     const confirmationCode = genConfirmationCode();
 
-    return { ...user, confirmationCode };
+    return { ...user, status: 'RESET_REQUIRED', confirmationCode, updatedTime: Date.now() };
   },
   confirmForgotPassword: (params: {
     user: UserEntity;
@@ -190,7 +166,9 @@ export const userMethod = {
         username: user.name,
         password: params.password,
       }),
+      status: 'CONFIRMED',
       confirmationCode: '',
+      updatedTime: Date.now(),
     };
   },
 };

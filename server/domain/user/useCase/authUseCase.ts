@@ -137,7 +137,7 @@ export const authUseCase = {
         UserAttributes: [
           { Name: 'sub', Value: user.id },
           { Name: 'email', Value: user.email },
-          { Name: 'email_verified', Value: 'true' },
+          { Name: 'email_verified', Value: user.verified ? 'true' : 'false' },
         ],
         Username: user.name,
       };

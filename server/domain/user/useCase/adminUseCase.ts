@@ -21,13 +21,12 @@ export const adminUseCase = {
       assert(email);
       assert(req.UserPoolId);
       assert(req.Username);
-      assert(req.TemporaryPassword);
 
       const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
       const idCount = await userQuery.countId(tx, req.Username);
-      const user = userMethod.createVerifiedUser(idCount, {
+      const user = userMethod.createVerifiedUserByAdmin(idCount, {
         name: req.Username,
-        password: req.TemporaryPassword,
+        password: req.TemporaryPassword ?? `TempPass-${Date.now()}`,
         email,
         userPoolId: userPool.id,
       });

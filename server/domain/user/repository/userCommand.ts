@@ -9,6 +9,8 @@ export const userCommand = {
       update: {
         email: user.email,
         name: user.name,
+        enabled: user.enabled,
+        status: user.status,
         password: user.password,
         verified: user.verified,
         salt: user.salt,
@@ -19,11 +21,14 @@ export const userCommand = {
         pubA: user.challenge?.pubA,
         pubB: user.challenge?.pubB,
         secB: user.challenge?.secB,
+        updatedAt: new Date(user.updatedTime),
       },
       create: {
         id: user.id,
         email: user.email,
         name: user.name,
+        enabled: user.enabled,
+        status: user.status,
         password: user.password,
         verified: user.verified,
         salt: user.salt,
@@ -32,6 +37,7 @@ export const userCommand = {
         confirmationCode: user.confirmationCode,
         userPoolId: user.userPoolId,
         createdAt: new Date(user.createdTime),
+        updatedAt: new Date(user.updatedTime),
       },
     });
   },

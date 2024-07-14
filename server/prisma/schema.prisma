@@ -8,9 +8,11 @@ generator client {
 }
 
 model User {
-  id               String   @id
+  id               String    @id
   name             String
   email            String
+  enabled          Boolean?
+  status           String?
   password         String
   verified         Boolean
   confirmationCode String
@@ -18,11 +20,12 @@ model User {
   verifier         String
   refreshToken     String
   createdAt        DateTime
+  updatedAt        DateTime?
   secretBlock      String?
   pubA             String?
   pubB             String?
   secB             String?
-  UserPool         UserPool @relation(fields: [userPoolId], references: [id])
+  UserPool         UserPool  @relation(fields: [userPoolId], references: [id])
   userPoolId       String
 }
 
@@ -45,6 +48,5 @@ model Task {
   id        String   @id
   label     String
   done      Boolean
-  imageKey  String?
   createdAt DateTime
 }
