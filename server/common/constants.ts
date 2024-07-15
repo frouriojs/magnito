@@ -6,5 +6,4 @@ export const BRANDED_ID_NAMES = [
   'deletableUser',
   'userPool',
   'userPoolClient',
-  'task',
 ] as const;

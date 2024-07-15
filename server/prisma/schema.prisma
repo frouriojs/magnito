@@ -51,10 +51,3 @@ model UserPoolClient {
   UserPool   UserPool @relation(fields: [userPoolId], references: [id])
   userPoolId String
 }
-
-model Task {
-  id        String   @id
-  label     String
-  done      Boolean
-  createdAt DateTime
-}
