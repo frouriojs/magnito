@@ -6,6 +6,7 @@ import type {
   AdminGetUserTarget,
   AdminInitiateAuthTarget,
   AdminSetUserPasswordTarget,
+  AdminUpdateUserAttributesTarget,
 } from 'common/types/auth';
 import type { UserEntity } from 'common/types/user';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
@@ -13,6 +14,7 @@ import { brandedId } from 'service/brandedId';
 import { prismaClient, transaction } from 'service/prismaClient';
 import { genJwks } from 'service/privateKey';
 import { adminMethod } from '../model/adminMethod';
+import { userMethod } from '../model/userMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
 import { createAttributes } from '../service/createAttributes';
@@ -113,6 +115,18 @@ export const adminUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
 
       await userCommand.save(tx, adminMethod.setUserPassword({ user, req }));
+
+      return {};
+    }),
+  updateUserAttributes: (
+    req: AdminUpdateUserAttributesTarget['reqBody'],
+  ): Promise<AdminUpdateUserAttributesTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.Username);
+
+      const user = await userQuery.findByName(tx, req.Username);
+
+      await userCommand.save(tx, userMethod.updateAttributes(user, req.UserAttributes));
 
       return {};
     }),

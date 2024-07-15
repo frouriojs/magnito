@@ -4,7 +4,6 @@ import type {
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
 } from 'common/types/auth';
-import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { genTokens } from 'domain/user/service/genTokens';
@@ -12,6 +11,7 @@ import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
+import { signInMethod } from '../model/signInMethod';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
@@ -19,7 +19,7 @@ export const signInUseCase = {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME).catch(() => null);
       cognitoAssert(user, 'Incorrect username or password.');
 
-      const { userWithChallenge, ChallengeParameters } = userMethod.createChallenge(
+      const { userWithChallenge, ChallengeParameters } = signInMethod.createChallenge(
         user,
         req.AuthParameters,
       );
@@ -67,7 +67,7 @@ export const signInUseCase = {
 
       cognitoAssert(user.verified, 'User is not confirmed.');
 
-      const tokens = userMethod.srpAuth({
+      const tokens = signInMethod.srpAuth({
         user,
         timestamp: req.ChallengeResponses.TIMESTAMP,
         clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,

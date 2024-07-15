@@ -4,6 +4,7 @@ import {
   AdminGetUserCommand,
   AdminInitiateAuthCommand,
   AdminSetUserPasswordCommand,
+  AdminUpdateUserAttributesCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'service/cognito';
@@ -13,7 +14,7 @@ import { fetchMailBodyAndTrash, inbucketClient } from 'tests/api/utils';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 
-test('AdminCreateUserCommand - specify TemporaryPassword', async () => {
+test(`${AdminCreateUserCommand.name} - specify TemporaryPassword`, async () => {
   const email = `${ulid()}@example.com`;
 
   await cognitoClient.send(
@@ -62,7 +63,7 @@ test('AdminCreateUserCommand - specify TemporaryPassword', async () => {
   expect(tokens.AuthenticationResult).toBeTruthy();
 });
 
-test('AdminCreateUserCommand - unset TemporaryPassword', async () => {
+test(`${AdminCreateUserCommand.name} - unset TemporaryPassword`, async () => {
   const email = `${ulid()}@example.com`;
 
   await cognitoClient.send(
@@ -103,7 +104,7 @@ test('AdminCreateUserCommand - unset TemporaryPassword', async () => {
   expect(res.UserStatus).toBe(UserStatusType.CONFIRMED);
 });
 
-test('AdminDeleteUserCommand', async () => {
+test(AdminDeleteUserCommand.name, async () => {
   const userClient = await createUserClient();
 
   await cognitoClient.send(
@@ -111,4 +112,39 @@ test('AdminDeleteUserCommand', async () => {
   );
 
   await expect(userClient.private.me.get()).rejects.toThrow();
+});
+
+test(AdminUpdateUserAttributesCommand.name, async () => {
+  const userClient = await createUserClient();
+  const attrName1 = 'custom:test1';
+  const attrVal1 = 'sample1';
+  const attrName2 = 'custom:test2';
+  const attrVal2 = 'sample2';
+  const attrVal3 = 'sample3';
+
+  await cognitoClient.send(
+    new AdminUpdateUserAttributesCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      UserAttributes: [
+        { Name: attrName1, Value: attrVal1 },
+        { Name: attrName2, Value: attrVal2 },
+      ],
+    }),
+  );
+
+  await cognitoClient.send(
+    new AdminUpdateUserAttributesCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      UserAttributes: [{ Name: attrName1, Value: attrVal3 }],
+    }),
+  );
+
+  const user = await userClient.private.me.$get();
+  const targetAttr1 = user.attributes.find((attr) => attr.name === attrName1);
+  const targetAttr2 = user.attributes.find((attr) => attr.name === attrName2);
+
+  expect(targetAttr1?.value).toBe(attrVal3);
+  expect(targetAttr2?.value).toBe(attrVal2);
 });

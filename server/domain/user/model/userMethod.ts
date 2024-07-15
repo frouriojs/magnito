@@ -1,31 +1,32 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
-import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'common/types/auth';
+import type { ChangePasswordTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
-import type { ChallengeVal, UserAttributeEntity, UserEntity } from 'common/types/user';
-import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import crypto from 'crypto';
+import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
-import { genTokens } from 'domain/user/service/genTokens';
-import {
-  calculateScramblingParameter,
-  calculateSessionKey,
-} from 'domain/user/service/srp/calcSessionKey';
-import { calculateSignature } from 'domain/user/service/srp/calcSignature';
-import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
-import { getPoolName } from 'domain/user/service/srp/util';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import { COMPUTED_ATTRIBUTE_NAMES, STANDARD_ATTRIBUTE_NAMES } from '../service/createAttributes';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
 
-const createAttribute = (attr: AttributeType): UserAttributeEntity => ({
-  id: brandedId.userAttribute.entity.parse(ulid()),
-  name: z.string().parse(attr.Name),
-  value: z.string().parse(attr.Value),
-});
+const createAttributes = (
+  attributes: AttributeType[],
+  exists: UserAttributeEntity[],
+): UserAttributeEntity[] => [
+  ...exists.filter((entity) => attributes.every((attr) => attr.Name !== entity.name)),
+  ...attributes
+    .filter((attr) => COMPUTED_ATTRIBUTE_NAMES.every((name) => name !== attr.Name))
+    .map((attr) => ({
+      id:
+        exists.find((entity) => entity.name === attr.Name)?.id ??
+        brandedId.userAttribute.entity.parse(ulid()),
+      name: z.enum(STANDARD_ATTRIBUTE_NAMES).or(z.string().startsWith('custom:')).parse(attr.Name),
+      value: z.string().parse(attr.Value),
+    })),
+];
 
 export const userMethod = {
   create: (
@@ -65,7 +66,7 @@ export const userMethod = {
       userPoolId: params.userPoolId,
       verified: false,
       confirmationCode: genConfirmationCode(),
-      attributes: params.attributes.filter((attr) => attr.Name !== 'email').map(createAttribute),
+      attributes: createAttributes(params.attributes, []),
       createdTime: now,
       updatedTime: now,
     };
@@ -77,58 +78,6 @@ export const userMethod = {
     );
 
     return { ...user, status: 'CONFIRMED', verified: true, updatedTime: Date.now() };
-  },
-  createChallenge: (
-    user: UserEntity,
-    params: UserSrpAuthTarget['reqBody']['AuthParameters'],
-  ): {
-    userWithChallenge: UserEntity;
-    ChallengeParameters: UserSrpAuthTarget['resBody']['ChallengeParameters'];
-  } => {
-    const { B, b } = calculateSrpB(user.verifier);
-    const secretBlock = crypto.randomBytes(64).toString('base64');
-    const challenge: ChallengeVal = { pubB: B, secB: b, pubA: params.SRP_A, secretBlock };
-
-    return {
-      userWithChallenge: { ...user, challenge },
-      ChallengeParameters: {
-        SALT: user.salt,
-        SECRET_BLOCK: secretBlock,
-        SRP_B: B,
-        USERNAME: user.name,
-        USER_ID_FOR_SRP: user.name,
-      },
-    };
-  },
-  srpAuth: (params: {
-    user: UserEntity;
-    timestamp: string;
-    clientSignature: string;
-    jwks: Jwks;
-    pool: UserPoolEntity;
-    poolClient: UserPoolClientEntity;
-  }): { AccessToken: string; IdToken: string } => {
-    assert(params.user.challenge);
-    const { pubA: A, pubB: B, secB: b } = params.user.challenge;
-    const poolname = getPoolName(params.user.userPoolId);
-    const scramblingParameter = calculateScramblingParameter(A, B);
-    const sessionKey = calculateSessionKey({ A, B, b, v: params.user.verifier });
-    const signature = calculateSignature({
-      poolname,
-      username: params.user.name,
-      secretBlock: params.user.challenge.secretBlock,
-      timestamp: params.timestamp,
-      scramblingParameter,
-      key: sessionKey,
-    });
-    cognitoAssert(signature === params.clientSignature, 'Incorrect username or password.');
-
-    return genTokens({
-      privateKey: params.pool.privateKey,
-      userPoolClientId: params.poolClient.id,
-      jwks: params.jwks,
-      user: params.user,
-    });
   },
   changePassword: (params: {
     user: UserEntity;
@@ -179,6 +128,15 @@ export const userMethod = {
       }),
       status: 'CONFIRMED',
       confirmationCode: '',
+      updatedTime: Date.now(),
+    };
+  },
+  updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
+    assert(attributes);
+
+    return {
+      ...user,
+      attributes: createAttributes(attributes, user.attributes),
       updatedTime: Date.now(),
     };
   },

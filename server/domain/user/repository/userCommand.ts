@@ -4,9 +4,7 @@ import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 
 export const userCommand = {
   save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
-    await tx.userAttribute.deleteMany({
-      where: { id: { in: user.attributes.map((attr) => attr.id) } },
-    });
+    await tx.userAttribute.deleteMany({ where: { userId: user.id } });
 
     await tx.user.upsert({
       where: { id: user.id },

@@ -29,6 +29,7 @@ const useCases: {
   'AWSCognitoIdentityProviderService.AdminDeleteUser': adminUseCase.deleteUser,
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': adminUseCase.initiateAuth,
   'AWSCognitoIdentityProviderService.AdminSetUserPassword': adminUseCase.setUserPassword,
+  'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes': adminUseCase.updateUserAttributes,
   'AWSCognitoIdentityProviderService.ChangePassword': authUseCase.changePassword,
   'AWSCognitoIdentityProviderService.ForgotPassword': authUseCase.forgotPassword,
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': authUseCase.confirmForgotPassword,
