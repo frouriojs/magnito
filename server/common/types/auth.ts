@@ -18,10 +18,10 @@ import type {
   ListUserPoolsResponse,
   SignUpRequest,
   SignUpResponse,
+  UpdateUserAttributesRequest,
+  UpdateUserAttributesResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { MaybeId } from './brandedId';
-
-export type Jwks = { keys: [{ kid: string; alg: string }] };
 
 type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
@@ -150,6 +150,11 @@ export type ConfirmForgotPasswordTarget = TargetBody<
   Record<string, never>
 >;
 
+export type UpdateUserAttributesTarget = TargetBody<
+  UpdateUserAttributesRequest,
+  UpdateUserAttributesResponse
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -169,4 +174,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
   'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;
+  'AWSCognitoIdentityProviderService.UpdateUserAttributes': UpdateUserAttributesTarget;
 };

@@ -34,6 +34,7 @@ const useCases: {
   'AWSCognitoIdentityProviderService.ChangePassword': authUseCase.changePassword,
   'AWSCognitoIdentityProviderService.ForgotPassword': authUseCase.forgotPassword,
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': authUseCase.confirmForgotPassword,
+  'AWSCognitoIdentityProviderService.UpdateUserAttributes': authUseCase.updateUserAttributes,
 };
 
 const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {

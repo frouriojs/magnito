@@ -1,6 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import type { Jwks } from 'common/types/auth';
-import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
+import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { genJwks } from 'service/privateKey';
 import { toUserPoolClientEntity, toUserPoolEntity } from './toUserPoolEntity';
 

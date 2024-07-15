@@ -1,9 +1,11 @@
+import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
 import type { UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
+import { createAttributes } from '../service/createAttributes';
 import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
@@ -56,6 +58,17 @@ export const adminMethod = {
       password: params.req.Password,
       refreshToken: ulid(),
       challenge: undefined,
+      updatedTime: Date.now(),
+    };
+  },
+  updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
+    assert(attributes);
+    const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
+
+    return {
+      ...user,
+      attributes: createAttributes(attributes, user.attributes),
+      email,
       updatedTime: Date.now(),
     };
   },

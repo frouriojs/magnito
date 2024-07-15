@@ -1,5 +1,13 @@
+import {
+  AdminCreateUserCommand,
+  AdminInitiateAuthCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import { InbucketAPIClient } from 'inbucket-js-client';
+import { cognitoClient } from 'service/cognito';
+import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
+import { ulid } from 'ulid';
+import { testPassword, testUserName } from './apiClient';
 
 export const GET = (api: { $path: () => string }): string => `GET: ${api.$path()}`;
 export const POST = (api: { $path: () => string }): string => `POST: ${api.$path()}`;
@@ -16,4 +24,28 @@ export const fetchMailBodyAndTrash = async (email: string): Promise<string> => {
   await inbucketClient.deleteMessage(email, mailbox[0].id);
 
   return message.body.text.trim();
+};
+
+export const createUserAndToken = async (): Promise<{ AccessToken: string }> => {
+  await cognitoClient.send(
+    new AdminCreateUserCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      TemporaryPassword: testPassword,
+      UserAttributes: [{ Name: 'email', Value: `${ulid()}@example.com` }],
+    }),
+  );
+
+  const res = await cognitoClient.send(
+    new AdminInitiateAuthCommand({
+      AuthFlow: 'ADMIN_NO_SRP_AUTH',
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+      AuthParameters: { USERNAME: testUserName, PASSWORD: testPassword },
+    }),
+  );
+
+  assert(res.AuthenticationResult?.IdToken);
+
+  return { AccessToken: res.AuthenticationResult.IdToken };
 };

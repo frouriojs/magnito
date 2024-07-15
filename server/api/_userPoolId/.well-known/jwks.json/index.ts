@@ -1,5 +1,5 @@
 import type { DefineMethods } from 'aspida';
-import type { Jwks } from 'common/types/auth';
+import type { Jwks } from 'common/types/userPool';
 
 export type Methods = DefineMethods<{
   get: {

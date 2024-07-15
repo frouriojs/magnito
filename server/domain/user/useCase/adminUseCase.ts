@@ -18,7 +18,7 @@ import { adminMethod } from '../model/adminMethod';
 import { userMethod } from '../model/userMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
-import { createAttributes } from '../service/createAttributes';
+import { toAttributeTypes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import { sendTemporaryPassword } from '../service/sendAuthMail';
 
@@ -53,7 +53,7 @@ export const adminUseCase = {
     const user = await userQuery.findByName(prismaClient, req.Username);
     assert(user.userPoolId === req.UserPoolId);
 
-    return { Username: user.name, UserAttributes: createAttributes(user), UserStatus: user.status };
+    return { Username: user.name, UserAttributes: toAttributeTypes(user), UserStatus: user.status };
   },
   createUser: (req: AdminCreateUserTarget['reqBody']): Promise<AdminCreateUserTarget['resBody']> =>
     transaction(async (tx) => {
@@ -62,7 +62,7 @@ export const adminUseCase = {
       if (req.MessageAction !== 'SUPPRESS') await sendTemporaryPassword(user);
 
       return {
-        User: { Username: user.name, Attributes: createAttributes(user), UserStatus: user.status },
+        User: { Username: user.name, Attributes: toAttributeTypes(user), UserStatus: user.status },
       };
     }),
   deleteUser: (req: AdminDeleteUserTarget['reqBody']): Promise<AdminDeleteUserTarget['resBody']> =>
@@ -127,7 +127,7 @@ export const adminUseCase = {
 
       const user = await userQuery.findByName(tx, req.Username);
 
-      await userCommand.save(tx, userMethod.updateAttributes(user, req.UserAttributes));
+      await userCommand.save(tx, adminMethod.updateAttributes(user, req.UserAttributes));
 
       return {};
     }),

@@ -116,12 +116,13 @@ test(AdminDeleteUserCommand.name, async () => {
 });
 
 test(AdminUpdateUserAttributesCommand.name, async () => {
-  const userClient = await createUserClient();
   const attrName1 = 'custom:test1';
   const attrVal1 = 'sample1';
   const attrName2 = 'custom:test2';
   const attrVal2 = 'sample2';
   const attrVal3 = 'sample3';
+
+  await createUserClient();
 
   await cognitoClient.send(
     new AdminUpdateUserAttributesCommand({
@@ -142,18 +143,21 @@ test(AdminUpdateUserAttributesCommand.name, async () => {
     }),
   );
 
-  const user = await userClient.private.me.$get();
-  const targetAttr1 = user.attributes.find((attr) => attr.name === attrName1);
-  const targetAttr2 = user.attributes.find((attr) => attr.name === attrName2);
+  const user = await cognitoClient.send(
+    new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
+  const targetAttr1 = user.UserAttributes?.find((attr) => attr.Name === attrName1);
+  const targetAttr2 = user.UserAttributes?.find((attr) => attr.Name === attrName2);
 
-  expect(targetAttr1?.value).toBe(attrVal3);
-  expect(targetAttr2?.value).toBe(attrVal2);
+  expect(targetAttr1?.Value).toBe(attrVal3);
+  expect(targetAttr2?.Value).toBe(attrVal2);
 });
 
 test(AdminDeleteUserAttributesCommand.name, async () => {
-  const userClient = await createUserClient();
   const attrName1 = 'custom:test1';
   const attrName2 = 'custom:test2';
+
+  await createUserClient();
 
   await cognitoClient.send(
     new AdminUpdateUserAttributesCommand({
@@ -174,8 +178,10 @@ test(AdminDeleteUserAttributesCommand.name, async () => {
     }),
   );
 
-  const user = await userClient.private.me.$get();
+  const user = await cognitoClient.send(
+    new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
 
-  expect(user.attributes.every((attr) => attr.name !== attrName1)).toBeTruthy();
-  expect(user.attributes.some((attr) => attr.name === attrName2)).toBeTruthy();
+  expect(user.UserAttributes?.every((attr) => attr.Name !== attrName1)).toBeTruthy();
+  expect(user.UserAttributes?.some((attr) => attr.Name === attrName2)).toBeTruthy();
 });

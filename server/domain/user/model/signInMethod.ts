@@ -1,7 +1,7 @@
 import assert from 'assert';
-import type { Jwks, UserSrpAuthTarget } from 'common/types/auth';
+import type { UserSrpAuthTarget } from 'common/types/auth';
 import type { ChallengeVal, UserEntity } from 'common/types/user';
-import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
+import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';
 import { genTokens } from 'domain/user/service/genTokens';
 import {

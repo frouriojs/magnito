@@ -1,6 +1,6 @@
-import type { Jwks } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
 import type { UserEntity } from 'common/types/user';
+import type { Jwks } from 'common/types/userPool';
 import { createSigner } from 'fast-jwt';
 import { EXPIRES_SEC } from 'service/constants';
 import { PORT } from 'service/envValues';

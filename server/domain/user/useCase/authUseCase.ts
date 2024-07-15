@@ -5,6 +5,7 @@ import type {
   ForgotPasswordTarget,
   GetUserTarget,
   RevokeTokenTarget,
+  UpdateUserAttributesTarget,
 } from 'common/types/auth';
 import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
@@ -13,7 +14,7 @@ import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
-import { createAttributes } from '../service/createAttributes';
+import { toAttributeTypes } from '../service/createAttributes';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
 import { sendConfirmationCode } from '../service/sendAuthMail';
 
@@ -23,7 +24,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      return { UserAttributes: createAttributes(user), Username: user.name };
+      return { UserAttributes: toAttributeTypes(user), Username: user.name };
     }),
   revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
     transaction(async (tx) => {
@@ -72,5 +73,20 @@ export const authUseCase = {
       );
 
       return {};
+    }),
+  updateUserAttributes: async (
+    req: UpdateUserAttributesTarget['reqBody'],
+  ): Promise<UpdateUserAttributesTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.AccessToken);
+      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
+      const user = await userQuery.findById(tx, decoded.sub);
+      const updated = userMethod.updateAttributes(user, req.UserAttributes);
+
+      await userCommand.save(tx, updated);
+
+      if (user.confirmationCode !== updated.confirmationCode) await sendConfirmationCode(user);
+
+      return { CodeDeliveryDetailsList: [genCodeDeliveryDetails(updated)] };
     }),
 };

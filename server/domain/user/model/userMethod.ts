@@ -2,31 +2,15 @@ import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { ChangePasswordTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
+import type { UserEntity } from 'common/types/user';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
-import { COMPUTED_ATTRIBUTE_NAMES, STANDARD_ATTRIBUTE_NAMES } from '../service/createAttributes';
+import { createAttributes } from '../service/createAttributes';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
-
-const createAttributes = (
-  attributes: AttributeType[],
-  exists: UserAttributeEntity[],
-): UserAttributeEntity[] => [
-  ...exists.filter((entity) => attributes.every((attr) => attr.Name !== entity.name)),
-  ...attributes
-    .filter((attr) => COMPUTED_ATTRIBUTE_NAMES.every((name) => name !== attr.Name))
-    .map((attr) => ({
-      id:
-        exists.find((entity) => entity.name === attr.Name)?.id ??
-        brandedId.userAttribute.entity.parse(ulid()),
-      name: z.enum(STANDARD_ATTRIBUTE_NAMES).or(z.string().startsWith('custom:')).parse(attr.Name),
-      value: z.string().parse(attr.Value),
-    })),
-];
 
 export const userMethod = {
   create: (
@@ -133,10 +117,14 @@ export const userMethod = {
   },
   updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
     assert(attributes);
+    const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
 
     return {
       ...user,
       attributes: createAttributes(attributes, user.attributes),
+      status: user.email === email ? user.status : 'UNCONFIRMED',
+      confirmationCode: user.email === email ? user.confirmationCode : genConfirmationCode(),
+      email,
       updatedTime: Date.now(),
     };
   },
