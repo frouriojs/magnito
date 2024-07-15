@@ -1,6 +1,9 @@
 import assert from 'assert';
 import { adminUseCase } from 'domain/user/useCase/adminUseCase';
 import { authUseCase } from 'domain/user/useCase/authUseCase';
+import { signInUseCase } from 'domain/user/useCase/signInUseCase';
+import { signUpUseCase } from 'domain/user/useCase/signUpUseCase';
+import { userPoolUseCase } from 'domain/userPool/useCase/userPoolUseCase';
 import { returnPostError } from 'service/returnStatus';
 import type { AmzTargets } from '../common/types/auth';
 import { defineController } from './$relay';
@@ -10,17 +13,17 @@ const useCases: {
     req: AmzTargets[Target]['reqBody'],
   ) => Promise<AmzTargets[Target]['resBody']>;
 } = {
-  'AWSCognitoIdentityProviderService.SignUp': authUseCase.signUp,
-  'AWSCognitoIdentityProviderService.ConfirmSignUp': authUseCase.confirmSignUp,
+  'AWSCognitoIdentityProviderService.SignUp': signUpUseCase.signUp,
+  'AWSCognitoIdentityProviderService.ConfirmSignUp': signUpUseCase.confirmSignUp,
   'AWSCognitoIdentityProviderService.InitiateAuth': (req) =>
     req.AuthFlow === 'USER_SRP_AUTH'
-      ? authUseCase.userSrpAuth(req)
-      : authUseCase.refreshTokenAuth(req),
-  'AWSCognitoIdentityProviderService.RespondToAuthChallenge': authUseCase.respondToAuthChallenge,
+      ? signInUseCase.userSrpAuth(req)
+      : signInUseCase.refreshTokenAuth(req),
+  'AWSCognitoIdentityProviderService.RespondToAuthChallenge': signInUseCase.respondToAuthChallenge,
   'AWSCognitoIdentityProviderService.GetUser': authUseCase.getUser,
   'AWSCognitoIdentityProviderService.RevokeToken': authUseCase.revokeToken,
-  'AWSCognitoIdentityProviderService.ResendConfirmationCode': authUseCase.resendConfirmationCode,
-  'AWSCognitoIdentityProviderService.ListUserPools': authUseCase.listUserPools,
+  'AWSCognitoIdentityProviderService.ResendConfirmationCode': signUpUseCase.resendConfirmationCode,
+  'AWSCognitoIdentityProviderService.ListUserPools': userPoolUseCase.listUserPools,
   'AWSCognitoIdentityProviderService.AdminGetUser': adminUseCase.getUser,
   'AWSCognitoIdentityProviderService.AdminCreateUser': adminUseCase.createUser,
   'AWSCognitoIdentityProviderService.AdminDeleteUser': adminUseCase.deleteUser,
