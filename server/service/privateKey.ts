@@ -1,5 +1,5 @@
 import type { Jwks } from 'common/types/userPool';
-import { createPublicKey, generateKeyPairSync } from 'crypto';
+import { createHash, createPublicKey, generateKeyPairSync } from 'crypto';
 import { JWK } from 'node-jose';
 
 export const genPrivatekey = (): string => {
@@ -15,10 +15,10 @@ export const genPrivatekey = (): string => {
 export const genJwks = async (privateKey: string): Promise<Jwks> => {
   const keystore = JWK.createKeyStore();
   const publicKey = createPublicKey(privateKey);
-  await keystore.add(publicKey.export({ type: 'spki', format: 'pem' }), 'pem', {
-    alg: 'RS256',
-    use: 'sig',
-  });
+  const publicKeyPem = publicKey.export({ type: 'spki', format: 'pem' });
+  const kid = createHash('sha256').update(publicKeyPem).digest('base64url');
 
-  return keystore.toJSON(true) as Jwks;
+  await keystore.add(publicKeyPem, 'pem', { alg: 'RS256', use: 'sig', kid });
+
+  return keystore.toJSON() as Jwks;
 };

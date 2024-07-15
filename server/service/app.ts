@@ -10,7 +10,7 @@ import Fastify from 'fastify';
 import buildGetJwks from 'get-jwks';
 import { join } from 'path';
 import server from '../$server';
-import { COOKIE_NAME, JWT_PROP_NAME } from './constants';
+import { COOKIE_NAME } from './constants';
 
 export const init = (): FastifyInstance => {
   const fastify = Fastify();
@@ -27,7 +27,6 @@ export const init = (): FastifyInstance => {
     },
   );
   fastify.register(fastifyJwt, {
-    decoratorName: JWT_PROP_NAME,
     cookie: { cookieName: COOKIE_NAME, signed: false },
     decode: { complete: true },
     secret: (_: FastifyRequest, token: TokenOrHeader) => {
