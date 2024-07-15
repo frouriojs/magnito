@@ -13,6 +13,8 @@ import type {
   AdminUpdateUserAttributesRequest,
   AdminUpdateUserAttributesResponse,
   CodeDeliveryDetailsType,
+  DeleteUserAttributesRequest,
+  DeleteUserAttributesResponse,
   GetUserResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
@@ -155,6 +157,11 @@ export type UpdateUserAttributesTarget = TargetBody<
   UpdateUserAttributesResponse
 >;
 
+export type DeleteUserAttributesTarget = TargetBody<
+  DeleteUserAttributesRequest,
+  DeleteUserAttributesResponse
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -175,4 +182,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.UpdateUserAttributes': UpdateUserAttributesTarget;
+  'AWSCognitoIdentityProviderService.DeleteUserAttributes': DeleteUserAttributesTarget;
 };

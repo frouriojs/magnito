@@ -2,6 +2,7 @@ import assert from 'assert';
 import type {
   ChangePasswordTarget,
   ConfirmForgotPasswordTarget,
+  DeleteUserAttributesTarget,
   ForgotPasswordTarget,
   GetUserTarget,
   RevokeTokenTarget,
@@ -79,6 +80,7 @@ export const authUseCase = {
   ): Promise<UpdateUserAttributesTarget['resBody']> =>
     transaction(async (tx) => {
       assert(req.AccessToken);
+
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
       const updated = userMethod.updateAttributes(user, req.UserAttributes);
@@ -88,5 +90,18 @@ export const authUseCase = {
       if (user.confirmationCode !== updated.confirmationCode) await sendConfirmationCode(user);
 
       return { CodeDeliveryDetailsList: [genCodeDeliveryDetails(updated)] };
+    }),
+  deleteUserAttributes: (
+    req: DeleteUserAttributesTarget['reqBody'],
+  ): Promise<DeleteUserAttributesTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.AccessToken);
+
+      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
+      const user = await userQuery.findById(tx, decoded.sub);
+
+      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
+
+      return {};
     }),
 };

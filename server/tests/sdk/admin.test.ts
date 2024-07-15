@@ -116,6 +116,7 @@ test(AdminDeleteUserCommand.name, async () => {
 });
 
 test(AdminUpdateUserAttributesCommand.name, async () => {
+  const newEmail = `${ulid()}@example.com`;
   const attrName1 = 'custom:test1';
   const attrVal1 = 'sample1';
   const attrName2 = 'custom:test2';
@@ -139,16 +140,21 @@ test(AdminUpdateUserAttributesCommand.name, async () => {
     new AdminUpdateUserAttributesCommand({
       UserPoolId: DEFAULT_USER_POOL_ID,
       Username: testUserName,
-      UserAttributes: [{ Name: attrName1, Value: attrVal3 }],
+      UserAttributes: [
+        { Name: 'email', Value: newEmail },
+        { Name: attrName1, Value: attrVal3 },
+      ],
     }),
   );
 
   const user = await cognitoClient.send(
     new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
   );
+  const emailAttr = user.UserAttributes?.find((attr) => attr.Name === 'email');
   const targetAttr1 = user.UserAttributes?.find((attr) => attr.Name === attrName1);
   const targetAttr2 = user.UserAttributes?.find((attr) => attr.Name === attrName2);
 
+  expect(emailAttr?.Value).toBe(newEmail);
   expect(targetAttr1?.Value).toBe(attrVal3);
   expect(targetAttr2?.Value).toBe(attrVal2);
 });
