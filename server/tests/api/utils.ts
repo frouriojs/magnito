@@ -1,6 +1,7 @@
 import {
   AdminCreateUserCommand,
   AdminInitiateAuthCommand,
+  AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import { InbucketAPIClient } from 'inbucket-js-client';
@@ -31,8 +32,16 @@ export const createUserAndToken = async (): Promise<{ AccessToken: string }> => 
     new AdminCreateUserCommand({
       UserPoolId: DEFAULT_USER_POOL_ID,
       Username: testUserName,
-      TemporaryPassword: testPassword,
       UserAttributes: [{ Name: 'email', Value: `${ulid()}@example.com` }],
+    }),
+  );
+
+  await cognitoClient.send(
+    new AdminSetUserPasswordCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      Permanent: true,
+      Password: testPassword,
     }),
   );
 

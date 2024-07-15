@@ -3,6 +3,7 @@ import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import { isEmailVerified } from './isEmailVerified';
 
 export const COMPUTED_ATTRIBUTE_NAMES = ['sub', 'email', 'email_verified', 'updated_at'] as const;
 
@@ -28,7 +29,7 @@ export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
   return [
     { Name: 'sub', Value: user.id },
     { Name: 'email', Value: user.email },
-    { Name: 'email_verified', Value: user.status === 'CONFIRMED' ? 'true' : 'false' },
+    { Name: 'email_verified', Value: isEmailVerified(user) ? 'true' : 'false' },
     { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
     ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
   ];

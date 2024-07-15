@@ -6,6 +6,7 @@ import { EXPIRES_SEC } from 'service/constants';
 import { PORT } from 'service/envValues';
 import type { AccessTokenJwt, IdTokenJwt } from 'service/types';
 import { ulid } from 'ulid';
+import { isEmailVerified } from './isEmailVerified';
 
 export const genTokens = (params: {
   privateKey: string;
@@ -39,7 +40,7 @@ export const genTokens = (params: {
   };
   const idToken: IdTokenJwt = {
     ...comomn,
-    email_verified: params.user.status === 'CONFIRMED',
+    email_verified: isEmailVerified(params.user),
     'cognito:username': params.user.name,
     aud: params.userPoolClientId,
     token_use: 'id',

@@ -71,7 +71,7 @@ export const adminUseCase = {
       assert(req.UserPoolId);
 
       const user = await userQuery.findByName(tx, req.Username);
-      const deletableId = adminMethod.deleteUser({ user, userPoolId: req.UserPoolId });
+      const deletableId = adminMethod.deleteUser(user, req.UserPoolId);
 
       await userCommand.delete(tx, deletableId, user.attributes);
 
@@ -115,7 +115,7 @@ export const adminUseCase = {
 
       const user = await userQuery.findByName(tx, req.Username);
 
-      await userCommand.save(tx, adminMethod.setUserPassword({ user, req }));
+      await userCommand.save(tx, adminMethod.setUserPassword(user, req));
 
       return {};
     }),

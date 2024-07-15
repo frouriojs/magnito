@@ -33,28 +33,21 @@ export const adminMethod = {
       status: 'FORCE_CHANGE_PASSWORD',
     };
   },
-  deleteUser: (params: { user: UserEntity; userPoolId: string }): EntityId['deletableUser'] => {
-    assert(params.user.userPoolId === params.userPoolId);
+  deleteUser: (user: UserEntity, userPoolId: string): EntityId['deletableUser'] => {
+    assert(user.userPoolId === userPoolId);
 
-    return brandedId.deletableUser.entity.parse(params.user.id);
+    return brandedId.deletableUser.entity.parse(user.id);
   },
-  setUserPassword: (params: {
-    user: UserEntity;
-    req: AdminSetUserPasswordTarget['reqBody'];
-  }): UserEntity => {
-    assert(params.req.UserPoolId);
-    assert(params.req.Password);
-    validatePass(params.req.Password);
+  setUserPassword: (user: UserEntity, req: AdminSetUserPasswordTarget['reqBody']): UserEntity => {
+    assert(req.UserPoolId);
+    assert(req.Password);
+    validatePass(req.Password);
 
     return {
-      ...params.user,
-      ...genCredentials({
-        poolId: params.user.userPoolId,
-        username: params.user.name,
-        password: params.req.Password,
-      }),
-      status: 'CONFIRMED',
-      password: params.req.Password,
+      ...user,
+      ...genCredentials({ poolId: user.userPoolId, username: user.name, password: req.Password }),
+      status: req.Permanent ? 'CONFIRMED' : 'FORCE_CHANGE_PASSWORD',
+      password: req.Password,
       refreshToken: ulid(),
       challenge: undefined,
       updatedTime: Date.now(),

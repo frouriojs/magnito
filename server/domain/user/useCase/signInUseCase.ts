@@ -12,6 +12,7 @@ import { cognitoAssert } from 'service/cognitoAssert';
 import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
 import { signInMethod } from '../model/signInMethod';
+import { isEmailVerified } from '../service/isEmailVerified';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
@@ -65,7 +66,7 @@ export const signInUseCase = {
       assert(pool.id === poolClient.userPoolId);
       assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
 
-      cognitoAssert(user.status === 'FORCE_CHANGE_PASSWORD', 'User is not confirmed.');
+      cognitoAssert(isEmailVerified(user), 'User is not confirmed.');
 
       const tokens = signInMethod.srpAuth({
         user,

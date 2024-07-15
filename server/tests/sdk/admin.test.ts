@@ -41,6 +41,7 @@ test(`${AdminCreateUserCommand.name} - specify TemporaryPassword`, async () => {
   await cognitoClient.send(
     new AdminSetUserPasswordCommand({
       UserPoolId: DEFAULT_USER_POOL_ID,
+      Permanent: true,
       Username: testUserName,
       Password: testPassword,
     }),
@@ -102,7 +103,7 @@ test(`${AdminCreateUserCommand.name} - unset TemporaryPassword`, async () => {
     new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
   );
 
-  expect(res.UserStatus).toBe(UserStatusType.CONFIRMED);
+  expect(res.UserStatus).toBe(UserStatusType.FORCE_CHANGE_PASSWORD);
 });
 
 test(AdminDeleteUserCommand.name, async () => {
