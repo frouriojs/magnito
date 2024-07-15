@@ -48,7 +48,6 @@ export const userMethod = {
       password: params.password,
       refreshToken: ulid(),
       userPoolId: params.userPoolId,
-      verified: false,
       confirmationCode: genConfirmationCode(),
       attributes: createAttributes(params.attributes, []),
       createdTime: now,
@@ -61,7 +60,7 @@ export const userMethod = {
       'Invalid verification code provided, please try again.',
     );
 
-    return { ...user, status: 'CONFIRMED', verified: true, updatedTime: Date.now() };
+    return { ...user, status: 'CONFIRMED', updatedTime: Date.now() };
   },
   changePassword: (params: {
     user: UserEntity;
@@ -125,7 +124,6 @@ export const userMethod = {
       attributes: createAttributes(attributes, user.attributes),
       status: verified ? user.status : 'UNCONFIRMED',
       confirmationCode: verified ? user.confirmationCode : genConfirmationCode(),
-      verified,
       email,
       updatedTime: Date.now(),
     };
@@ -137,7 +135,7 @@ export const userMethod = {
       'Invalid verification code provided, please try again.',
     );
 
-    return { ...user, status: 'CONFIRMED', verified: true, updatedTime: Date.now() };
+    return { ...user, status: 'CONFIRMED', updatedTime: Date.now() };
   },
   deleteAttributes: (user: UserEntity, attributeNames: string[] | undefined): UserEntity => {
     assert(attributeNames);

@@ -28,7 +28,7 @@ export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
   return [
     { Name: 'sub', Value: user.id },
     { Name: 'email', Value: user.email },
-    { Name: 'email_verified', Value: user.verified ? 'true' : 'false' },
+    { Name: 'email_verified', Value: user.status === 'CONFIRMED' ? 'true' : 'false' },
     { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
     ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
   ];

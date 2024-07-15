@@ -3,14 +3,14 @@ import assert from 'assert';
 import { prismaClient } from 'service/prismaClient';
 
 async function main(): Promise<void> {
-  const users = await prismaClient.user.findMany({ where: { enabled: null } });
+  const users = await prismaClient.user.findMany({ where: { updatedAt: null } });
 
   users.length > 0 &&
     (await prismaClient.user.updateMany({
       data: users.map((user) => ({
         ...user,
         enabled: true,
-        status: user.verified ? UserStatusType.CONFIRMED : UserStatusType.UNCONFIRMED,
+        status: UserStatusType.CONFIRMED,
         updatedAt: user.createdAt,
       })),
     }));

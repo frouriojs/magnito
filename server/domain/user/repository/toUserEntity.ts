@@ -32,7 +32,6 @@ export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] })
     salt: prismaUser.salt,
     verifier: prismaUser.verifier,
     refreshToken: prismaUser.refreshToken,
-    verified: prismaUser.verified,
     confirmationCode: prismaUser.confirmationCode,
     challenge: getChallenge(prismaUser),
     userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),

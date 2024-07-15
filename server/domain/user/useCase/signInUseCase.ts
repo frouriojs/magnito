@@ -65,7 +65,7 @@ export const signInUseCase = {
       assert(pool.id === poolClient.userPoolId);
       assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
 
-      cognitoAssert(user.verified, 'User is not confirmed.');
+      cognitoAssert(user.status === 'FORCE_CHANGE_PASSWORD', 'User is not confirmed.');
 
       const tokens = signInMethod.srpAuth({
         user,

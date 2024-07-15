@@ -39,7 +39,7 @@ export const genTokens = (params: {
   };
   const idToken: IdTokenJwt = {
     ...comomn,
-    email_verified: params.user.verified,
+    email_verified: params.user.status === 'CONFIRMED',
     'cognito:username': params.user.name,
     aud: params.userPoolClientId,
     token_use: 'id',

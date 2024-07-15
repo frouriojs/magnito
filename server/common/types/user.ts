@@ -21,7 +21,6 @@ export type UserEntity = {
   status: UserStatusType;
   email: string;
   password: string;
-  verified: boolean;
   confirmationCode: string;
   salt: string;
   verifier: string;

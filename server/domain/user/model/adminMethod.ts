@@ -31,7 +31,6 @@ export const adminMethod = {
         attributes: req.UserAttributes,
       }),
       status: 'FORCE_CHANGE_PASSWORD',
-      verified: true,
     };
   },
   deleteUser: (params: { user: UserEntity; userPoolId: string }): EntityId['deletableUser'] => {

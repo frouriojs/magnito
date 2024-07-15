@@ -14,7 +14,6 @@ model User {
   enabled          Boolean?
   status           String?
   password         String
-  verified         Boolean
   confirmationCode String
   salt             String
   verifier         String
