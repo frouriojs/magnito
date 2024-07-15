@@ -1,6 +1,8 @@
+import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { ChangePasswordTarget, Jwks, UserSrpAuthTarget } from 'common/types/auth';
-import type { ChallengeVal, UserEntity } from 'common/types/user';
+import type { EntityId } from 'common/types/brandedId';
+import type { ChallengeVal, UserAttributeEntity, UserEntity } from 'common/types/user';
 import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
@@ -18,37 +20,57 @@ import { ulid } from 'ulid';
 import { z } from 'zod';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
-import type { CreateUserVal } from './types';
+
+const createAttribute = (attr: AttributeType): UserAttributeEntity => ({
+  id: brandedId.userAttribute.entity.parse(ulid()),
+  name: z.string().parse(attr.Name),
+  value: z.string().parse(attr.Value),
+});
 
 export const userMethod = {
-  createUser: (idCount: number, val: CreateUserVal): UserEntity => {
+  create: (
+    idCount: number,
+    params: {
+      name: string;
+      password: string;
+      email: string;
+      userPoolId: EntityId['userPool'];
+      attributes: AttributeType[] | undefined;
+    },
+  ): UserEntity => {
+    assert(params.attributes);
     cognitoAssert(idCount === 0, 'User already exists');
     cognitoAssert(
-      /^[a-z][a-z\d_-]/.test(val.name),
+      /^[a-z][a-z\d_-]/.test(params.name),
       "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+",
     );
-    validatePass(val.password);
-    cognitoAssert(z.string().email().parse(val.email), 'Invalid email address format.');
+    validatePass(params.password);
+    cognitoAssert(z.string().email().parse(params.email), 'Invalid email address format.');
 
     const now = Date.now();
 
     return {
-      ...genCredentials({ poolId: val.userPoolId, username: val.name, password: val.password }),
+      ...genCredentials({
+        poolId: params.userPoolId,
+        username: params.name,
+        password: params.password,
+      }),
       id: brandedId.user.entity.parse(ulid()),
-      email: val.email,
+      email: params.email,
       enabled: true,
       status: 'UNCONFIRMED',
-      name: val.name,
-      password: val.password,
+      name: params.name,
+      password: params.password,
       refreshToken: ulid(),
-      userPoolId: val.userPoolId,
+      userPoolId: params.userPoolId,
       verified: false,
       confirmationCode: genConfirmationCode(),
+      attributes: params.attributes.filter((attr) => attr.Name !== 'email').map(createAttribute),
       createdTime: now,
       updatedTime: now,
     };
   },
-  verifyUser: (user: UserEntity, confirmationCode: string): UserEntity => {
+  confirm: (user: UserEntity, confirmationCode: string): UserEntity => {
     cognitoAssert(
       user.confirmationCode === confirmationCode,
       'Invalid verification code provided, please try again.',

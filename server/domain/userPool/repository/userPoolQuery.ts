@@ -1,6 +1,5 @@
 import type { Prisma } from '@prisma/client';
 import type { Jwks } from 'common/types/auth';
-import type { MaybeId } from 'common/types/brandedId';
 import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { genJwks } from 'service/privateKey';
 import { toUserPoolClientEntity, toUserPoolEntity } from './toUserPoolEntity';
@@ -14,7 +13,7 @@ export const userPoolQuery = {
     userPoolQuery.findById(tx, userPoolId).then((pool) => genJwks(pool.privateKey)),
   findClientById: (
     tx: Prisma.TransactionClient,
-    poolClientId: MaybeId['userPoolClient'],
+    poolClientId: string,
   ): Promise<UserPoolClientEntity> =>
     tx.userPoolClient
       .findUniqueOrThrow({ where: { id: poolClientId } })

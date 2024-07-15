@@ -8,6 +8,12 @@ export type ChallengeVal = {
   secB: string;
 };
 
+export type UserAttributeEntity = {
+  id: EntityId['userAttribute'];
+  name: string;
+  value: string;
+};
+
 export type UserEntity = {
   id: EntityId['user'];
   name: string;
@@ -21,6 +27,7 @@ export type UserEntity = {
   verifier: string;
   refreshToken: string;
   userPoolId: EntityId['userPool'];
+  attributes: UserAttributeEntity[];
   createdTime: number;
   updatedTime: number;
   challenge?: ChallengeVal;

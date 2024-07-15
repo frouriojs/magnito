@@ -7,9 +7,11 @@ export const userQuery = {
   countId: (tx: Prisma.TransactionClient, id: string): Promise<number> =>
     tx.user.count({ where: { id } }),
   findById: (tx: Prisma.TransactionClient, id: EntityId['user']): Promise<UserEntity> =>
-    tx.user.findUniqueOrThrow({ where: { id } }).then(toUserEntity),
+    tx.user.findUniqueOrThrow({ where: { id }, include: { attributes: true } }).then(toUserEntity),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserEntity> =>
-    tx.user.findFirstOrThrow({ where: { name } }).then(toUserEntity),
+    tx.user.findFirstOrThrow({ where: { name }, include: { attributes: true } }).then(toUserEntity),
   findByRefreshToken: (tx: Prisma.TransactionClient, refreshToken: string): Promise<UserEntity> =>
-    tx.user.findFirstOrThrow({ where: { refreshToken } }).then(toUserEntity),
+    tx.user
+      .findFirstOrThrow({ where: { refreshToken }, include: { attributes: true } })
+      .then(toUserEntity),
 };

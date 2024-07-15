@@ -8,30 +8,20 @@ import type {
   AdminInitiateAuthResponse,
   AdminSetUserPasswordRequest,
   AdminSetUserPasswordResponse,
+  CodeDeliveryDetailsType,
+  GetUserResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
+  SignUpRequest,
+  SignUpResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
-import type { EntityId, MaybeId } from './brandedId';
+import type { MaybeId } from './brandedId';
 
 export type Jwks = { keys: [{ kid: string; alg: string }] };
 
 type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
-export type CodeDeliveryDetails = {
-  AttributeName: 'email';
-  DeliveryMedium: 'EMAIL';
-  Destination: string;
-};
-
-export type SignUpTarget = TargetBody<
-  {
-    Username: string;
-    Password: string;
-    UserAttributes: [{ Name: 'email'; Value: string }];
-    ClientId: MaybeId['userPoolClient'];
-  },
-  { CodeDeliveryDetails: CodeDeliveryDetails; UserConfirmed: boolean; UserSub: EntityId['user'] }
->;
+export type SignUpTarget = TargetBody<SignUpRequest, SignUpResponse>;
 
 export type ConfirmSignUpTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; ConfirmationCode: string; Username: string },
@@ -96,17 +86,7 @@ export type RespondToAuthChallengeTarget = TargetBody<
   }
 >;
 
-export type GetUserTarget = TargetBody<
-  { AccessToken: string },
-  {
-    UserAttributes: [
-      { Name: 'sub'; Value: EntityId['user'] },
-      { Name: 'email'; Value: string },
-      { Name: 'email_verified'; Value: 'true' | 'false' },
-    ];
-    Username: string;
-  }
->;
+export type GetUserTarget = TargetBody<{ AccessToken: string }, GetUserResponse>;
 
 export type RevokeTokenTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; Token: string },
@@ -115,7 +95,7 @@ export type RevokeTokenTarget = TargetBody<
 
 export type ResendConfirmationCodeTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; Username: string },
-  { CodeDeliveryDetails: CodeDeliveryDetails }
+  { CodeDeliveryDetails: CodeDeliveryDetailsType }
 >;
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
@@ -143,7 +123,7 @@ export type ChangePasswordTarget = TargetBody<
 
 export type ForgotPasswordTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; Username: string },
-  { CodeDeliveryDetails: CodeDeliveryDetails }
+  { CodeDeliveryDetails: CodeDeliveryDetailsType }
 >;
 
 export type ConfirmForgotPasswordTarget = TargetBody<

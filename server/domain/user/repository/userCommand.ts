@@ -1,9 +1,13 @@
 import type { Prisma } from '@prisma/client';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
+import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 
 export const userCommand = {
   save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
+    await tx.userAttribute.deleteMany({
+      where: { id: { in: user.attributes.map((attr) => attr.id) } },
+    });
+
     await tx.user.upsert({
       where: { id: user.id },
       update: {
@@ -21,6 +25,7 @@ export const userCommand = {
         pubA: user.challenge?.pubA,
         pubB: user.challenge?.pubB,
         secB: user.challenge?.secB,
+        attributes: { createMany: { data: user.attributes } },
         updatedAt: new Date(user.updatedTime),
       },
       create: {
@@ -36,6 +41,7 @@ export const userCommand = {
         refreshToken: user.refreshToken,
         confirmationCode: user.confirmationCode,
         userPoolId: user.userPoolId,
+        attributes: { createMany: { data: user.attributes } },
         createdAt: new Date(user.createdTime),
         updatedAt: new Date(user.updatedTime),
       },
@@ -44,7 +50,9 @@ export const userCommand = {
   delete: async (
     tx: Prisma.TransactionClient,
     deletableUserId: EntityId['deletableUser'],
+    attributes: UserAttributeEntity[],
   ): Promise<void> => {
+    await tx.userAttribute.deleteMany({ where: { id: { in: attributes.map((attr) => attr.id) } } });
     await tx.user.delete({ where: { id: deletableUserId } });
   },
 };

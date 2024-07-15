@@ -19,7 +19,10 @@ test('signUp', async () => {
     body: {
       Username,
       Password,
-      UserAttributes: [{ Name: 'email', Value: email }],
+      UserAttributes: [
+        { Name: 'email', Value: email },
+        { Name: 'custom:test', Value: 'sample' },
+      ],
       ClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });

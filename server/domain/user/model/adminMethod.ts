@@ -1,20 +1,37 @@
 import assert from 'assert';
-import type { AdminSetUserPasswordTarget } from 'common/types/auth';
+import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
 import type { UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
+import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
-import type { CreateUserVal } from './types';
 import { userMethod } from './userMethod';
 
 export const adminMethod = {
-  createVerifiedUser: (idCount: number, val: CreateUserVal): UserEntity => ({
-    ...userMethod.createUser(idCount, val),
-    status: 'FORCE_CHANGE_PASSWORD',
-    verified: true,
-  }),
+  createVerifiedUser: (
+    idCount: number,
+    req: AdminCreateUserTarget['reqBody'],
+    userPoolId: EntityId['userPool'],
+  ): UserEntity => {
+    assert(req.Username);
+
+    const password = req.TemporaryPassword ?? `TempPass-${Date.now()}`;
+    const email = findEmail(req.UserAttributes);
+
+    return {
+      ...userMethod.create(idCount, {
+        name: req.Username,
+        password,
+        email,
+        userPoolId,
+        attributes: req.UserAttributes,
+      }),
+      status: 'FORCE_CHANGE_PASSWORD',
+      verified: true,
+    };
+  },
   deleteUser: (params: { user: UserEntity; userPoolId: string }): EntityId['deletableUser'] => {
     assert(params.user.userPoolId === params.userPoolId);
 

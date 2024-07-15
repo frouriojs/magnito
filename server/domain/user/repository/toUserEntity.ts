@@ -1,6 +1,6 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import type { User } from '@prisma/client';
-import type { UserEntity } from 'common/types/user';
+import type { User, UserAttribute } from '@prisma/client';
+import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 
@@ -14,7 +14,7 @@ const getChallenge = (prismaUser: User): UserEntity['challenge'] =>
       }
     : undefined;
 
-export const toUserEntity = (prismaUser: User): UserEntity => {
+export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
   return {
     id: brandedId.user.entity.parse(prismaUser.id),
     name: prismaUser.name,
@@ -36,6 +36,13 @@ export const toUserEntity = (prismaUser: User): UserEntity => {
     confirmationCode: prismaUser.confirmationCode,
     challenge: getChallenge(prismaUser),
     userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
+    attributes: prismaUser.attributes.map(
+      (attr): UserAttributeEntity => ({
+        id: brandedId.userAttribute.entity.parse(attr.id),
+        name: attr.name,
+        value: attr.value,
+      }),
+    ),
     createdTime: prismaUser.createdAt.getTime(),
     updatedTime: z.number().parse(prismaUser.updatedAt?.getTime()),
   };

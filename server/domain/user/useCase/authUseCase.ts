@@ -24,20 +24,29 @@ import { cognitoAssert } from 'service/cognitoAssert';
 import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
+import { createAttributes } from '../service/createAttributes';
+import { findEmail } from '../service/findEmail';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
 import { sendConfirmationCode } from '../service/sendAuthMail';
 
 export const authUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
     transaction(async (tx) => {
+      assert(req.ClientId);
+      assert(req.Username);
+      assert(req.Password);
+
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const idCount = await userQuery.countId(tx, req.Username);
-      const user = userMethod.createUser(idCount, {
+      const email = findEmail(req.UserAttributes);
+      const user = userMethod.create(idCount, {
         name: req.Username,
+        email,
         password: req.Password,
-        email: req.UserAttributes[0].Value,
         userPoolId: poolClient.userPoolId,
+        attributes: req.UserAttributes,
       });
+
       await userCommand.save(tx, user);
       await sendConfirmationCode(user);
 
@@ -50,9 +59,9 @@ export const authUseCase = {
   confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
-      const verified = userMethod.verifyUser(user, req.ConfirmationCode);
+      const confirmed = userMethod.confirm(user, req.ConfirmationCode);
 
-      await userCommand.save(tx, verified);
+      await userCommand.save(tx, confirmed);
 
       return {};
     }),
@@ -133,14 +142,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      return {
-        UserAttributes: [
-          { Name: 'sub', Value: user.id },
-          { Name: 'email', Value: user.email },
-          { Name: 'email_verified', Value: user.verified ? 'true' : 'false' },
-        ],
-        Username: user.name,
-      };
+      return { UserAttributes: createAttributes(user), Username: user.name };
     }),
   revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
     transaction(async (tx) => {
