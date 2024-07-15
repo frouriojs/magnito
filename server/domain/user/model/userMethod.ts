@@ -140,4 +140,13 @@ export const userMethod = {
       updatedTime: Date.now(),
     };
   },
+  deleteAttributes: (user: UserEntity, attributeNames: string[] | undefined): UserEntity => {
+    assert(attributeNames);
+
+    return {
+      ...user,
+      attributes: user.attributes.filter((attr) => !attributeNames.includes(attr.name)),
+      updatedTime: Date.now(),
+    };
+  },
 };

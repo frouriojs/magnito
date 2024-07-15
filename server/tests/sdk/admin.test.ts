@@ -1,5 +1,6 @@
 import {
   AdminCreateUserCommand,
+  AdminDeleteUserAttributesCommand,
   AdminDeleteUserCommand,
   AdminGetUserCommand,
   AdminInitiateAuthCommand,
@@ -147,4 +148,34 @@ test(AdminUpdateUserAttributesCommand.name, async () => {
 
   expect(targetAttr1?.value).toBe(attrVal3);
   expect(targetAttr2?.value).toBe(attrVal2);
+});
+
+test(AdminDeleteUserAttributesCommand.name, async () => {
+  const userClient = await createUserClient();
+  const attrName1 = 'custom:test1';
+  const attrName2 = 'custom:test2';
+
+  await cognitoClient.send(
+    new AdminUpdateUserAttributesCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      UserAttributes: [
+        { Name: attrName1, Value: 'sample1' },
+        { Name: attrName2, Value: 'sample2' },
+      ],
+    }),
+  );
+
+  await cognitoClient.send(
+    new AdminDeleteUserAttributesCommand({
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      Username: testUserName,
+      UserAttributeNames: [attrName1],
+    }),
+  );
+
+  const user = await userClient.private.me.$get();
+
+  expect(user.attributes.every((attr) => attr.name !== attrName1)).toBeTruthy();
+  expect(user.attributes.some((attr) => attr.name === attrName2)).toBeTruthy();
 });

@@ -1,6 +1,8 @@
 import type {
   AdminCreateUserRequest,
   AdminCreateUserResponse,
+  AdminDeleteUserAttributesRequest,
+  AdminDeleteUserAttributesResponse,
   AdminDeleteUserRequest,
   AdminGetUserRequest,
   AdminGetUserResponse,
@@ -123,6 +125,11 @@ export type AdminUpdateUserAttributesTarget = TargetBody<
   AdminUpdateUserAttributesResponse
 >;
 
+export type AdminDeleteUserAttributesTarget = TargetBody<
+  AdminDeleteUserAttributesRequest,
+  AdminDeleteUserAttributesResponse
+>;
+
 export type ChangePasswordTarget = TargetBody<
   { AccessToken: string; PreviousPassword: string; ProposedPassword: string },
   Record<string, never>
@@ -158,6 +165,7 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': AdminInitiateAuthTarget;
   'AWSCognitoIdentityProviderService.AdminSetUserPassword': AdminSetUserPasswordTarget;
   'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes': AdminUpdateUserAttributesTarget;
+  'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes': AdminDeleteUserAttributesTarget;
   'AWSCognitoIdentityProviderService.ChangePassword': ChangePasswordTarget;
   'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;

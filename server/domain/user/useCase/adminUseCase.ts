@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import assert from 'assert';
 import type {
   AdminCreateUserTarget,
+  AdminDeleteUserAttributesTarget,
   AdminDeleteUserTarget,
   AdminGetUserTarget,
   AdminInitiateAuthTarget,
@@ -127,6 +128,18 @@ export const adminUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
 
       await userCommand.save(tx, userMethod.updateAttributes(user, req.UserAttributes));
+
+      return {};
+    }),
+  deleteUserAttributes: (
+    req: AdminDeleteUserAttributesTarget['reqBody'],
+  ): Promise<AdminDeleteUserAttributesTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.Username);
+
+      const user = await userQuery.findByName(tx, req.Username);
+
+      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
 
       return {};
     }),
