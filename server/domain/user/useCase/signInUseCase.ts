@@ -3,7 +3,7 @@ import type {
   RefreshTokenAuthTarget,
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
-} from 'common/types/auth';
+} from 'common/types/signIn';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { genTokens } from 'domain/user/service/genTokens';

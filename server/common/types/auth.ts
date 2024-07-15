@@ -22,74 +22,19 @@ import type {
   SignUpResponse,
   UpdateUserAttributesRequest,
   UpdateUserAttributesResponse,
+  VerifyUserAttributeRequest,
+  VerifyUserAttributeResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { MaybeId } from './brandedId';
+import type { InitiateAuthTarget, RespondToAuthChallengeTarget } from './signIn';
 
-type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
+export type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
 export type SignUpTarget = TargetBody<SignUpRequest, SignUpResponse>;
 
 export type ConfirmSignUpTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; ConfirmationCode: string; Username: string },
   Record<string, never>
->;
-
-export type UserSrpAuthTarget = TargetBody<
-  {
-    AuthFlow: 'USER_SRP_AUTH';
-    AuthParameters: { USERNAME: string; SRP_A: string };
-    ClientId: MaybeId['userPoolClient'];
-  },
-  {
-    ChallengeName: 'PASSWORD_VERIFIER';
-    ChallengeParameters: {
-      SALT: string;
-      SECRET_BLOCK: string;
-      SRP_B: string;
-      USERNAME: string;
-      USER_ID_FOR_SRP: string;
-    };
-  }
->;
-
-export type RefreshTokenAuthTarget = TargetBody<
-  {
-    AuthFlow: 'REFRESH_TOKEN_AUTH';
-    AuthParameters: { REFRESH_TOKEN: string };
-    ClientId: MaybeId['userPoolClient'];
-  },
-  {
-    AuthenticationResult: {
-      AccessToken: string;
-      ExpiresIn: number;
-      IdToken: string;
-      TokenType: 'Bearer';
-    };
-    ChallengeParameters: Record<string, never>;
-  }
->;
-
-export type RespondToAuthChallengeTarget = TargetBody<
-  {
-    ChallengeName: 'PASSWORD_VERIFIER';
-    ChallengeResponses: {
-      PASSWORD_CLAIM_SECRET_BLOCK: string;
-      PASSWORD_CLAIM_SIGNATURE: string;
-      TIMESTAMP: string;
-      USERNAME: string;
-    };
-    ClientId: MaybeId['userPoolClient'];
-  },
-  {
-    AuthenticationResult: {
-      AccessToken: string;
-      ExpiresIn: number;
-      IdToken: string;
-      RefreshToken: string;
-      TokenType: 'Bearer';
-    };
-    ChallengeParameters: Record<string, never>;
-  }
 >;
 
 export type GetUserTarget = TargetBody<{ AccessToken: string }, GetUserResponse>;
@@ -157,6 +102,11 @@ export type UpdateUserAttributesTarget = TargetBody<
   UpdateUserAttributesResponse
 >;
 
+export type VerifyUserAttributeTarget = TargetBody<
+  VerifyUserAttributeRequest,
+  VerifyUserAttributeResponse
+>;
+
 export type DeleteUserAttributesTarget = TargetBody<
   DeleteUserAttributesRequest,
   DeleteUserAttributesResponse
@@ -165,7 +115,7 @@ export type DeleteUserAttributesTarget = TargetBody<
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
-  'AWSCognitoIdentityProviderService.InitiateAuth': UserSrpAuthTarget | RefreshTokenAuthTarget;
+  'AWSCognitoIdentityProviderService.InitiateAuth': InitiateAuthTarget;
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': RespondToAuthChallengeTarget;
   'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
@@ -182,5 +132,6 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ForgotPassword': ForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': ConfirmForgotPasswordTarget;
   'AWSCognitoIdentityProviderService.UpdateUserAttributes': UpdateUserAttributesTarget;
+  'AWSCognitoIdentityProviderService.VerifyUserAttribute': VerifyUserAttributeTarget;
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': DeleteUserAttributesTarget;
 };

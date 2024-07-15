@@ -1,6 +1,6 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
-import type { ChangePasswordTarget } from 'common/types/auth';
+import type { ChangePasswordTarget, VerifyUserAttributeTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
 import type { UserEntity } from 'common/types/user';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
@@ -118,15 +118,26 @@ export const userMethod = {
   updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
     assert(attributes);
     const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
+    const verified = user.email === email;
 
     return {
       ...user,
       attributes: createAttributes(attributes, user.attributes),
-      status: user.email === email ? user.status : 'UNCONFIRMED',
-      confirmationCode: user.email === email ? user.confirmationCode : genConfirmationCode(),
+      status: verified ? user.status : 'UNCONFIRMED',
+      confirmationCode: verified ? user.confirmationCode : genConfirmationCode(),
+      verified,
       email,
       updatedTime: Date.now(),
     };
+  },
+  verifyAttribute: (user: UserEntity, req: VerifyUserAttributeTarget['reqBody']): UserEntity => {
+    assert(req.AttributeName === 'email');
+    cognitoAssert(
+      user.confirmationCode === req.Code,
+      'Invalid verification code provided, please try again.',
+    );
+
+    return { ...user, status: 'CONFIRMED', verified: true, updatedTime: Date.now() };
   },
   deleteAttributes: (user: UserEntity, attributeNames: string[] | undefined): UserEntity => {
     assert(attributeNames);

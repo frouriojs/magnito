@@ -1,0 +1,62 @@
+import type { TargetBody } from './auth';
+import type { MaybeId } from './brandedId';
+
+export type UserSrpAuthTarget = TargetBody<
+  {
+    AuthFlow: 'USER_SRP_AUTH';
+    AuthParameters: { USERNAME: string; SRP_A: string };
+    ClientId: MaybeId['userPoolClient'];
+  },
+  {
+    ChallengeName: 'PASSWORD_VERIFIER';
+    ChallengeParameters: {
+      SALT: string;
+      SECRET_BLOCK: string;
+      SRP_B: string;
+      USERNAME: string;
+      USER_ID_FOR_SRP: string;
+    };
+  }
+>;
+
+export type RefreshTokenAuthTarget = TargetBody<
+  {
+    AuthFlow: 'REFRESH_TOKEN_AUTH';
+    AuthParameters: { REFRESH_TOKEN: string };
+    ClientId: MaybeId['userPoolClient'];
+  },
+  {
+    AuthenticationResult: {
+      AccessToken: string;
+      ExpiresIn: number;
+      IdToken: string;
+      TokenType: 'Bearer';
+    };
+    ChallengeParameters: Record<string, never>;
+  }
+>;
+
+export type InitiateAuthTarget = UserSrpAuthTarget | RefreshTokenAuthTarget;
+
+export type RespondToAuthChallengeTarget = TargetBody<
+  {
+    ChallengeName: 'PASSWORD_VERIFIER';
+    ChallengeResponses: {
+      PASSWORD_CLAIM_SECRET_BLOCK: string;
+      PASSWORD_CLAIM_SIGNATURE: string;
+      TIMESTAMP: string;
+      USERNAME: string;
+    };
+    ClientId: MaybeId['userPoolClient'];
+  },
+  {
+    AuthenticationResult: {
+      AccessToken: string;
+      ExpiresIn: number;
+      IdToken: string;
+      RefreshToken: string;
+      TokenType: 'Bearer';
+    };
+    ChallengeParameters: Record<string, never>;
+  }
+>;

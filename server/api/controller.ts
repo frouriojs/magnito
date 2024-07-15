@@ -35,6 +35,7 @@ const useCases: {
   'AWSCognitoIdentityProviderService.ForgotPassword': authUseCase.forgotPassword,
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': authUseCase.confirmForgotPassword,
   'AWSCognitoIdentityProviderService.UpdateUserAttributes': authUseCase.updateUserAttributes,
+  'AWSCognitoIdentityProviderService.VerifyUserAttribute': authUseCase.verifyUserAttribute,
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': authUseCase.deleteUserAttributes,
 };
 

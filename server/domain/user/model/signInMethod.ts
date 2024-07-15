@@ -1,5 +1,5 @@
 import assert from 'assert';
-import type { UserSrpAuthTarget } from 'common/types/auth';
+import type { UserSrpAuthTarget } from 'common/types/signIn';
 import type { ChallengeVal, UserEntity } from 'common/types/user';
 import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';

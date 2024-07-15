@@ -7,6 +7,7 @@ import type {
   GetUserTarget,
   RevokeTokenTarget,
   UpdateUserAttributesTarget,
+  VerifyUserAttributeTarget,
 } from 'common/types/auth';
 import { userMethod } from 'domain/user/model/userMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
@@ -75,7 +76,7 @@ export const authUseCase = {
 
       return {};
     }),
-  updateUserAttributes: async (
+  updateUserAttributes: (
     req: UpdateUserAttributesTarget['reqBody'],
   ): Promise<UpdateUserAttributesTarget['resBody']> =>
     transaction(async (tx) => {
@@ -87,9 +88,22 @@ export const authUseCase = {
 
       await userCommand.save(tx, updated);
 
-      if (user.confirmationCode !== updated.confirmationCode) await sendConfirmationCode(user);
+      if (user.confirmationCode !== updated.confirmationCode) await sendConfirmationCode(updated);
 
       return { CodeDeliveryDetailsList: [genCodeDeliveryDetails(updated)] };
+    }),
+  verifyUserAttribute: (
+    req: VerifyUserAttributeTarget['reqBody'],
+  ): Promise<VerifyUserAttributeTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.AccessToken);
+
+      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
+      const user = await userQuery.findById(tx, decoded.sub);
+
+      await userCommand.save(tx, userMethod.verifyAttribute(user, req));
+
+      return {};
     }),
   deleteUserAttributes: (
     req: DeleteUserAttributesTarget['reqBody'],
