@@ -1,3 +1,4 @@
+import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type {
   ChangePasswordTarget,
@@ -5,6 +6,7 @@ import type {
   DeleteUserAttributesTarget,
   ForgotPasswordTarget,
   GetUserTarget,
+  ListUsersTarget,
   RevokeTokenTarget,
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
@@ -14,6 +16,7 @@ import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
+import { pretendAsDate } from 'service/pretendAsDate';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
 import { toAttributeTypes } from '../service/createAttributes';
@@ -27,6 +30,24 @@ export const authUseCase = {
       const user = await userQuery.findById(tx, decoded.sub);
 
       return { UserAttributes: toAttributeTypes(user), Username: user.name };
+    }),
+  listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.UserPoolId);
+      const users = await userQuery.listByPoolId(tx, req.UserPoolId);
+
+      return {
+        Users: users.map(
+          (user): UserType => ({
+            Username: user.name,
+            Attributes: toAttributeTypes(user),
+            UserCreateDate: pretendAsDate(user.createdTime),
+            UserLastModifiedDate: pretendAsDate(user.updatedTime),
+            Enabled: user.enabled,
+            UserStatus: user.status,
+          }),
+        ),
+      };
     }),
   revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
     transaction(async (tx) => {

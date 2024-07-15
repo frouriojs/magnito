@@ -18,6 +18,8 @@ import type {
   GetUserResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
+  ListUsersRequest,
+  ListUsersResponse,
   SignUpRequest,
   SignUpResponse,
   UpdateUserAttributesRequest,
@@ -48,6 +50,8 @@ export type ResendConfirmationCodeTarget = TargetBody<
   { ClientId: MaybeId['userPoolClient']; Username: string },
   { CodeDeliveryDetails: CodeDeliveryDetailsType }
 >;
+
+export type ListUsersTarget = TargetBody<ListUsersRequest, ListUsersResponse>;
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
 
@@ -120,6 +124,7 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.GetUser': GetUserTarget;
   'AWSCognitoIdentityProviderService.RevokeToken': RevokeTokenTarget;
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
+  'AWSCognitoIdentityProviderService.ListUsers': ListUsersTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
   'AWSCognitoIdentityProviderService.AdminGetUser': AdminGetUserTarget;
   'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
