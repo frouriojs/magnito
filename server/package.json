@@ -16,7 +16,7 @@
     "migrate:dev:createonly": "prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
-    "start": "prisma migrate deploy && node prisma/seed.js && node --enable-source-maps index.js",
+    "start": "prisma migrate deploy && node --enable-source-maps prisma/seed.js && node --enable-source-maps index.js",
     "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },

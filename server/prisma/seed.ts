@@ -1,12 +1,13 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
+import type { Prisma } from '@prisma/client';
 import assert from 'assert';
-import { prismaClient } from 'service/prismaClient';
+import { prismaClient, transaction } from 'service/prismaClient';
 
-async function main(): Promise<void> {
-  const users = await prismaClient.user.findMany({ where: { updatedAt: null } });
+const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
+  const users = await tx.user.findMany({ where: { updatedAt: null } });
 
   users.length > 0 &&
-    (await prismaClient.user.updateMany({
+    (await tx.user.updateMany({
       data: users.map((user) => ({
         ...user,
         enabled: true,
@@ -16,7 +17,7 @@ async function main(): Promise<void> {
     }));
 
   const test = async (): Promise<void> => {
-    const users = await prismaClient.user.findMany();
+    const users = await tx.user.findMany();
 
     users.forEach((user) => {
       assert(user.enabled !== null);
@@ -26,9 +27,9 @@ async function main(): Promise<void> {
   };
 
   await test();
-}
+};
 
-main()
+transaction((tx) => Promise.all([migrateUser(tx)]))
   .catch((e) => {
     console.error(e);
     process.exit(1);
