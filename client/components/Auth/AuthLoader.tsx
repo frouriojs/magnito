@@ -3,16 +3,15 @@ import { Hub } from 'aws-amplify/utils';
 import { isAxiosError } from 'axios';
 import { useAlert } from 'components/Alert/useAlert';
 import { useLoading } from 'components/Loading/useLoading';
-import { useCatchApiErr } from 'hooks/useCatchApiErr';
 import { useCallback, useEffect } from 'react';
 import { apiAxios, apiClient } from 'utils/apiClient';
+import { catchApiErr } from 'utils/catchApiErr';
 import { useUser } from './useUser';
 
 export const AuthLoader = () => {
   const { user, setUser } = useUser();
   const { setLoading } = useLoading();
   const { setAlert } = useAlert();
-  const catchApiErr = useCatchApiErr();
   const updateCookie = useCallback(async () => {
     const jwt = await fetchAuthSession().then((e) => e.tokens?.idToken?.toString());
 
@@ -22,7 +21,7 @@ export const AuthLoader = () => {
     } else {
       setUser(null);
     }
-  }, [catchApiErr, setUser]);
+  }, [setUser]);
 
   useEffect(() => {
     getCurrentUser()
@@ -75,7 +74,7 @@ export const AuthLoader = () => {
         }
       },
     );
-  }, [catchApiErr, setAlert, updateCookie, setLoading, setUser]);
+  }, [setAlert, updateCookie, setLoading, setUser]);
 
   return <></>;
 };
