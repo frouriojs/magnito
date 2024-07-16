@@ -21,6 +21,6 @@ client/api/*
 **/*.css.d.ts.map
 
 # server
-server/index.js
-server/index.js.map
+server/index.js*
+server/prisma/seed.js*
 server/coverage/

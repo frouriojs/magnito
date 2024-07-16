@@ -4,11 +4,10 @@
     "predev": "run-p generate migrate:deploy",
     "dev": "run-p dev:*",
     "dev:build": "node ./scripts/build.dev.js",
-    "dev:server": "node-dev --respawn index.js",
+    "dev:server": "node-dev --enable-source-maps --respawn index.js",
     "dev:frourio": "frourio --watch",
     "dev:prisma": "prisma generate --watch",
-    "prebuild": "run-p generate migrate:deploy",
-    "build": "node ./scripts/build.prod.js",
+    "build": "npm run generate && node ./scripts/build.prod.js",
     "lint": "prisma format",
     "generate": "run-s generate:prisma generate:frourio",
     "generate:prisma": "prisma generate",
@@ -17,7 +16,7 @@
     "migrate:dev:createonly": "prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
-    "start": "node --enable-source-maps index.js",
+    "start": "prisma migrate deploy && node prisma/seed.js && node --enable-source-maps index.js",
     "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
@@ -40,6 +39,7 @@
     "jwt-decode": "^4.0.0",
     "node-jose": "^2.2.0",
     "nodemailer": "^6.9.14",
+    "prisma": "^5.17.0",
     "ulid": "^2.3.0",
     "velona": "^0.8.0",
     "zod": "^3.23.8"
@@ -60,7 +60,6 @@
     "inbucket-js-client": "^1.0.1",
     "node-dev": "^8.0.0",
     "notios": "^0.5.3",
-    "prisma": "^5.16.2",
     "typescript": "^5.5.3"
   },
   "engines": {

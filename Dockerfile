@@ -2,21 +2,20 @@ FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json .
+COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY client/package.json client/package-lock.json ./client/
+COPY client/package.json client/package-lock.json client/
 RUN npm ci --prefix client
 
-COPY server/package.json server/package-lock.json ./server/
+COPY server/package.json server/package-lock.json server/
 RUN npm ci --prefix server
 
-COPY . .
+COPY . ./
 
 ARG SERVER_PORT=5050
 ARG VERSION
 ARG NEXT_PUBLIC_API_ORIGIN=http://localhost:$SERVER_PORT
-ARG DATABASE_URL=file:../../data/app.db
 
 RUN npm run batch:writeVersion -- $VERSION
 RUN npm run build
@@ -41,13 +40,14 @@ ENV SMTP_PORT=2500
 ENV SMTP_USER=fake_mail_user
 ENV SMTP_PASS=fake_mail_password
 
-COPY --chown=node package.json .
-COPY --chown=node --from=builder /usr/src/app/client/out ./client/out
+COPY --chown=node package.json ./
 COPY --chown=node server/package.json server/package-lock.json ./server/
-COPY --chown=node --from=builder /usr/src/app/server/node_modules ./server/node_modules
-COPY --chown=node --from=builder /usr/src/app/server/index.js ./server/index.js
-COPY --chown=node --from=builder /usr/src/app/server/prisma ./server/prisma
-COPY --chown=node --from=builder /usr/src/app/data ./data
+
+COPY --chown=node --from=builder /usr/src/app/client/out client/out/
+COPY --chown=node --from=builder /usr/src/app/server/node_modules server/node_modules/
+COPY --chown=node --from=builder /usr/src/app/server/index.js server/index.js
+COPY --chown=node --from=builder /usr/src/app/server/prisma server/prisma/
+COPY --chown=node --from=builder /usr/src/app/data data/
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/public/health && wget --quiet --spider http://127.0.0.1:$CLIENT_PORT || exit 1
 

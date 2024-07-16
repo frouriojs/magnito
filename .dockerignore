@@ -1,7 +1,6 @@
 .git
 .github
 .vscode
-data
 **/node_modules
 README.md
 **/.env
