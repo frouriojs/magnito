@@ -3,10 +3,12 @@ import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
 import { I18n } from 'aws-amplify/utils';
 import { AuthLoader } from 'components/Auth/AuthLoader';
+import { useCognitoClient } from 'hooks/useCognitoClient';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { apiClient } from 'utils/apiClient';
+import { catchApiErr } from 'utils/catchApiErr';
 import { NEXT_PUBLIC_API_ORIGIN } from 'utils/envValues';
 import '../styles/globals.css';
 
@@ -15,21 +17,29 @@ I18n.setLanguage('ja');
 
 function MyApp({ Component, pageProps }: AppProps) {
   const SafeHydrate = dynamic(() => import('../components/SafeHydrate'), { ssr: false });
-  const [configured, setConfigured] = useState(false);
+  const { defaults, setDefaults } = useCognitoClient();
+
+  useMemo(() => {
+    if (defaults.userPoolId === undefined) return;
+
+    Amplify.configure({
+      Auth: {
+        Cognito: {
+          userPoolId: defaults.userPoolId,
+          userPoolClientId: defaults.userPoolClientId,
+          userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN,
+        },
+      },
+    });
+  }, [defaults]);
 
   useEffect(() => {
-    apiClient.public.defaults.$get().then((defaults) => {
-      Amplify.configure({
-        Auth: { Cognito: { ...defaults, userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN } },
-      });
-
-      setConfigured(true);
-    });
+    apiClient.public.defaults.$get().then(setDefaults).catch(catchApiErr);
   }, []);
 
   return (
     <SafeHydrate>
-      {configured && (
+      {defaults.userPoolId && (
         <Authenticator.Provider>
           <AuthLoader />
           <Component {...pageProps} />

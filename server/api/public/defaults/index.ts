@@ -1,8 +1,6 @@
 import type { DefineMethods } from 'aspida';
-import type { EntityId } from 'common/types/brandedId';
+import type { DefaultConfigs } from 'common/types/api';
 
 export type Methods = DefineMethods<{
-  get: {
-    resBody: { userPoolId: EntityId['userPool']; userPoolClientId: EntityId['userPoolClient'] };
-  };
+  get: { resBody: DefaultConfigs };
 }>;
