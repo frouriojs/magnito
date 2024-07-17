@@ -18,7 +18,7 @@
     "batch:writeVersion": "node batches/writeVersion.js",
     "lint": "run-p lint:*",
     "lint:js": "eslint .",
-    "lint:style": "stylelint \"**/*.css\" --ignore-path .gitignore",
+    "lint:style": "stylelint \"client/**/*.css\" --ignore-path .gitignore",
     "lint:prettier": "prettier --check \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore",
     "lint:server": "npm run lint --prefix server",
     "fix:lint": "npm run lint:js -- --fix && npm run lint:style -- --fix && npm run lint:prettier -- --write",
