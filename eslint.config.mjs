@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import gitignore from 'eslint-config-flat-gitignore';
 import prettierConfig from 'eslint-config-prettier';
-import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -21,7 +20,6 @@ export default tseslint.config(
     },
     plugins: {
       react: reactPlugin,
-      import: importPlugin,
     },
     settings: {
       react: {
