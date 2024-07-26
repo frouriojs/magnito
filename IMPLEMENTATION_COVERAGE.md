@@ -1,0 +1,112 @@
+# Implementation Coverage List
+
+## cognito-idp
+
+<details>
+<summary> 21% implemented  </summary>
+
+- [ ] AddCustomAttributes
+- [ ] AdminAddUserToGroup
+- [ ] AdminConfirmSignUp
+- [x] AdminCreateUser
+- [x] AdminDeleteUser
+- [x] AdminDeleteUserAttributes
+- [ ] AdminDisableProviderForUser
+- [ ] AdminDisableUser
+- [ ] AdminEnableUser
+- [ ] AdminForgetDevice
+- [ ] AdminGetDevice
+- [x] AdminGetUser
+- [x] AdminInitiateAuth
+- [ ] AdminLinkProviderForUser
+- [ ] AdminListDevices
+- [ ] AdminListGroupsForUser
+- [ ] AdminListUserAuthEvents
+- [ ] AdminRemoveUserFromGroup
+- [ ] AdminResetUserPassword
+- [ ] AdminRespondToAuthChallenge
+- [ ] AdminSetUserMfaPreference
+- [x] AdminSetUserPassword
+- [ ] AdminSetUserSettings
+- [ ] AdminUpdateAuthEventFeedback
+- [ ] AdminUpdateDeviceStatus
+- [x] AdminUpdateUserAttributes
+- [ ] AdminUserGlobalSignOut
+- [ ] AssociateSoftwareToken
+- [x] ChangePassword
+- [ ] ConfirmDevice
+- [x] ConfirmForgotPassword
+- [x] ConfirmSignUp
+- [ ] CreateGroup
+- [ ] CreateIdentityProvider
+- [ ] CreateResourceServer
+- [ ] CreateUserImportJob
+- [ ] CreateUserPool
+- [ ] CreateUserPoolClient
+- [ ] CreateUserPoolDomain
+- [ ] DeleteGroup
+- [ ] DeleteIdentityProvider
+- [ ] DeleteResourceServer
+- [ ] DeleteUser
+- [x] DeleteUserAttributes
+- [ ] DeleteUserPool
+- [ ] DeleteUserPoolClient
+- [ ] DeleteUserPoolDomain
+- [ ] DescribeIdentityProvider
+- [ ] DescribeResourceServer
+- [ ] DescribeRiskConfiguration
+- [ ] DescribeUserImportJob
+- [ ] DescribeUserPool
+- [ ] DescribeUserPoolClient
+- [ ] DescribeUserPoolDomain
+- [ ] ForgetDevice
+- [x] ForgotPassword
+- [ ] GetCsvHeader
+- [ ] GetDevice
+- [ ] GetGroup
+- [ ] GetIdentityProviderByIdentifier
+- [ ] GetLogDeliveryConfiguration
+- [ ] GetSigningCertificate
+- [ ] GetUiCustomization
+- [x] GetUser
+- [ ] GetUserAttributeVerificationCode
+- [ ] GetUserPoolMfaConfig
+- [ ] GlobalSignOut
+- [x] InitiateAuth
+- [ ] ListDevices
+- [ ] ListGroups
+- [ ] ListIdentityProviders
+- [ ] ListResourceServers
+- [ ] ListTagsForResource
+- [ ] ListUserImportJobs
+- [ ] ListUserPoolClients
+- [x] ListUserPools
+- [x] ListUsers
+- [ ] ListUsersInGroup
+- [x] ResendConfirmationCode
+- [x] RespondToAuthChallenge
+- [x] RevokeToken
+- [ ] SetLogDeliveryConfiguration
+- [ ] SetRiskConfiguration
+- [ ] SetUiCustomization
+- [ ] SetUserMfaPreference
+- [ ] SetUserPoolMfaConfig
+- [ ] SetUserSettings
+- [x] SignUp
+- [ ] StartUserImportJob
+- [ ] StopUserImportJob
+- [ ] TagResource
+- [ ] UntagResource
+- [ ] UpdateAuthEventFeedback
+- [ ] UpdateDeviceStatus
+- [ ] UpdateGroup
+- [ ] UpdateIdentityProvider
+- [ ] UpdateResourceServer
+- [x] UpdateUserAttributes
+- [ ] UpdateUserPool
+- [ ] UpdateUserPoolClient
+- [ ] UpdateUserPoolDomain
+- [ ] VerifySoftwareToken
+- [x] VerifyUserAttribute
+
+</details>
