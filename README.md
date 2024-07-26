@@ -6,17 +6,25 @@
   <img alt="Magnito logo image" src="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
 </picture>
 
-Amazon Cognito emulator for Amplify UI
+![Docker Pulls](https://img.shields.io/docker/pulls/frourio/magnito)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/frourio/magnito)
+![Docker Image Version (latest by date)](<https://img.shields.io/docker/v/frourio/magnito>)
+
+Free, and open Amazon Cognito emulator for Amplify UI
+
+Running your Amplify UI locally without AWS Cognito.
 
 ## Images
 
-Docker Hub - https://hub.docker.com/r/frourio/magnito
+Docker Hub - <https://hub.docker.com/r/frourio/magnito>
 
-Amazon ECR Public Gallery - https://gallery.ecr.aws/frourio/magnito
+Amazon ECR Public Gallery - <https://gallery.ecr.aws/frourio/magnito>
 
 ## Usage
 
-Docker compose
+Docker Compose
+
+`compose.yml`
 
 ```yml
 services:
@@ -53,6 +61,51 @@ volumes:
     driver: local
 ```
 
+### Web UI
+
+You can access the Magnito web interface at <http://localhost:5051/>.
+
 ### SMTP Server UI
 
-[Inbucket](https://inbucket.org) - http://localhost:9000/
+You can check the emails sent by Magnito with Inbucket.
+
+[Inbucket](https://inbucket.org) - <http://localhost:9000/>
+
+## Screenshots
+
+| Sign Up | Sign In |
+| --- | --- |
+| ![Sign Up](https://frouriojs.github.io/magnito/screenshots/sign-up.png) | ![Sign In](https://frouriojs.github.io/magnito/screenshots/sign-in.png) |
+| Forgot Password | Admin |
+|![Forgot Password](https://frouriojs.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frouriojs.github.io/magnito/screenshots/admin.png) |
+| Profile | Change Password |
+| ![Profile](https://frouriojs.github.io/magnito/screenshots/profile.png) | ![Change Password](https://frouriojs.github.io/magnito/screenshots/change-password.png) |
+
+## Features
+
+- Sign Up
+  - Create a new user account by entering an email address and password.
+  - Passwords must have at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one number, and at least one special character.
+
+- Sign In
+  - Sign in with your email address and password.
+
+- Forgot Password
+  - Send a password reset email to the email address you registered with.
+
+- Reset Password
+  - Reset your password by entering a old password and a new password.
+
+- Admin
+  - List all user information.
+
+- Profile
+  - Check your user information.
+
+## Implementation Coverage
+
+[IMPLEMENTATION_COVERAGE](IMPLEMENTATION_COVERAGE.md)
+
+## License
+
+[MIT](LICENSE)
