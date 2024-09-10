@@ -70,7 +70,7 @@ export default tseslint.config(
   },
   {
     files: ['**/*.js'],
-    rules: { '@typescript-eslint/no-var-requires': ['off'] },
+    rules: { '@typescript-eslint/no-require-imports': ['off'] },
   },
   prettierConfig,
 );

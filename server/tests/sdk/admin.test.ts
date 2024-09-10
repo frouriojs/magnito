@@ -8,6 +8,7 @@ import {
   AdminUpdateUserAttributesCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
+import assert from 'assert';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
@@ -151,9 +152,11 @@ test(AdminUpdateUserAttributesCommand.name, async () => {
   const user = await cognitoClient.send(
     new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
   );
-  const emailAttr = user.UserAttributes?.find((attr) => attr.Name === 'email');
-  const targetAttr1 = user.UserAttributes?.find((attr) => attr.Name === attrName1);
-  const targetAttr2 = user.UserAttributes?.find((attr) => attr.Name === attrName2);
+
+  assert(user.UserAttributes);
+  const emailAttr = user.UserAttributes.find((attr) => attr.Name === 'email');
+  const targetAttr1 = user.UserAttributes.find((attr) => attr.Name === attrName1);
+  const targetAttr2 = user.UserAttributes.find((attr) => attr.Name === attrName2);
 
   expect(emailAttr?.Value).toBe(newEmail);
   expect(targetAttr1?.Value).toBe(attrVal3);

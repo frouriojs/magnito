@@ -6,15 +6,16 @@ import { prismaClient, transaction } from 'service/prismaClient';
 const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
   const users = await tx.user.findMany({ where: { updatedAt: null } });
 
-  users.length > 0 &&
-    (await tx.user.updateMany({
+  if (users.length > 0) {
+    await tx.user.updateMany({
       data: users.map((user) => ({
         ...user,
         enabled: true,
         status: UserStatusType.CONFIRMED,
         updatedAt: user.createdAt,
       })),
-    }));
+    });
+  }
 
   const test = async (): Promise<void> => {
     const users = await tx.user.findMany();

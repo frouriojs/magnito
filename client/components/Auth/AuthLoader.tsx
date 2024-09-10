@@ -30,6 +30,7 @@ export const AuthLoader = () => {
   }, [setUser, updateCookie]);
 
   useEffect(() => {
+    // eslint-disable-next-line complexity
     const useId = apiAxios.interceptors.response.use(undefined, async (err) => {
       if (user.data && isAxiosError(err) && err.response?.status === 401 && err.config) {
         const { config } = err;
