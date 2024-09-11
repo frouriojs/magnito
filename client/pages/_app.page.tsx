@@ -28,6 +28,16 @@ function MyApp({ Component, pageProps }: AppProps) {
           userPoolId: defaults.userPoolId,
           userPoolClientId: defaults.userPoolClientId,
           userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN,
+          loginWith: {
+            email: true,
+            oauth: {
+              domain: 'localhost:5052',
+              scopes: ['email', 'profile'],
+              redirectSignIn: ['http://localhost:5051'],
+              redirectSignOut: ['http://localhost:5051'],
+              responseType: 'token',
+            },
+          },
         },
       },
     });

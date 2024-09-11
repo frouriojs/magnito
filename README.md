@@ -8,7 +8,7 @@
 
 ![Docker Pulls](https://img.shields.io/docker/pulls/frourio/magnito)
 ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/frourio/magnito)
-![Docker Image Version (latest by date)](<https://img.shields.io/docker/v/frourio/magnito>)
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/frourio/magnito)
 
 Free, and open Amazon Cognito emulator for Amplify UI
 
@@ -73,30 +73,35 @@ You can check the emails sent by Magnito with Inbucket.
 
 ## Screenshots
 
-| Sign Up | Sign In |
-| --- | --- |
-| ![Sign Up](https://frouriojs.github.io/magnito/screenshots/sign-up.png) | ![Sign In](https://frouriojs.github.io/magnito/screenshots/sign-in.png) |
-| Forgot Password | Admin |
-|![Forgot Password](https://frouriojs.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frouriojs.github.io/magnito/screenshots/admin.png) |
-| Profile | Change Password |
-| ![Profile](https://frouriojs.github.io/magnito/screenshots/profile.png) | ![Change Password](https://frouriojs.github.io/magnito/screenshots/change-password.png) |
+| Sign Up                                                                                 | Sign In                                                                                 |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| ![Sign Up](https://frouriojs.github.io/magnito/screenshots/sign-up.png)                 | ![Sign In](https://frouriojs.github.io/magnito/screenshots/sign-in.png)                 |
+| Forgot Password                                                                         | Admin                                                                                   |
+| ![Forgot Password](https://frouriojs.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frouriojs.github.io/magnito/screenshots/admin.png)                     |
+| Profile                                                                                 | Change Password                                                                         |
+| ![Profile](https://frouriojs.github.io/magnito/screenshots/profile.png)                 | ![Change Password](https://frouriojs.github.io/magnito/screenshots/change-password.png) |
 
 ## Features
 
 - Sign Up
+
   - Create a new user account by entering an email address and password.
   - Passwords must have at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one number, and at least one special character.
 
 - Sign In
+
   - Sign in with your email address and password.
 
 - Forgot Password
+
   - Send a password reset email to the email address you registered with.
 
 - Reset Password
+
   - Reset your password by entering a old password and a new password.
 
 - Admin
+
   - List all user information.
 
 - Profile

@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:client": "next dev -p 5051",
+    "dev:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source 5052 --target 5051",
     "dev:hcm": "hcm '**/*.module.css' -w",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
@@ -24,6 +25,7 @@
     "aws-amplify": "^6.6.0",
     "axios": "^1.7.7",
     "jotai": "^2.9.3",
+    "local-ssl-proxy": "^2.0.5",
     "next": "^14.2.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

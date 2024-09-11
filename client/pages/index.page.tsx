@@ -24,6 +24,7 @@ const Home = () => {
         <Spacer axis="y" size={24} />
         <Authenticator
           signUpAttributes={['email']}
+          socialProviders={['google']}
           services={{
             handleSignUp: (input) =>
               signUp({
