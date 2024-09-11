@@ -20,6 +20,7 @@
     "@aspida/axios": "^1.14.0",
     "@aws-amplify/ui-react": "^6.3.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.645.0",
+    "@fakerjs/word": "^1.0.1",
     "aspida": "^1.14.0",
     "aws-amplify": "^6.6.0",
     "axios": "^1.7.7",

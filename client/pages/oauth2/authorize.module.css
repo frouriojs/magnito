@@ -1,0 +1,46 @@
+.container {
+  max-width: 500px;
+  padding: 32px 24px;
+  margin: 0 auto;
+}
+
+.btn {
+  padding: 6px 16px;
+  font-weight: bold;
+  color: blue;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: #777;
+}
+
+.textInput {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.textInput:focus {
+  outline-color: blue;
+}
+
+.submitBtn {
+  padding: 6px 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  background: blue;
+  border: none;
+  border-radius: 6px;
+}
+
+.submitBtn:disabled {
+  cursor: not-allowed;
+  background: #aaa;
+}
