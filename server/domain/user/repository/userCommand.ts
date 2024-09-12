@@ -1,14 +1,15 @@
 import type { Prisma } from '@prisma/client';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
+import type { CognitoUserEntity, UserAttributeEntity } from 'common/types/user';
 
 export const userCommand = {
-  save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
+  save: async (tx: Prisma.TransactionClient, user: CognitoUserEntity): Promise<void> => {
     await tx.userAttribute.deleteMany({ where: { userId: user.id } });
 
     await tx.user.upsert({
       where: { id: user.id },
       update: {
+        kind: user.kind,
         email: user.email,
         name: user.name,
         enabled: user.enabled,
@@ -27,6 +28,7 @@ export const userCommand = {
       },
       create: {
         id: user.id,
+        kind: user.kind,
         email: user.email,
         name: user.name,
         enabled: user.enabled,

@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             email: true,
             oauth: {
               domain: 'localhost:5052',
-              scopes: ['email', 'profile'],
+              scopes: ['openid'],
               redirectSignIn: ['http://localhost:5051'],
               redirectSignOut: ['http://localhost:5051'],
               responseType: 'token',

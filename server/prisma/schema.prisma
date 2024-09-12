@@ -9,17 +9,18 @@ generator client {
 
 model User {
   id               String          @id
+  kind             String?
   name             String
   email            String
-  enabled          Boolean?
-  status           String?
+  enabled          Boolean
+  status           String
   password         String
   confirmationCode String
   salt             String
   verifier         String
   refreshToken     String
   createdAt        DateTime
-  updatedAt        DateTime?
+  updatedAt        DateTime
   secretBlock      String?
   pubA             String?
   pubB             String?

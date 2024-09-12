@@ -2,7 +2,7 @@ import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { ChangePasswordTarget, VerifyUserAttributeTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
+import type { CognitoUserEntity } from 'common/types/user';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
@@ -22,7 +22,7 @@ export const userMethod = {
       userPoolId: EntityId['userPool'];
       attributes: AttributeType[] | undefined;
     },
-  ): UserEntity => {
+  ): CognitoUserEntity => {
     assert(params.attributes);
     cognitoAssert(idCount === 0, 'User already exists');
     cognitoAssert(
@@ -40,7 +40,8 @@ export const userMethod = {
         username: params.name,
         password: params.password,
       }),
-      id: brandedId.user.entity.parse(ulid()),
+      id: brandedId.cognitoUser.entity.parse(ulid()),
+      kind: 'cognito',
       email: params.email,
       enabled: true,
       status: 'UNCONFIRMED',
@@ -54,7 +55,7 @@ export const userMethod = {
       updatedTime: now,
     };
   },
-  confirm: (user: UserEntity, confirmationCode: string): UserEntity => {
+  confirm: (user: CognitoUserEntity, confirmationCode: string): CognitoUserEntity => {
     cognitoAssert(
       user.confirmationCode === confirmationCode,
       'Invalid verification code provided, please try again.',
@@ -63,9 +64,9 @@ export const userMethod = {
     return { ...user, status: 'CONFIRMED', updatedTime: Date.now() };
   },
   changePassword: (params: {
-    user: UserEntity;
+    user: CognitoUserEntity;
     req: ChangePasswordTarget['reqBody'];
-  }): UserEntity => {
+  }): CognitoUserEntity => {
     cognitoAssert(
       params.user.password === params.req.PreviousPassword,
       'Incorrect username or password.',
@@ -85,16 +86,16 @@ export const userMethod = {
       updatedTime: Date.now(),
     };
   },
-  forgotPassword: (user: UserEntity): UserEntity => {
+  forgotPassword: (user: CognitoUserEntity): CognitoUserEntity => {
     const confirmationCode = genConfirmationCode();
 
     return { ...user, status: 'RESET_REQUIRED', confirmationCode, updatedTime: Date.now() };
   },
   confirmForgotPassword: (params: {
-    user: UserEntity;
+    user: CognitoUserEntity;
     confirmationCode: string;
     password: string;
-  }): UserEntity => {
+  }): CognitoUserEntity => {
     const { user, confirmationCode } = params;
     cognitoAssert(
       user.confirmationCode === confirmationCode,
@@ -114,7 +115,10 @@ export const userMethod = {
       updatedTime: Date.now(),
     };
   },
-  updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
+  updateAttributes: (
+    user: CognitoUserEntity,
+    attributes: AttributeType[] | undefined,
+  ): CognitoUserEntity => {
     assert(attributes);
     const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
     const verified = user.email === email;
@@ -128,7 +132,10 @@ export const userMethod = {
       updatedTime: Date.now(),
     };
   },
-  verifyAttribute: (user: UserEntity, req: VerifyUserAttributeTarget['reqBody']): UserEntity => {
+  verifyAttribute: (
+    user: CognitoUserEntity,
+    req: VerifyUserAttributeTarget['reqBody'],
+  ): CognitoUserEntity => {
     assert(req.AttributeName === 'email');
     cognitoAssert(
       user.confirmationCode === req.Code,
@@ -137,7 +144,10 @@ export const userMethod = {
 
     return { ...user, status: 'CONFIRMED', updatedTime: Date.now() };
   },
-  deleteAttributes: (user: UserEntity, attributeNames: string[] | undefined): UserEntity => {
+  deleteAttributes: (
+    user: CognitoUserEntity,
+    attributeNames: string[] | undefined,
+  ): CognitoUserEntity => {
     assert(attributeNames);
 
     return {

@@ -9,7 +9,7 @@ import type {
   AdminSetUserPasswordTarget,
   AdminUpdateUserAttributesTarget,
 } from 'common/types/auth';
-import type { UserEntity } from 'common/types/user';
+import type { CognitoUserEntity } from 'common/types/user';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { brandedId } from 'service/brandedId';
 import { prismaClient, transaction } from 'service/prismaClient';
@@ -25,7 +25,7 @@ import { sendTemporaryPassword } from '../service/sendAuthMail';
 const findUser = async (
   tx: Prisma.TransactionClient,
   req: AdminCreateUserTarget['reqBody'],
-): Promise<UserEntity> => {
+): Promise<CognitoUserEntity> => {
   assert(req.Username);
 
   return await userQuery.findByName(tx, req.Username);
@@ -34,7 +34,7 @@ const findUser = async (
 const createUser = async (
   tx: Prisma.TransactionClient,
   req: AdminCreateUserTarget['reqBody'],
-): Promise<UserEntity> => {
+): Promise<CognitoUserEntity> => {
   assert(req.Username);
   assert(req.UserPoolId);
 

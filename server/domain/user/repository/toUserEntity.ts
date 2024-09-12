@@ -1,10 +1,11 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { User, UserAttribute } from '@prisma/client';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
+import { USER_KINDS } from 'common/constants';
+import type { CognitoUserEntity, UserAttributeEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 
-const getChallenge = (prismaUser: User): UserEntity['challenge'] =>
+const getChallenge = (prismaUser: User): CognitoUserEntity['challenge'] =>
   prismaUser.secretBlock && prismaUser.pubA && prismaUser.pubB && prismaUser.secB
     ? {
         secretBlock: prismaUser.secretBlock,
@@ -14,11 +15,14 @@ const getChallenge = (prismaUser: User): UserEntity['challenge'] =>
       }
     : undefined;
 
-export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
+export const toUserEntity = (
+  prismaUser: User & { attributes: UserAttribute[] },
+): CognitoUserEntity => {
   return {
-    id: brandedId.user.entity.parse(prismaUser.id),
+    id: brandedId.cognitoUser.entity.parse(prismaUser.id),
+    kind: z.literal(USER_KINDS.cognito).parse(prismaUser.kind),
     name: prismaUser.name,
-    enabled: z.boolean().parse(prismaUser.enabled),
+    enabled: prismaUser.enabled,
     status: z
       .enum([
         UserStatusType.UNCONFIRMED,
@@ -43,6 +47,6 @@ export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] })
       }),
     ),
     createdTime: prismaUser.createdAt.getTime(),
-    updatedTime: z.number().parse(prismaUser.updatedAt?.getTime()),
+    updatedTime: prismaUser.updatedAt.getTime(),
   };
 };

@@ -2,7 +2,7 @@ import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
+import type { CognitoUserEntity, UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
 import { createAttributes } from '../service/createAttributes';
@@ -16,7 +16,7 @@ export const adminMethod = {
     idCount: number,
     req: AdminCreateUserTarget['reqBody'],
     userPoolId: EntityId['userPool'],
-  ): UserEntity => {
+  ): CognitoUserEntity => {
     assert(req.Username);
 
     const password = req.TemporaryPassword ?? `TempPass-${Date.now()}`;
@@ -38,7 +38,10 @@ export const adminMethod = {
 
     return brandedId.deletableUser.entity.parse(user.id);
   },
-  setUserPassword: (user: UserEntity, req: AdminSetUserPasswordTarget['reqBody']): UserEntity => {
+  setUserPassword: (
+    user: CognitoUserEntity,
+    req: AdminSetUserPasswordTarget['reqBody'],
+  ): CognitoUserEntity => {
     assert(req.UserPoolId);
     assert(req.Password);
     validatePass(req.Password);
@@ -53,7 +56,10 @@ export const adminMethod = {
       updatedTime: Date.now(),
     };
   },
-  updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
+  updateAttributes: (
+    user: CognitoUserEntity,
+    attributes: AttributeType[] | undefined,
+  ): CognitoUserEntity => {
     assert(attributes);
     const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
 

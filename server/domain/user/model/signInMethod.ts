@@ -1,6 +1,6 @@
 import assert from 'assert';
 import type { UserSrpAuthTarget } from 'common/types/signIn';
-import type { ChallengeVal, UserEntity } from 'common/types/user';
+import type { ChallengeVal, CognitoUserEntity } from 'common/types/user';
 import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import crypto from 'crypto';
 import { genTokens } from 'domain/user/service/genTokens';
@@ -15,10 +15,10 @@ import { cognitoAssert } from 'service/cognitoAssert';
 
 export const signInMethod = {
   createChallenge: (
-    user: UserEntity,
+    user: CognitoUserEntity,
     params: UserSrpAuthTarget['reqBody']['AuthParameters'],
   ): {
-    userWithChallenge: UserEntity;
+    userWithChallenge: CognitoUserEntity;
     ChallengeParameters: UserSrpAuthTarget['resBody']['ChallengeParameters'];
   } => {
     const { B, b } = calculateSrpB(user.verifier);
@@ -37,7 +37,7 @@ export const signInMethod = {
     };
   },
   srpAuth: (params: {
-    user: UserEntity;
+    user: CognitoUserEntity;
     timestamp: string;
     clientSignature: string;
     jwks: Jwks;

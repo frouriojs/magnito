@@ -11,12 +11,12 @@ export type Query = {
   redirect_uri: string;
   response_type: OAuthConfig['responseType'];
   client_id: MaybeId['userPoolClient'];
-  identity_provider: OAuthConfig['providers'];
+  identity_provider: string;
   scope: OAuthConfig['scopes'];
   state: string;
 };
 
-const AddAccount = (props: { onBack: () => void }) => {
+const AddAccount = (props: { provider: string; onBack: () => void }) => {
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
@@ -30,7 +30,7 @@ const AddAccount = (props: { onBack: () => void }) => {
   const setFakeVals = () => {
     const fakeWord = word({ length: 8 });
 
-    setEmail(`${fakeWord}@magnito.com`);
+    setEmail(`${fakeWord}@${props.provider.toLowerCase()}.com`);
     setDisplayName(fakeWord);
   };
 
@@ -83,7 +83,9 @@ const AddAccount = (props: { onBack: () => void }) => {
 
 const Authorize = () => {
   const router = useRouter();
-  const provider = router.query.identity_provider;
+  const provider = z
+    .enum(['Google', 'Apple', 'Amazon', 'Facebook'])
+    .parse((router.query.identity_provider as string).replace(/^.+([A-Z][a-z]+)$/, '$1'));
   const [mode, setMode] = useState<'default' | 'add'>('default');
 
   return (
@@ -97,7 +99,7 @@ const Authorize = () => {
           + Add new account
         </button>
       ) : (
-        <AddAccount onBack={() => setMode('default')} />
+        <AddAccount provider={provider} onBack={() => setMode('default')} />
       )}
     </div>
   );

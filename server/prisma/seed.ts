@@ -1,19 +1,14 @@
-import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { Prisma } from '@prisma/client';
 import assert from 'assert';
+import { USER_KINDS } from 'common/constants';
 import { prismaClient, transaction } from 'service/prismaClient';
 
 const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
-  const users = await tx.user.findMany({ where: { updatedAt: null } });
+  const users = await tx.user.findMany({ where: { kind: null } });
 
   if (users.length > 0) {
     await tx.user.updateMany({
-      data: users.map((user) => ({
-        ...user,
-        enabled: true,
-        status: UserStatusType.CONFIRMED,
-        updatedAt: user.createdAt,
-      })),
+      data: users.map((user) => ({ ...user, kind: USER_KINDS.cognito })),
     });
   }
 
@@ -21,9 +16,7 @@ const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
     const users = await tx.user.findMany();
 
     users.forEach((user) => {
-      assert(user.enabled !== null);
-      assert(user.status !== null);
-      assert(user.updatedAt !== null);
+      assert(user.kind !== null);
     });
   };
 

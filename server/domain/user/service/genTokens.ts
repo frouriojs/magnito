@@ -1,5 +1,5 @@
 import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
+import type { CognitoUserEntity } from 'common/types/user';
 import type { Jwks } from 'common/types/userPool';
 import { createSigner } from 'fast-jwt';
 import { EXPIRES_SEC } from 'service/constants';
@@ -12,7 +12,7 @@ export const genTokens = (params: {
   privateKey: string;
   userPoolClientId: EntityId['userPoolClient'];
   jwks: Jwks;
-  user: UserEntity;
+  user: CognitoUserEntity;
 }): { AccessToken: string; IdToken: string } => {
   const signer = createSigner({
     key: params.privateKey,

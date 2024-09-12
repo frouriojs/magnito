@@ -1,4 +1,5 @@
 import type { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
+import type { USER_KINDS } from 'common/constants';
 import type { EntityId } from './brandedId';
 
 export type ChallengeVal = {
@@ -14,8 +15,21 @@ export type UserAttributeEntity = {
   value: string;
 };
 
-export type UserEntity = {
-  id: EntityId['user'];
+export type SocialUserEntity = {
+  id: EntityId['socialUser'];
+  kind: typeof USER_KINDS.social;
+  name: string;
+  email: string;
+  refreshToken: string;
+  userPoolId: EntityId['userPool'];
+  attributes: UserAttributeEntity[];
+  createdTime: number;
+  updatedTime: number;
+};
+
+export type CognitoUserEntity = {
+  id: EntityId['cognitoUser'];
+  kind: typeof USER_KINDS.cognito;
   name: string;
   enabled: boolean;
   status: UserStatusType;
@@ -31,3 +45,5 @@ export type UserEntity = {
   updatedTime: number;
   challenge?: ChallengeVal;
 };
+
+export type UserEntity = SocialUserEntity | CognitoUserEntity;

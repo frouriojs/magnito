@@ -1,5 +1,5 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
+import type { CognitoUserEntity, UserAttributeEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
 import { z } from 'zod';
@@ -25,7 +25,7 @@ export const STANDARD_ATTRIBUTE_NAMES = [
   'zoneinfo',
 ] as const;
 
-export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
+export const toAttributeTypes = (user: CognitoUserEntity): AttributeType[] => {
   return [
     { Name: 'sub', Value: user.id },
     { Name: 'email', Value: user.email },
