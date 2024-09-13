@@ -14,13 +14,14 @@ model User {
   email            String
   enabled          Boolean
   status           String
-  password         String
-  confirmationCode String
-  salt             String
-  verifier         String
+  password         String?
+  confirmationCode String?
+  salt             String?
+  verifier         String?
   refreshToken     String
   createdAt        DateTime
   updatedAt        DateTime
+  provider         String?
   secretBlock      String?
   pubA             String?
   pubB             String?

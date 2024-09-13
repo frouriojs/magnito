@@ -4,7 +4,7 @@ import type {
   ResendConfirmationCodeTarget,
   SignUpTarget,
 } from 'common/types/auth';
-import { userMethod } from 'domain/user/model/userMethod';
+import { cognitoUserMethod } from 'domain/user/model/cognitoUserMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
@@ -23,7 +23,7 @@ export const signUpUseCase = {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const idCount = await userQuery.countId(tx, req.Username);
       const email = findEmail(req.UserAttributes);
-      const user = userMethod.create(idCount, {
+      const user = cognitoUserMethod.create(idCount, {
         name: req.Username,
         email,
         password: req.Password,
@@ -43,7 +43,7 @@ export const signUpUseCase = {
   confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
-      const confirmed = userMethod.confirm(user, req.ConfirmationCode);
+      const confirmed = cognitoUserMethod.confirm(user, req.ConfirmationCode);
 
       await userCommand.save(tx, confirmed);
 

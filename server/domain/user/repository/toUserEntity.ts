@@ -1,7 +1,7 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { User, UserAttribute } from '@prisma/client';
-import { USER_KINDS } from 'common/constants';
-import type { CognitoUserEntity, UserAttributeEntity } from 'common/types/user';
+import { PROVIDER_LIST, USER_KINDS } from 'common/constants';
+import type { CognitoUserEntity, SocialUserEntity, UserAttributeEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 
@@ -15,7 +15,7 @@ const getChallenge = (prismaUser: User): CognitoUserEntity['challenge'] =>
       }
     : undefined;
 
-export const toUserEntity = (
+export const toCognitoUserEntity = (
   prismaUser: User & { attributes: UserAttribute[] },
 ): CognitoUserEntity => {
   return {
@@ -32,11 +32,11 @@ export const toUserEntity = (
       ])
       .parse(prismaUser.status),
     email: prismaUser.email,
-    password: prismaUser.password,
-    salt: prismaUser.salt,
-    verifier: prismaUser.verifier,
+    password: z.string().parse(prismaUser.password),
+    salt: z.string().parse(prismaUser.salt),
+    verifier: z.string().parse(prismaUser.verifier),
     refreshToken: prismaUser.refreshToken,
-    confirmationCode: prismaUser.confirmationCode,
+    confirmationCode: z.string().parse(prismaUser.confirmationCode),
     challenge: getChallenge(prismaUser),
     userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
     attributes: prismaUser.attributes.map(
@@ -50,3 +50,42 @@ export const toUserEntity = (
     updatedTime: prismaUser.updatedAt.getTime(),
   };
 };
+
+export const toSocialUserEntity = (
+  prismaUser: User & { attributes: UserAttribute[] },
+): SocialUserEntity => {
+  return {
+    id: brandedId.socialUser.entity.parse(prismaUser.id),
+    kind: z.literal(USER_KINDS.social).parse(prismaUser.kind),
+    name: prismaUser.name,
+    enabled: prismaUser.enabled,
+    status: z.literal(UserStatusType.EXTERNAL_PROVIDER).parse(prismaUser.status),
+    email: prismaUser.email,
+    provider: z.enum(PROVIDER_LIST).parse(prismaUser.provider),
+    refreshToken: prismaUser.refreshToken,
+    userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
+    attributes: prismaUser.attributes.map(
+      (attr): UserAttributeEntity => ({
+        id: brandedId.userAttribute.entity.parse(attr.id),
+        name: attr.name,
+        value: attr.value,
+      }),
+    ),
+    createdTime: prismaUser.createdAt.getTime(),
+    updatedTime: prismaUser.updatedAt.getTime(),
+  };
+};
+
+// export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
+//   const kind = z.enum(USER_KIND_LIST).parse(prismaUser.kind);
+
+//   switch (kind) {
+//     case 'cognito':
+//       return toCognitoUserEntity(prismaUser);
+//     case 'social':
+//       return toSocialUserEntity(prismaUser);
+//     /* v8 ignore next 2 */
+//     default:
+//       throw new Error(kind satisfies never);
+//   }
+// };

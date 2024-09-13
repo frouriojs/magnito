@@ -11,7 +11,7 @@ import type {
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
 } from 'common/types/auth';
-import { userMethod } from 'domain/user/model/userMethod';
+import { cognitoUserMethod } from 'domain/user/model/cognitoUserMethod';
 import { userCommand } from 'domain/user/repository/userCommand';
 import { userQuery } from 'domain/user/repository/userQuery';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
@@ -34,7 +34,7 @@ export const authUseCase = {
   listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
     transaction(async (tx) => {
       assert(req.UserPoolId);
-      const users = await userQuery.listByPoolId(tx, req.UserPoolId);
+      const users = await userQuery.listCognitos(tx, req.UserPoolId);
 
       return {
         Users: users.map(
@@ -62,7 +62,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      await userCommand.save(tx, userMethod.changePassword({ user, req }));
+      await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req }));
 
       return {};
     }),
@@ -74,7 +74,7 @@ export const authUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
       assert(poolClient.userPoolId === user.userPoolId);
 
-      const forgotUser = userMethod.forgotPassword(user);
+      const forgotUser = cognitoUserMethod.forgotPassword(user);
       await userCommand.save(tx, forgotUser);
       await sendConfirmationCode(forgotUser);
 
@@ -88,7 +88,7 @@ export const authUseCase = {
 
       await userCommand.save(
         tx,
-        userMethod.confirmForgotPassword({
+        cognitoUserMethod.confirmForgotPassword({
           user,
           confirmationCode: req.ConfirmationCode,
           password: req.Password,
@@ -105,7 +105,7 @@ export const authUseCase = {
 
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
-      const updated = userMethod.updateAttributes(user, req.UserAttributes);
+      const updated = cognitoUserMethod.updateAttributes(user, req.UserAttributes);
 
       await userCommand.save(tx, updated);
 
@@ -122,7 +122,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      await userCommand.save(tx, userMethod.verifyAttribute(user, req));
+      await userCommand.save(tx, cognitoUserMethod.verifyAttribute(user, req));
 
       return {};
     }),
@@ -135,7 +135,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
+      await userCommand.save(tx, cognitoUserMethod.deleteAttributes(user, req.UserAttributeNames));
 
       return {};
     }),

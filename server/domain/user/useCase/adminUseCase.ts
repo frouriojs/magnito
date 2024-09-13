@@ -15,7 +15,7 @@ import { brandedId } from 'service/brandedId';
 import { prismaClient, transaction } from 'service/prismaClient';
 import { genJwks } from 'service/privateKey';
 import { adminMethod } from '../model/adminMethod';
-import { userMethod } from '../model/userMethod';
+import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { userCommand } from '../repository/userCommand';
 import { userQuery } from '../repository/userQuery';
 import { toAttributeTypes } from '../service/createAttributes';
@@ -139,7 +139,7 @@ export const adminUseCase = {
 
       const user = await userQuery.findByName(tx, req.Username);
 
-      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
+      await userCommand.save(tx, cognitoUserMethod.deleteAttributes(user, req.UserAttributeNames));
 
       return {};
     }),

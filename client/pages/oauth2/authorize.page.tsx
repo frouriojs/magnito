@@ -1,5 +1,6 @@
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
+import { PROVIDER_LIST } from 'common/constants';
 import type { MaybeId } from 'common/types/brandedId';
 import { Spacer } from 'components/Spacer';
 import { useRouter } from 'next/router';
@@ -84,7 +85,7 @@ const AddAccount = (props: { provider: string; onBack: () => void }) => {
 const Authorize = () => {
   const router = useRouter();
   const provider = z
-    .enum(['Google', 'Apple', 'Amazon', 'Facebook'])
+    .enum(PROVIDER_LIST)
     .parse((router.query.identity_provider as string).replace(/^.+([A-Z][a-z]+)$/, '$1'));
   const [mode, setMode] = useState<'default' | 'add'>('default');
 

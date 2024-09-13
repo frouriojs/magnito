@@ -1,6 +1,6 @@
 import type { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import type { USER_KINDS } from 'common/constants';
-import type { EntityId } from './brandedId';
+import type { PROVIDER_LIST, USER_KINDS } from 'common/constants';
+import type { EntityId, MaybeId } from './brandedId';
 
 export type ChallengeVal = {
   secretBlock: string;
@@ -19,12 +19,20 @@ export type SocialUserEntity = {
   id: EntityId['socialUser'];
   kind: typeof USER_KINDS.social;
   name: string;
+  enabled: boolean;
+  status: typeof UserStatusType.EXTERNAL_PROVIDER;
   email: string;
+  provider: (typeof PROVIDER_LIST)[number];
+  password?: undefined;
+  confirmationCode?: undefined;
+  salt?: undefined;
+  verifier?: undefined;
   refreshToken: string;
   userPoolId: EntityId['userPool'];
   attributes: UserAttributeEntity[];
   createdTime: number;
   updatedTime: number;
+  challenge?: undefined;
 };
 
 export type CognitoUserEntity = {
@@ -34,6 +42,7 @@ export type CognitoUserEntity = {
   enabled: boolean;
   status: UserStatusType;
   email: string;
+  provider?: undefined;
   password: string;
   confirmationCode: string;
   salt: string;
@@ -47,3 +56,11 @@ export type CognitoUserEntity = {
 };
 
 export type UserEntity = SocialUserEntity | CognitoUserEntity;
+
+export type SocialUserCreateVal = {
+  provider: (typeof PROVIDER_LIST)[number];
+  name: string;
+  email: string;
+  photoUrl?: string;
+  userPoolClientId: MaybeId['userPoolClient'];
+};

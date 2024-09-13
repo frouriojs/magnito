@@ -11,6 +11,8 @@ export const BRANDED_ID_NAMES = [
 
 export const USER_KIND_LIST = ['social', 'cognito'] as const;
 
+export const PROVIDER_LIST = ['Google', 'Apple', 'Amazon', 'Facebook'] as const;
+
 const listToDict = <T extends readonly [string, ...string[]]>(list: T): { [U in T[number]]: U } =>
   list.reduce((dict, type) => ({ ...dict, [type]: type }), {} as { [U in T[number]]: U });
 

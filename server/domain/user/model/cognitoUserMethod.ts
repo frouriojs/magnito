@@ -12,7 +12,7 @@ import { createAttributes } from '../service/createAttributes';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
 
-export const userMethod = {
+export const cognitoUserMethod = {
   create: (
     idCount: number,
     params: {

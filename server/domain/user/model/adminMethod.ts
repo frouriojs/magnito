@@ -9,7 +9,7 @@ import { createAttributes } from '../service/createAttributes';
 import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
-import { userMethod } from './userMethod';
+import { cognitoUserMethod } from './cognitoUserMethod';
 
 export const adminMethod = {
   createVerifiedUser: (
@@ -23,7 +23,7 @@ export const adminMethod = {
     const email = findEmail(req.UserAttributes);
 
     return {
-      ...userMethod.create(idCount, {
+      ...cognitoUserMethod.create(idCount, {
         name: req.Username,
         password,
         email,
