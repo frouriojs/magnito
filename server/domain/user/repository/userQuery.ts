@@ -20,10 +20,10 @@ export const userQuery = {
         include: { attributes: true },
       })
       .then((users) => users.map(toSocialUserEntity)),
-  listCognitos: (tx: Prisma.TransactionClient, userPoolId: string): Promise<CognitoUserEntity[]> =>
+  listAll: (tx: Prisma.TransactionClient, userPoolId: string): Promise<UserEntity[]> =>
     tx.user
-      .findMany({ where: { userPoolId, kind: USER_KINDS.cognito }, include: { attributes: true } })
-      .then((users) => users.map(toCognitoUserEntity)),
+      .findMany({ where: { userPoolId }, include: { attributes: true } })
+      .then((users) => users.map(toUserEntity)),
   findById: (
     tx: Prisma.TransactionClient,
     id: UserEntity['id'] | MaybeId['socialUser'],

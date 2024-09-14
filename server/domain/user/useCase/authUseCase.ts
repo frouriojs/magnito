@@ -34,7 +34,7 @@ export const authUseCase = {
   listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
     transaction(async (tx) => {
       assert(req.UserPoolId);
-      const users = await userQuery.listCognitos(tx, req.UserPoolId);
+      const users = await userQuery.listAll(tx, req.UserPoolId);
 
       return {
         Users: users.map(

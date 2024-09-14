@@ -8,14 +8,49 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  width: 640px;
   max-width: 100%;
   margin: 0 auto;
   margin-top: 32px;
 }
 
 .card {
+  padding: 16px;
+  margin: 0 auto;
   background: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 2px 2px 12px #0004;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+.card table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+}
+
+.card caption {
+  margin-bottom: 8px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+.card th,
+.card td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.card th {
+  color: #333;
+  background-color: #f8f8f8;
+}
+
+.card tr:hover {
+  background-color: #f1f1f1;
+}
+
+.card td {
+  color: #555;
 }
