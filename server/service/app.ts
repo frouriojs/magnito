@@ -1,12 +1,14 @@
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
-import helmet from '@fastify/helmet';
+import fastifyFormbody from '@fastify/formbody';
 import type { TokenOrHeader } from '@fastify/jwt';
 import fastifyJwt from '@fastify/jwt';
+import fastifyStatic from '@fastify/static';
 import assert from 'assert';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
 import buildGetJwks from 'get-jwks';
+import { resolve } from 'path';
 import server from '../$server';
 import { COOKIE_NAME } from './constants';
 
@@ -14,9 +16,9 @@ export const init = (): FastifyInstance => {
   const fastify = Fastify();
   const getJwks = buildGetJwks();
 
-  fastify.register(helmet);
   fastify.register(cors, { origin: true, credentials: true });
   fastify.register(cookie);
+  fastify.register(fastifyFormbody);
   fastify.addContentTypeParser(
     'application/x-amz-json-1.1',
     { parseAs: 'string' },
@@ -37,6 +39,9 @@ export const init = (): FastifyInstance => {
       });
     },
   });
+
+  // serve ssl oauth2 page
+  fastify.register(fastifyStatic, { root: resolve('../client/out') });
 
   server(fastify);
 

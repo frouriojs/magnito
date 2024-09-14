@@ -3,6 +3,7 @@ import type { SocialUserRequestTokensVal, SocialUserResponseTokensVal } from 'co
 
 export type Methods = DefineMethods<{
   post: {
+    reqFormat: URLSearchParams;
     reqBody: SocialUserRequestTokensVal;
     resBody: SocialUserResponseTokensVal;
   };

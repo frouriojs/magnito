@@ -24,7 +24,10 @@ export const userQuery = {
     tx.user
       .findMany({ where: { userPoolId, kind: USER_KINDS.cognito }, include: { attributes: true } })
       .then((users) => users.map(toCognitoUserEntity)),
-  findById: (tx: Prisma.TransactionClient, id: UserEntity['id']): Promise<UserEntity> =>
+  findById: (
+    tx: Prisma.TransactionClient,
+    id: UserEntity['id'] | MaybeId['socialUser'],
+  ): Promise<UserEntity> =>
     tx.user.findUniqueOrThrow({ where: { id }, include: { attributes: true } }).then(toUserEntity),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<CognitoUserEntity> =>
     tx.user

@@ -27,4 +27,11 @@ export default defineController(() => ({
     },
     handler: async ({ body }) => ({ status: 200, body: await socialUseCase.createUser(body) }),
   },
+  patch: {
+    validators: { body: z.object({ id: brandedId.socialUser.maybe, codeChallenge: z.string() }) },
+    handler: async ({ body }) => ({
+      status: 200,
+      body: await socialUseCase.updateCodeChallenge(body),
+    }),
+  },
 }));

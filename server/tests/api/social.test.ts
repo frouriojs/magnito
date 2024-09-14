@@ -3,7 +3,7 @@ import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
-import { GET, POST } from './utils';
+import { GET, PATCH, POST } from './utils';
 
 test(POST(noCookieClient.public.socialUsers), async () => {
   const name1 = 'user1';
@@ -41,6 +41,26 @@ test(POST(noCookieClient.public.socialUsers), async () => {
   expect(res).toHaveLength(2);
 });
 
+test(PATCH(noCookieClient.public.socialUsers), async () => {
+  const codeChallenge1 = createHash('sha256').update(ulid()).digest('base64url');
+  const codeChallenge2 = createHash('sha256').update(ulid()).digest('base64url');
+  const user = await noCookieClient.public.socialUsers.$post({
+    body: {
+      provider: 'Google',
+      name: 'user1',
+      email: `${ulid()}@example.com`,
+      codeChallenge: codeChallenge1,
+      userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  const updated = await noCookieClient.public.socialUsers.$patch({
+    body: { id: user.id, codeChallenge: codeChallenge2 },
+  });
+
+  expect(updated.codeChallenge).toBe(codeChallenge2);
+});
+
 test(GET(noCookieClient.oauth2), async () => {
   const res = await noCookieClient.oauth2.get();
 
@@ -48,14 +68,12 @@ test(GET(noCookieClient.oauth2), async () => {
 });
 
 test(POST(noCookieClient.oauth2.token), async () => {
-  const name1 = 'user1';
-  const email1 = `${ulid()}@example.com`;
   const codeVerifier = ulid();
   const user = await noCookieClient.public.socialUsers.$post({
     body: {
       provider: 'Google',
-      name: name1,
-      email: email1,
+      name: 'user1',
+      email: `${ulid()}@example.com`,
       codeChallenge: createHash('sha256').update(codeVerifier).digest('base64url'),
       userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },

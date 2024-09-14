@@ -130,8 +130,13 @@ const Authorize = () => {
     query: { userPoolClientId },
   });
   const [mode, setMode] = useState<'default' | 'add'>('default');
-  const selectAccount = (user: SocialUserEntity) => {
+  const redirect = (user: SocialUserEntity) => {
     location.href = `${redirectUri}?code=${user.authorizationCode}&state=${state}`;
+  };
+  const selectAccount = async (user: SocialUserEntity) => {
+    await apiClient.public.socialUsers
+      .$patch({ body: { id: user.id, codeChallenge } })
+      .then(redirect);
   };
 
   return (
@@ -174,7 +179,7 @@ const Authorize = () => {
           provider={provider}
           codeChallenge={codeChallenge}
           userPoolClientId={userPoolClientId}
-          onAdded={selectAccount}
+          onAdded={redirect}
           onBack={() => setMode('default')}
         />
       )}

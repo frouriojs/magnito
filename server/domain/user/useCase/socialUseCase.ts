@@ -1,3 +1,4 @@
+import type { MaybeId } from 'common/types/brandedId';
 import type {
   SocialUserCreateVal,
   SocialUserEntity,
@@ -20,13 +21,25 @@ export const socialUseCase = {
 
       return user;
     }),
-  getTokens: (params: SocialUserRequestTokensVal): Promise<SocialUserResponseTokensVal> =>
+  getTokens: (val: SocialUserRequestTokensVal): Promise<SocialUserResponseTokensVal> =>
     transaction(async (tx) => {
-      const user = await userQuery.findByAuthorizationCode(tx, params.code);
+      const user = await userQuery.findByAuthorizationCode(tx, val.code);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
-      const poolClient = await userPoolQuery.findClientById(tx, params.client_id);
+      const poolClient = await userPoolQuery.findClientById(tx, val.client_id);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
-      return socialUserMethod.createToken(user, params.code_verifier, pool, poolClient, jwks);
+      return socialUserMethod.createToken(user, val.code_verifier, pool, poolClient, jwks);
+    }),
+  updateCodeChallenge: (val: {
+    id: MaybeId['socialUser'];
+    codeChallenge: string;
+  }): Promise<SocialUserEntity> =>
+    transaction(async (tx) => {
+      const user = await userQuery.findById(tx, val.id);
+      const updated = socialUserMethod.updateCodeChallenge(user, val.codeChallenge);
+
+      await userCommand.save(tx, updated);
+
+      return updated;
     }),
 };

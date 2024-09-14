@@ -5,4 +5,11 @@ import { NEXT_PUBLIC_API_ORIGIN } from './envValues';
 
 export const apiAxios = axios.create({ withCredentials: true });
 
-export const apiClient = api(aspida(apiAxios, { baseURL: NEXT_PUBLIC_API_ORIGIN }));
+export const apiClient = api(
+  aspida(apiAxios, {
+    baseURL:
+      typeof location !== 'undefined' && location.protocol === 'https:'
+        ? undefined
+        : NEXT_PUBLIC_API_ORIGIN,
+  }),
+);

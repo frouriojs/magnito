@@ -11,4 +11,8 @@ export type Methods = DefineMethods<{
     reqBody: SocialUserCreateVal;
     resBody: SocialUserEntity;
   };
+  patch: {
+    reqBody: { id: MaybeId['socialUser']; codeChallenge: string };
+    resBody: SocialUserEntity;
+  };
 }>;

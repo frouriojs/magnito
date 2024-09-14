@@ -52,7 +52,9 @@ export const BasicHeader = (props: { user: UserEntity }) => {
         </div>
         <Menu open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
           <MenuItem onClick={() => setOpenProfile(true)}>プロフィール</MenuItem>
-          <MenuItem onClick={() => setOpenPassword(true)}>パスワードを変更</MenuItem>
+          {props.user.kind === 'cognito' && (
+            <MenuItem onClick={() => setOpenPassword(true)}>パスワードを変更</MenuItem>
+          )}
           <MenuItem onClick={signOut}>ログアウト</MenuItem>
         </Menu>
       </div>

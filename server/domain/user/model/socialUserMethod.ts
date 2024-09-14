@@ -4,6 +4,7 @@ import type {
   SocialUserCreateVal,
   SocialUserEntity,
   SocialUserResponseTokensVal,
+  UserEntity,
 } from 'common/types/user';
 import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
 import { createHash } from 'crypto';
@@ -67,5 +68,10 @@ export const socialUserMethod = {
       expires_in: 3600,
       token_type: 'Bearer',
     };
+  },
+  updateCodeChallenge: (user: UserEntity, codeChallenge: string): SocialUserEntity => {
+    assert(user.kind === 'social');
+
+    return { ...user, codeChallenge };
   },
 };
