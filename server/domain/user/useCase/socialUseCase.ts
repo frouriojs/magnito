@@ -1,8 +1,14 @@
-import type { SocialUserCreateVal, SocialUserEntity } from 'common/types/user';
+import type {
+  SocialUserCreateVal,
+  SocialUserEntity,
+  SocialUserRequestTokensVal,
+  SocialUserResponseTokensVal,
+} from 'common/types/user';
 import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { transaction } from 'service/prismaClient';
 import { socialUserMethod } from '../model/socialUserMethod';
 import { userCommand } from '../repository/userCommand';
+import { userQuery } from '../repository/userQuery';
 
 export const socialUseCase = {
   createUser: (val: SocialUserCreateVal): Promise<SocialUserEntity> =>
@@ -13,5 +19,14 @@ export const socialUseCase = {
       await userCommand.save(tx, user);
 
       return user;
+    }),
+  getTokens: (params: SocialUserRequestTokensVal): Promise<SocialUserResponseTokensVal> =>
+    transaction(async (tx) => {
+      const user = await userQuery.findByAuthorizationCode(tx, params.code);
+      const pool = await userPoolQuery.findById(tx, user.userPoolId);
+      const poolClient = await userPoolQuery.findClientById(tx, params.client_id);
+      const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
+
+      return socialUserMethod.createToken(user, params.code_verifier, pool, poolClient, jwks);
     }),
 };

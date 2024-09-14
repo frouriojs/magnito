@@ -4,11 +4,12 @@ import {
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
+import { createHash } from 'crypto';
 import { InbucketAPIClient } from 'inbucket-js-client';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { ulid } from 'ulid';
-import { testPassword, testUserName } from './apiClient';
+import { noCookieClient, testPassword, testUserName } from './apiClient';
 
 export const GET = (api: { $path: () => string }): string => `GET: ${api.$path()}`;
 export const POST = (api: { $path: () => string }): string => `POST: ${api.$path()}`;
@@ -27,7 +28,7 @@ export const fetchMailBodyAndTrash = async (email: string): Promise<string> => {
   return message.body.text.trim();
 };
 
-export const createUserAndToken = async (): Promise<{ AccessToken: string }> => {
+export const createCognitoUserAndToken = async (): Promise<{ AccessToken: string }> => {
   await cognitoClient.send(
     new AdminCreateUserCommand({
       UserPoolId: DEFAULT_USER_POOL_ID,
@@ -57,4 +58,30 @@ export const createUserAndToken = async (): Promise<{ AccessToken: string }> => 
   assert(res.AuthenticationResult?.IdToken);
 
   return { AccessToken: res.AuthenticationResult.IdToken };
+};
+
+export const createSocialUserAndToken = async (): Promise<{ AccessToken: string }> => {
+  const codeVerifier = ulid();
+
+  const user = await noCookieClient.public.socialUsers.$post({
+    body: {
+      provider: 'Google',
+      name: 'user1',
+      email: `${ulid()}@example.com`,
+      codeChallenge: createHash('sha256').update(codeVerifier).digest('base64url'),
+      userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  const res = await noCookieClient.oauth2.token.$post({
+    body: {
+      grant_type: 'authorization_code',
+      code: user.authorizationCode,
+      client_id: DEFAULT_USER_POOL_CLIENT_ID,
+      redirect_uri: 'https://example.com',
+      code_verifier: codeVerifier,
+    },
+  });
+
+  return { AccessToken: res.id_token };
 };

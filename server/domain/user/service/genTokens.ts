@@ -1,5 +1,5 @@
 import type { EntityId } from 'common/types/brandedId';
-import type { CognitoUserEntity } from 'common/types/user';
+import type { UserEntity } from 'common/types/user';
 import type { Jwks } from 'common/types/userPool';
 import { createSigner } from 'fast-jwt';
 import { EXPIRES_SEC } from 'service/constants';
@@ -12,7 +12,7 @@ export const genTokens = (params: {
   privateKey: string;
   userPoolClientId: EntityId['userPoolClient'];
   jwks: Jwks;
-  user: CognitoUserEntity;
+  user: UserEntity;
 }): { AccessToken: string; IdToken: string } => {
   const signer = createSigner({
     key: params.privateKey,
@@ -40,7 +40,7 @@ export const genTokens = (params: {
   };
   const idToken: IdTokenJwt = {
     ...comomn,
-    email_verified: isEmailVerified(params.user),
+    email_verified: params.user.kind === 'cognito' && isEmailVerified(params.user),
     'cognito:username': params.user.name,
     aud: params.userPoolClientId,
     token_use: 'id',

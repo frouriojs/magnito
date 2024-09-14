@@ -3,7 +3,7 @@ import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 import { noCookieClient } from './apiClient';
-import { POST } from './utils';
+import { GET, POST } from './utils';
 
 test(POST(noCookieClient.public.socialUsers), async () => {
   const name1 = 'user1';
@@ -39,4 +39,37 @@ test(POST(noCookieClient.public.socialUsers), async () => {
   });
 
   expect(res).toHaveLength(2);
+});
+
+test(GET(noCookieClient.oauth2), async () => {
+  const res = await noCookieClient.oauth2.get();
+
+  expect(res.status === 200).toBeTruthy();
+});
+
+test(POST(noCookieClient.oauth2.token), async () => {
+  const name1 = 'user1';
+  const email1 = `${ulid()}@example.com`;
+  const codeVerifier = ulid();
+  const user = await noCookieClient.public.socialUsers.$post({
+    body: {
+      provider: 'Google',
+      name: name1,
+      email: email1,
+      codeChallenge: createHash('sha256').update(codeVerifier).digest('base64url'),
+      userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  const res = await noCookieClient.oauth2.token.post({
+    body: {
+      grant_type: 'authorization_code',
+      code: user.authorizationCode,
+      client_id: DEFAULT_USER_POOL_CLIENT_ID,
+      redirect_uri: 'https://example.com',
+      code_verifier: codeVerifier,
+    },
+  });
+
+  expect(res.status === 200).toBeTruthy();
 });

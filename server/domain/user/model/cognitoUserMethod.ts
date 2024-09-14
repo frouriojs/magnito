@@ -2,7 +2,7 @@ import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
 import type { ChangePasswordTarget, VerifyUserAttributeTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
-import type { CognitoUserEntity } from 'common/types/user';
+import type { CognitoUserEntity, UserEntity } from 'common/types/user';
 import { genConfirmationCode } from 'domain/user/service/genConfirmationCode';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
@@ -115,27 +115,35 @@ export const cognitoUserMethod = {
       updatedTime: Date.now(),
     };
   },
-  updateAttributes: (
-    user: CognitoUserEntity,
-    attributes: AttributeType[] | undefined,
-  ): CognitoUserEntity => {
+  // eslint-disable-next-line complexity
+  updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
     assert(attributes);
-    const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
-    const verified = user.email === email;
+
+    if (user.kind === 'cognito') {
+      const email = attributes.find((attr) => attr.Name === 'email')?.Value ?? user.email;
+      const verified = user.email === email;
+
+      return {
+        ...user,
+        attributes: createAttributes(attributes, user.attributes),
+        status: verified ? user.status : 'UNCONFIRMED',
+        confirmationCode: verified ? user.confirmationCode : genConfirmationCode(),
+        email,
+        updatedTime: Date.now(),
+      };
+    }
 
     return {
       ...user,
       attributes: createAttributes(attributes, user.attributes),
-      status: verified ? user.status : 'UNCONFIRMED',
-      confirmationCode: verified ? user.confirmationCode : genConfirmationCode(),
-      email,
       updatedTime: Date.now(),
     };
   },
   verifyAttribute: (
-    user: CognitoUserEntity,
+    user: UserEntity,
     req: VerifyUserAttributeTarget['reqBody'],
   ): CognitoUserEntity => {
+    assert(user.kind === 'cognito');
     assert(req.AttributeName === 'email');
     cognitoAssert(
       user.confirmationCode === req.Code,
@@ -144,10 +152,7 @@ export const cognitoUserMethod = {
 
     return { ...user, status: 'CONFIRMED', updatedTime: Date.now() };
   },
-  deleteAttributes: (
-    user: CognitoUserEntity,
-    attributeNames: string[] | undefined,
-  ): CognitoUserEntity => {
+  deleteAttributes: (user: UserEntity, attributeNames: string[] | undefined): UserEntity => {
     assert(attributeNames);
 
     return {

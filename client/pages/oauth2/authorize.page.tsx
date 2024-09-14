@@ -3,6 +3,7 @@ import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
 import { APP_NAME, PROVIDER_LIST } from 'common/constants';
 import type { MaybeId } from 'common/types/brandedId';
+import type { SocialUserEntity } from 'common/types/user';
 import { Spacer } from 'components/Spacer';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -25,6 +26,7 @@ const AddAccount = (props: {
   provider: (typeof PROVIDER_LIST)[number];
   codeChallenge: string;
   userPoolClientId: MaybeId['userPoolClient'];
+  onAdded: (user: SocialUserEntity) => void;
   onBack: () => void;
 }) => {
   const [email, setEmail] = useState('');
@@ -46,7 +48,7 @@ const AddAccount = (props: {
   const addUser = async () => {
     if (!data.success) return;
 
-    await apiClient.public.socialUsers.$post({
+    const user = await apiClient.public.socialUsers.$post({
       body: {
         ...data.data,
         photoUrl: photoUrl || undefined,
@@ -55,6 +57,8 @@ const AddAccount = (props: {
         userPoolClientId: props.userPoolClientId,
       },
     });
+
+    props.onAdded(user);
   };
 
   return (
@@ -114,6 +118,8 @@ const Authorize = () => {
   const router = useRouter();
   const userPoolClientId = router.query.client_id as MaybeId['userPoolClient'];
   const codeChallenge = router.query.code_challenge as string;
+  const state = router.query.state as string;
+  const redirectUri = router.query.redirect_uri as string;
   const provider = z
     .enum(PROVIDER_LIST)
     .parse(
@@ -124,6 +130,9 @@ const Authorize = () => {
     query: { userPoolClientId },
   });
   const [mode, setMode] = useState<'default' | 'add'>('default');
+  const selectAccount = (user: SocialUserEntity) => {
+    location.href = `${redirectUri}?code=${user.authorizationCode}&state=${state}`;
+  };
 
   return (
     <div className={styles.container}>
@@ -134,7 +143,7 @@ const Authorize = () => {
           <div className={styles.desc}>Please select an existing account or add a new one.</div>
           <Spacer axis="y" size={16} />
           {users.map((user) => (
-            <div key={user.id} className={styles.userInfo}>
+            <div key={user.id} className={styles.userInfo} onClick={() => selectAccount(user)}>
               <div
                 className={styles.userIcon}
                 style={{
@@ -165,6 +174,7 @@ const Authorize = () => {
           provider={provider}
           codeChallenge={codeChallenge}
           userPoolClientId={userPoolClientId}
+          onAdded={selectAccount}
           onBack={() => setMode('default')}
         />
       )}

@@ -1,7 +1,12 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { User, UserAttribute } from '@prisma/client';
-import { PROVIDER_LIST, USER_KINDS } from 'common/constants';
-import type { CognitoUserEntity, SocialUserEntity, UserAttributeEntity } from 'common/types/user';
+import { PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'common/constants';
+import type {
+  CognitoUserEntity,
+  SocialUserEntity,
+  UserAttributeEntity,
+  UserEntity,
+} from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { z } from 'zod';
 
@@ -78,16 +83,16 @@ export const toSocialUserEntity = (
   };
 };
 
-// export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
-//   const kind = z.enum(USER_KIND_LIST).parse(prismaUser.kind);
+export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
+  const kind = z.enum(USER_KIND_LIST).parse(prismaUser.kind);
 
-//   switch (kind) {
-//     case 'cognito':
-//       return toCognitoUserEntity(prismaUser);
-//     case 'social':
-//       return toSocialUserEntity(prismaUser);
-//     /* v8 ignore next 2 */
-//     default:
-//       throw new Error(kind satisfies never);
-//   }
-// };
+  switch (kind) {
+    case 'cognito':
+      return toCognitoUserEntity(prismaUser);
+    case 'social':
+      return toSocialUserEntity(prismaUser);
+    /* v8 ignore next 2 */
+    default:
+      throw new Error(kind satisfies never);
+  }
+};

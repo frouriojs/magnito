@@ -5,12 +5,49 @@ import {
   VerifyUserAttributeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'service/cognito';
-import { createUserAndToken, fetchMailBodyAndTrash } from 'tests/api/utils';
+import {
+  createCognitoUserAndToken,
+  createSocialUserAndToken,
+  fetchMailBodyAndTrash,
+} from 'tests/api/utils';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 
-test(UpdateUserAttributesCommand.name, async () => {
-  const token = await createUserAndToken();
+test(`${UpdateUserAttributesCommand.name} - cognito`, async () => {
+  const token = await createCognitoUserAndToken();
+  const attrName1 = 'custom:test1';
+  const attrVal1 = 'sample1';
+  const attrName2 = 'custom:test2';
+  const attrVal2 = 'sample2';
+  const attrVal3 = 'sample3';
+
+  await cognitoClient.send(
+    new UpdateUserAttributesCommand({
+      ...token,
+      UserAttributes: [
+        { Name: attrName1, Value: attrVal1 },
+        { Name: attrName2, Value: attrVal2 },
+      ],
+    }),
+  );
+
+  await cognitoClient.send(
+    new UpdateUserAttributesCommand({
+      ...token,
+      UserAttributes: [{ Name: attrName1, Value: attrVal3 }],
+    }),
+  );
+
+  const user = await cognitoClient.send(new GetUserCommand(token));
+  const targetAttr1 = user.UserAttributes?.find((attr) => attr.Name === attrName1);
+  const targetAttr2 = user.UserAttributes?.find((attr) => attr.Name === attrName2);
+
+  expect(targetAttr1?.Value).toBe(attrVal3);
+  expect(targetAttr2?.Value).toBe(attrVal2);
+});
+
+test(`${UpdateUserAttributesCommand.name} - social`, async () => {
+  const token = await createSocialUserAndToken();
   const attrName1 = 'custom:test1';
   const attrVal1 = 'sample1';
   const attrName2 = 'custom:test2';
@@ -43,7 +80,7 @@ test(UpdateUserAttributesCommand.name, async () => {
 });
 
 test(VerifyUserAttributeCommand.name, async () => {
-  const token = await createUserAndToken();
+  const token = await createCognitoUserAndToken();
   const newEmail = `${ulid()}@example.com`;
 
   await cognitoClient.send(
@@ -70,7 +107,7 @@ test(VerifyUserAttributeCommand.name, async () => {
 });
 
 test(DeleteUserAttributesCommand.name, async () => {
-  const token = await createUserAndToken();
+  const token = await createCognitoUserAndToken();
   const attrName1 = 'custom:test1';
   const attrName2 = 'custom:test2';
 

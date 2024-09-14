@@ -69,3 +69,19 @@ export type SocialUserCreateVal = {
   photoUrl?: string;
   userPoolClientId: MaybeId['userPoolClient'];
 };
+
+export type SocialUserRequestTokensVal = {
+  grant_type: 'authorization_code';
+  code: string;
+  client_id: MaybeId['userPoolClient'];
+  redirect_uri: string;
+  code_verifier: string;
+};
+
+export type SocialUserResponseTokensVal = {
+  id_token: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: 'Bearer';
+};

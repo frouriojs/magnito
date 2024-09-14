@@ -1,5 +1,5 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import type { CognitoUserEntity, UserAttributeEntity } from 'common/types/user';
+import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 import { brandedId } from 'service/brandedId';
 import { ulid } from 'ulid';
 import { z } from 'zod';
@@ -25,14 +25,20 @@ export const STANDARD_ATTRIBUTE_NAMES = [
   'zoneinfo',
 ] as const;
 
-export const toAttributeTypes = (user: CognitoUserEntity): AttributeType[] => {
-  return [
-    { Name: 'sub', Value: user.id },
-    { Name: 'email', Value: user.email },
-    { Name: 'email_verified', Value: isEmailVerified(user) ? 'true' : 'false' },
-    { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
-    ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
-  ];
+export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
+  return user.kind === 'cognito'
+    ? [
+        { Name: 'sub', Value: user.id },
+        { Name: 'email', Value: user.email },
+        { Name: 'email_verified', Value: isEmailVerified(user) ? 'true' : 'false' },
+        { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
+        ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
+      ]
+    : [
+        { Name: 'sub', Value: user.id },
+        { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
+        ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
+      ];
 };
 
 export const createAttributes = (

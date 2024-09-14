@@ -62,6 +62,8 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
+      assert(user.kind === 'cognito');
+
       await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req }));
 
       return {};
@@ -109,7 +111,9 @@ export const authUseCase = {
 
       await userCommand.save(tx, updated);
 
-      if (user.confirmationCode !== updated.confirmationCode) await sendConfirmationCode(updated);
+      if (updated.kind === 'cognito' && user.confirmationCode !== updated.confirmationCode) {
+        await sendConfirmationCode(updated);
+      }
 
       return { CodeDeliveryDetailsList: [genCodeDeliveryDetails(updated)] };
     }),

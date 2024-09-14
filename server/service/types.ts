@@ -1,7 +1,8 @@
 import type { EntityId } from 'common/types/brandedId';
+import type { UserEntity } from 'common/types/user';
 
 export type IdTokenJwt = {
-  sub: EntityId['cognitoUser'];
+  sub: UserEntity['id'];
   email_verified: boolean;
   iss: string;
   'cognito:username': string;
@@ -17,7 +18,7 @@ export type IdTokenJwt = {
 };
 
 export type AccessTokenJwt = {
-  sub: EntityId['cognitoUser'];
+  sub: UserEntity['id'];
   iss: string;
   client_id: EntityId['userPoolClient'];
   origin_jti: string;

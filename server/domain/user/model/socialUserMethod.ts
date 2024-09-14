@@ -1,11 +1,18 @@
 import assert from 'assert';
 import type { EntityId } from 'common/types/brandedId';
-import type { SocialUserCreateVal, SocialUserEntity } from 'common/types/user';
+import type {
+  SocialUserCreateVal,
+  SocialUserEntity,
+  SocialUserResponseTokensVal,
+} from 'common/types/user';
+import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
+import { createHash } from 'crypto';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 import { createAttributes } from '../service/createAttributes';
+import { genTokens } from '../service/genTokens';
 
 export const socialUserMethod = {
   create: (userPoolId: EntityId['userPool'], val: SocialUserCreateVal): SocialUserEntity => {
@@ -35,6 +42,30 @@ export const socialUserMethod = {
         : [],
       createdTime: now,
       updatedTime: now,
+    };
+  },
+  createToken: (
+    user: SocialUserEntity,
+    codeVerifier: string,
+    pool: UserPoolEntity,
+    poolClient: UserPoolClientEntity,
+    jwks: Jwks,
+  ): SocialUserResponseTokensVal => {
+    const tokens = genTokens({
+      privateKey: pool.privateKey,
+      userPoolClientId: poolClient.id,
+      jwks,
+      user,
+    });
+
+    assert(user.codeChallenge === createHash('sha256').update(codeVerifier).digest('base64url'));
+
+    return {
+      id_token: tokens.IdToken,
+      access_token: tokens.AccessToken,
+      refresh_token: user.refreshToken,
+      expires_in: 3600,
+      token_type: 'Bearer',
     };
   },
 };

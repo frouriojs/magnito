@@ -3,7 +3,7 @@ import api from 'api/$api';
 import axios from 'axios';
 import { COOKIE_NAME } from 'service/constants';
 import { PORT } from 'service/envValues';
-import { createUserAndToken } from './utils';
+import { createCognitoUserAndToken } from './utils';
 
 const baseURL = `http://127.0.0.1:${PORT}`;
 
@@ -16,7 +16,7 @@ export const testUserName = 'test-user';
 export const testPassword = 'Test-user-password1';
 
 export const createUserClient = async (): Promise<typeof noCookieClient> => {
-  const token = await createUserAndToken();
+  const token = await createCognitoUserAndToken();
 
   const agent = axios.create({
     baseURL,
