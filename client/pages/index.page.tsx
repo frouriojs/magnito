@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import { pagesPath } from 'utils/$path';
 import styles from './index.module.css';
 
+export type OptionalQuery = { code: string; state: string };
+
 const Home = () => {
   const { user } = useUser();
   const router = useRouter();

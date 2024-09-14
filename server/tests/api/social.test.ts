@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
@@ -13,6 +14,7 @@ test(POST(noCookieClient.public.socialUsers), async () => {
       provider: 'Google',
       name: name1,
       email: email1,
+      codeChallenge: createHash('sha256').update(ulid()).digest('base64url'),
       userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },
   });
@@ -26,6 +28,7 @@ test(POST(noCookieClient.public.socialUsers), async () => {
       provider: 'Amazon',
       name: name2,
       email: email2,
+      codeChallenge: createHash('sha256').update(ulid()).digest('base64url'),
       photoUrl,
       userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
     },

@@ -4,6 +4,37 @@
   margin: 0 auto;
 }
 
+.userInfo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 8px;
+  color: gray;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.userInfo:hover {
+  background: #eee;
+}
+
+.userName {
+  font-weight: bold;
+}
+
+.userEmail {
+  font-size: 14px;
+}
+
+.userIcon {
+  width: 36px;
+  height: 36px;
+  background: #aaa;
+  background-size: cover;
+  border-radius: 50%;
+}
+
 .btn {
   padding: 6px 16px;
   font-weight: bold;
@@ -12,6 +43,11 @@
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+.desc {
+  font-size: 14px;
+  color: gray;
 }
 
 .inputLabel {

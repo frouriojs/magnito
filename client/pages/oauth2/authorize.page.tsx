@@ -1,38 +1,60 @@
+import useAspidaSWR from '@aspida/swr';
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
-import { PROVIDER_LIST } from 'common/constants';
+import { APP_NAME, PROVIDER_LIST } from 'common/constants';
 import type { MaybeId } from 'common/types/brandedId';
 import { Spacer } from 'components/Spacer';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { apiClient } from 'utils/apiClient';
 import { z } from 'zod';
 import styles from './authorize.module.css';
 
 export type Query = {
   redirect_uri: string;
-  response_type: OAuthConfig['responseType'];
   client_id: MaybeId['userPoolClient'];
   identity_provider: string;
   scope: OAuthConfig['scopes'];
   state: string;
-};
+} & (
+  | { response_type: 'code'; code_challenge: string; code_challenge_method: 'plain' | 'S256' }
+  | { response_type: 'token' }
+);
 
-const AddAccount = (props: { provider: string; onBack: () => void }) => {
+const AddAccount = (props: {
+  provider: (typeof PROVIDER_LIST)[number];
+  codeChallenge: string;
+  userPoolClientId: MaybeId['userPoolClient'];
+  onBack: () => void;
+}) => {
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const data = z
     .object({
       email: z.string().email(),
-      displayName: z.string(),
+      name: z.string(),
       photoUrl: z.literal('').or(z.string().url().optional()),
     })
-    .safeParse({ email, displayName, photoUrl });
+    .safeParse({ email, name: displayName, photoUrl });
   const setFakeVals = () => {
     const fakeWord = word({ length: 8 });
 
     setEmail(`${fakeWord}@${props.provider.toLowerCase()}.com`);
     setDisplayName(fakeWord);
+  };
+  const addUser = async () => {
+    if (!data.success) return;
+
+    await apiClient.public.socialUsers.$post({
+      body: {
+        ...data.data,
+        photoUrl: photoUrl || undefined,
+        provider: props.provider,
+        codeChallenge: props.codeChallenge,
+        userPoolClientId: props.userPoolClientId,
+      },
+    });
   };
 
   return (
@@ -41,7 +63,12 @@ const AddAccount = (props: { provider: string; onBack: () => void }) => {
         Auto-generate user information
       </button>
       <Spacer axis="y" size={20} />
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addUser();
+        }}
+      >
         <div className={styles.inputLabel}>Email</div>
         <Spacer axis="y" size={4} />
         <input
@@ -82,25 +109,64 @@ const AddAccount = (props: { provider: string; onBack: () => void }) => {
   );
 };
 
+// eslint-disable-next-line complexity
 const Authorize = () => {
   const router = useRouter();
+  const userPoolClientId = router.query.client_id as MaybeId['userPoolClient'];
+  const codeChallenge = router.query.code_challenge as string;
   const provider = z
     .enum(PROVIDER_LIST)
-    .parse((router.query.identity_provider as string).replace(/^.+([A-Z][a-z]+)$/, '$1'));
+    .parse(
+      (router.query.identity_provider as string | undefined)?.replace(/^.+([A-Z][a-z]+)$/, '$1') ??
+        'Google',
+    );
+  const { data: users } = useAspidaSWR(apiClient.public.socialUsers, {
+    query: { userPoolClientId },
+  });
   const [mode, setMode] = useState<'default' | 'add'>('default');
 
   return (
     <div className={styles.container}>
       <h1>Sign-in with {provider}</h1>
       <Spacer axis="y" size={8} />
-      <div>No {provider} accounts exist in Magnito.</div>
+      {users && users.length > 0 ? (
+        <>
+          <div className={styles.desc}>Please select an existing account or add a new one.</div>
+          <Spacer axis="y" size={16} />
+          {users.map((user) => (
+            <div key={user.id} className={styles.userInfo}>
+              <div
+                className={styles.userIcon}
+                style={{
+                  backgroundImage: user.attributes.some((attr) => attr.name === 'picture')
+                    ? `url(${user.attributes.find((attr) => attr.name === 'picture')?.value})`
+                    : undefined,
+                }}
+              />
+              <div>
+                <div className={styles.userName}>{user.name}</div>
+                <div className={styles.userEmail}>{user.email}</div>
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        <div className={styles.desc}>
+          No {provider} accounts exist in {APP_NAME}.
+        </div>
+      )}
       <Spacer axis="y" size={20} />
       {mode === 'default' ? (
         <button className={styles.btn} onClick={() => setMode('add')}>
           + Add new account
         </button>
       ) : (
-        <AddAccount provider={provider} onBack={() => setMode('default')} />
+        <AddAccount
+          provider={provider}
+          codeChallenge={codeChallenge}
+          userPoolClientId={userPoolClientId}
+          onBack={() => setMode('default')}
+        />
       )}
     </div>
   );

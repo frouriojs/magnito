@@ -62,6 +62,8 @@ export const toSocialUserEntity = (
     status: z.literal(UserStatusType.EXTERNAL_PROVIDER).parse(prismaUser.status),
     email: prismaUser.email,
     provider: z.enum(PROVIDER_LIST).parse(prismaUser.provider),
+    authorizationCode: z.string().parse(prismaUser.authorizationCode),
+    codeChallenge: z.string().parse(prismaUser.codeChallenge),
     refreshToken: prismaUser.refreshToken,
     userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
     attributes: prismaUser.attributes.map(

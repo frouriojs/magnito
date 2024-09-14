@@ -25,6 +25,8 @@ export type SocialUserEntity = {
   provider: (typeof PROVIDER_LIST)[number];
   password?: undefined;
   confirmationCode?: undefined;
+  authorizationCode: string;
+  codeChallenge: string;
   salt?: undefined;
   verifier?: undefined;
   refreshToken: string;
@@ -45,6 +47,8 @@ export type CognitoUserEntity = {
   provider?: undefined;
   password: string;
   confirmationCode: string;
+  authorizationCode?: undefined;
+  codeChallenge?: undefined;
   salt: string;
   verifier: string;
   refreshToken: string;
@@ -61,6 +65,7 @@ export type SocialUserCreateVal = {
   provider: (typeof PROVIDER_LIST)[number];
   name: string;
   email: string;
+  codeChallenge: string;
   photoUrl?: string;
   userPoolClientId: MaybeId['userPoolClient'];
 };

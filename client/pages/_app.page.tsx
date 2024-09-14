@@ -33,9 +33,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             oauth: {
               domain: 'localhost:5052',
               scopes: ['openid'],
-              redirectSignIn: ['http://localhost:5051'],
-              redirectSignOut: ['http://localhost:5051'],
-              responseType: 'token',
+              redirectSignIn: [location.origin],
+              redirectSignOut: [location.origin],
+              responseType: 'code',
             },
           },
         },

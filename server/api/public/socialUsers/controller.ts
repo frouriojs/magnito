@@ -20,6 +20,7 @@ export default defineController(() => ({
         provider: z.enum(PROVIDER_LIST),
         name: z.string(),
         email: z.string(),
+        codeChallenge: z.string(),
         photoUrl: z.string().optional(),
         userPoolClientId: brandedId.userPoolClient.maybe,
       }),

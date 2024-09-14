@@ -23,6 +23,8 @@ export const socialUserMethod = {
       kind: 'social',
       email: val.email,
       provider: val.provider,
+      codeChallenge: val.codeChallenge,
+      authorizationCode: ulid(),
       enabled: true,
       status: 'EXTERNAL_PROVIDER',
       name: val.name,
