@@ -91,3 +91,13 @@ test(POST(noCookieClient.oauth2.token), async () => {
 
   expect(res.status === 200).toBeTruthy();
 });
+
+test(GET(noCookieClient.logout), async () => {
+  const logoutUri = noCookieClient.public.$path();
+  const res = await noCookieClient.logout.get({
+    query: { client_id: DEFAULT_USER_POOL_CLIENT_ID, logout_uri: logoutUri },
+  });
+
+  expect(res.body).toBe('');
+  expect(res.status).toBe(200);
+});

@@ -129,6 +129,7 @@ const Authorize = () => {
   const { data: users } = useAspidaSWR(apiClient.public.socialUsers, {
     query: { userPoolClientId },
   });
+  const filteredUsers = users?.filter((user) => user.provider === provider) ?? [];
   const [mode, setMode] = useState<'default' | 'add'>('default');
   const redirect = (user: SocialUserEntity) => {
     location.href = `${redirectUri}?code=${user.authorizationCode}&state=${state}`;
@@ -143,11 +144,11 @@ const Authorize = () => {
     <div className={styles.container}>
       <h1>Sign-in with {provider}</h1>
       <Spacer axis="y" size={8} />
-      {users && users.length > 0 ? (
+      {filteredUsers.length > 0 ? (
         <>
           <div className={styles.desc}>Please select an existing account or add a new one.</div>
           <Spacer axis="y" size={16} />
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <div key={user.id} className={styles.userInfo} onClick={() => selectAccount(user)}>
               <div
                 className={styles.userIcon}
