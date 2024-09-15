@@ -33,6 +33,7 @@ services:
     ports:
       - 5050:5050 # Cognito API
       - 5051:5051 # web interface
+      - 5052:5052 # OAuth2 SSL endpoint
     environment:
       COGNITO_USER_POOL_ID: ap-northeast-1_example
       COGNITO_USER_POOL_CLIENT_ID: example-client-name
@@ -91,6 +92,7 @@ You can check the emails sent by Magnito with Inbucket.
 - Sign In
 
   - Sign in with your email address and password.
+  - Sign in with Google / Apple / Amazon / Facebook emulators.
 
 - Forgot Password
 
