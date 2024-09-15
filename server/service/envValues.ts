@@ -7,6 +7,7 @@ dotenv.config();
 
 const APP_VERSION = `v${z.string().parse(rootPackage.version)}`;
 const PORT = +z.string().regex(/^\d+$/).parse(process.env.PORT);
+const SSL_PORT = +z.string().regex(/^\d+$/).parse(process.env.SSL_PORT);
 const SMTP_HOST = z.string().parse(process.env.SMTP_HOST);
 const SMTP_PASS = z.string().parse(process.env.SMTP_PASS);
 const SMTP_PORT = +z.string().regex(/^\d+$/).parse(process.env.SMTP_PORT);
@@ -31,4 +32,5 @@ export {
   SMTP_PASS,
   SMTP_PORT,
   SMTP_USER,
+  SSL_PORT,
 };

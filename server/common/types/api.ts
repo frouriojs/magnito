@@ -6,4 +6,5 @@ export type DefaultConfigs = {
   region: string;
   accessKey: string;
   secretKey: string;
+  oauthDomain: string;
 };

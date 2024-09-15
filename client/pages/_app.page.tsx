@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           loginWith: {
             email: true,
             oauth: {
-              domain: 'localhost:5052',
+              domain: defaults.oauthDomain,
               scopes: ['openid'],
               redirectSignIn: [location.origin],
               redirectSignOut: [location.origin],

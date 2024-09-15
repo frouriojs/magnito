@@ -20,7 +20,7 @@
     "start": "npm run start:client & npm run start:server & npm run start:ssl",
     "start:client": "serve ../client/out -l $CLIENT_PORT",
     "start:server": "prisma migrate deploy && node --enable-source-maps prisma/seed.js && node --enable-source-maps index.js",
-    "start:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source $SSL_PORT --target $CLIENT_PORT",
+    "start:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source $SSL_PORT --target $PORT",
     "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },

@@ -4,6 +4,7 @@ import {
   DEFAULT_USER_POOL_ID,
   REGION,
   SECRET_KEY,
+  SSL_PORT,
 } from 'service/envValues';
 import { defineController } from './$relay';
 
@@ -16,6 +17,7 @@ export default defineController(() => ({
       region: REGION,
       accessKey: ACCESS_KEY,
       secretKey: SECRET_KEY,
+      oauthDomain: `localhost:${SSL_PORT}`,
     },
   }),
 }));
