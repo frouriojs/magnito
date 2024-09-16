@@ -35,7 +35,7 @@ const Main = (_: { user: UserEntity }) => {
             <tbody>
               {users?.map((user) => (
                 <tr key={user.Username}>
-                  <td>{user.Attributes?.find((attr) => attr.Name === 'sub')?.Value}</td>
+                  <td>{user.Attributes?.find((attr) => attr.Name === 'name')?.Value}</td>
                   <td>{user.Username}</td>
                   <td>{user.Attributes?.find((attr) => attr.Name === 'email')?.Value}</td>
                   <td>{user.UserStatus}</td>
