@@ -29,10 +29,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           userPoolClientId: defaults.userPoolClientId,
           userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN,
           loginWith: {
-            email: true,
             oauth: {
               domain: defaults.oauthDomain,
-              scopes: ['openid'],
+              scopes: ['openid', 'profile', 'aws.cognito.signin.user.admin'],
               redirectSignIn: [location.origin],
               redirectSignOut: [location.origin],
               responseType: 'code',
