@@ -10,6 +10,7 @@ export const COMPUTED_ATTRIBUTE_NAMES = [
   'name',
   'email',
   'email_verified',
+  'identities',
   'updated_at',
 ] as const;
 
@@ -34,13 +35,28 @@ export const STANDARD_ATTRIBUTE_NAMES = [
 export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
   return [
     { Name: 'sub', Value: user.id },
-    { Name: 'name', Value: user.name },
     { Name: 'email', Value: user.email },
     { Name: 'updated_at', Value: Math.floor(user.updatedTime / 1000).toString() },
     ...user.attributes.map((attr) => ({ Name: attr.name, Value: attr.value })),
     ...(user.kind === 'cognito'
       ? [{ Name: 'email_verified', Value: isEmailVerified(user) ? 'true' : 'false' }]
-      : []),
+      : [
+          { Name: 'email_verified', Value: 'false' },
+          { Name: 'name', Value: user.name },
+          {
+            Name: 'identities',
+            Value: JSON.stringify([
+              {
+                dateCreated: user.createdTime,
+                userId: user.id,
+                providerName: user.provider,
+                providerType: user.provider,
+                issuer: null,
+                primary: 'true',
+              },
+            ]),
+          },
+        ]),
   ];
 };
 
