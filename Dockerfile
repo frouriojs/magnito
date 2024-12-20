@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine3.20 AS builder
 
 WORKDIR /usr/src/app
 
@@ -21,7 +21,7 @@ RUN npm run batch:writeVersion -- $VERSION
 RUN npm run build
 RUN npm ci --omit=dev --prefix server
 
-FROM node:20-alpine
+FROM node:20-alpine3.20
 
 WORKDIR /usr/src/app
 

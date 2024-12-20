@@ -51,6 +51,7 @@ export const toCognitoUserEntity = (
         value: attr.value,
       }),
     ),
+    totpSecretCode: prismaUser.totpSecretCode ?? undefined,
     createdTime: prismaUser.createdAt.getTime(),
     updatedTime: prismaUser.updatedAt.getTime(),
   };

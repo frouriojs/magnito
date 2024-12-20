@@ -12,6 +12,8 @@ import type {
   AdminSetUserPasswordResponse,
   AdminUpdateUserAttributesRequest,
   AdminUpdateUserAttributesResponse,
+  AssociateSoftwareTokenRequest,
+  AssociateSoftwareTokenResponse,
   CodeDeliveryDetailsType,
   DeleteUserAttributesRequest,
   DeleteUserAttributesResponse,
@@ -24,6 +26,8 @@ import type {
   SignUpResponse,
   UpdateUserAttributesRequest,
   UpdateUserAttributesResponse,
+  VerifySoftwareTokenRequest,
+  VerifySoftwareTokenResponse,
   VerifyUserAttributeRequest,
   VerifyUserAttributeResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -116,6 +120,16 @@ export type DeleteUserAttributesTarget = TargetBody<
   DeleteUserAttributesResponse
 >;
 
+export type AssociateSoftwareTokenTarget = TargetBody<
+  AssociateSoftwareTokenRequest,
+  AssociateSoftwareTokenResponse
+>;
+
+export type VerifySoftwareTokenTarget = TargetBody<
+  VerifySoftwareTokenRequest,
+  VerifySoftwareTokenResponse
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -139,4 +153,6 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.UpdateUserAttributes': UpdateUserAttributesTarget;
   'AWSCognitoIdentityProviderService.VerifyUserAttribute': VerifyUserAttributeTarget;
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': DeleteUserAttributesTarget;
+  'AWSCognitoIdentityProviderService.AssociateSoftwareToken': AssociateSoftwareTokenTarget;
+  'AWSCognitoIdentityProviderService.VerifySoftwareToken': VerifySoftwareTokenTarget;
 };

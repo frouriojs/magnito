@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { adminUseCase } from 'domain/user/useCase/adminUseCase';
 import { authUseCase } from 'domain/user/useCase/authUseCase';
+import { mfaUseCase } from 'domain/user/useCase/mfaUseCase';
 import { signInUseCase } from 'domain/user/useCase/signInUseCase';
 import { signUpUseCase } from 'domain/user/useCase/signUpUseCase';
 import { userPoolUseCase } from 'domain/userPool/useCase/userPoolUseCase';
@@ -38,6 +39,8 @@ const useCases: {
   'AWSCognitoIdentityProviderService.UpdateUserAttributes': authUseCase.updateUserAttributes,
   'AWSCognitoIdentityProviderService.VerifyUserAttribute': authUseCase.verifyUserAttribute,
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': authUseCase.deleteUserAttributes,
+  'AWSCognitoIdentityProviderService.AssociateSoftwareToken': mfaUseCase.associateSoftwareToken,
+  'AWSCognitoIdentityProviderService.VerifySoftwareToken': mfaUseCase.verifySoftwareToken,
 };
 
 const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {

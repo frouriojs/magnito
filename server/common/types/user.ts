@@ -35,6 +35,7 @@ export type SocialUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: undefined;
+  totpSecretCode?: undefined;
 };
 
 export type CognitoUserEntity = {
@@ -57,6 +58,7 @@ export type CognitoUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: ChallengeVal;
+  totpSecretCode?: string;
 };
 
 export type UserEntity = SocialUserEntity | CognitoUserEntity;
