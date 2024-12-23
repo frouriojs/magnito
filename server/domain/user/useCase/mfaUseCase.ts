@@ -1,6 +1,10 @@
 import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
-import type { AssociateSoftwareTokenTarget, VerifySoftwareTokenTarget } from 'common/types/auth';
+import type {
+  AssociateSoftwareTokenTarget,
+  SetUserMFAPreferenceTarget,
+  VerifySoftwareTokenTarget,
+} from 'common/types/auth';
 import { jwtDecode } from 'jwt-decode';
 import { transaction } from 'service/prismaClient';
 import type { AccessTokenJwt } from 'service/types';
@@ -42,5 +46,22 @@ export const mfaUseCase = {
       await userCommand.save(tx, updated);
 
       return { Status: VerifySoftwareTokenResponseType.SUCCESS, Session: req.Session };
+    }),
+  setUserMFAPreference: (
+    req: SetUserMFAPreferenceTarget['reqBody'],
+  ): Promise<SetUserMFAPreferenceTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.AccessToken);
+
+      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
+      const user = await userQuery.findById(tx, decoded.sub);
+
+      assert(user.kind === 'cognito');
+
+      const updated = mfaMethod.setPreference(user, req);
+
+      await userCommand.save(tx, updated);
+
+      return {};
     }),
 };

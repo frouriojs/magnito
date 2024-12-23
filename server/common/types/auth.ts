@@ -22,6 +22,8 @@ import type {
   ListUserPoolsResponse,
   ListUsersRequest,
   ListUsersResponse,
+  SetUserMFAPreferenceRequest,
+  SetUserMFAPreferenceResponse,
   SignUpRequest,
   SignUpResponse,
   UpdateUserAttributesRequest,
@@ -130,6 +132,11 @@ export type VerifySoftwareTokenTarget = TargetBody<
   VerifySoftwareTokenResponse
 >;
 
+export type SetUserMFAPreferenceTarget = TargetBody<
+  SetUserMFAPreferenceRequest,
+  SetUserMFAPreferenceResponse
+>;
+
 export type AmzTargets = {
   'AWSCognitoIdentityProviderService.SignUp': SignUpTarget;
   'AWSCognitoIdentityProviderService.ConfirmSignUp': ConfirmSignUpTarget;
@@ -155,4 +162,5 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': DeleteUserAttributesTarget;
   'AWSCognitoIdentityProviderService.AssociateSoftwareToken': AssociateSoftwareTokenTarget;
   'AWSCognitoIdentityProviderService.VerifySoftwareToken': VerifySoftwareTokenTarget;
+  'AWSCognitoIdentityProviderService.SetUserMFAPreference': SetUserMFAPreferenceTarget;
 };

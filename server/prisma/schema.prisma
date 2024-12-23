@@ -8,30 +8,32 @@ generator client {
 }
 
 model User {
-  id                String          @id
-  kind              String?
-  name              String
-  email             String
-  enabled           Boolean
-  status            String
-  password          String?
-  confirmationCode  String?
-  salt              String?
-  verifier          String?
-  refreshToken      String
-  createdAt         DateTime
-  updatedAt         DateTime
-  provider          String?
-  authorizationCode String?
-  codeChallenge     String?
-  secretBlock       String?
-  pubA              String?
-  pubB              String?
-  secB              String?
-  totpSecretCode    String?
-  attributes        UserAttribute[]
-  UserPool          UserPool        @relation(fields: [userPoolId], references: [id])
-  userPoolId        String
+  id                  String          @id
+  kind                String?
+  name                String
+  email               String
+  enabled             Boolean
+  status              String
+  password            String?
+  confirmationCode    String?
+  salt                String?
+  verifier            String?
+  refreshToken        String
+  createdAt           DateTime
+  updatedAt           DateTime
+  provider            String?
+  authorizationCode   String?
+  codeChallenge       String?
+  secretBlock         String?
+  pubA                String?
+  pubB                String?
+  secB                String?
+  preferredMfaSetting String?
+  enabledTotp         Boolean?
+  totpSecretCode      String?
+  attributes          UserAttribute[]
+  UserPool            UserPool        @relation(fields: [userPoolId], references: [id])
+  userPoolId          String
 }
 
 model UserAttribute {

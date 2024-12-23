@@ -3,7 +3,7 @@
 ## cognito-idp
 
 <details>
-<summary> 21% implemented  </summary>
+<summary> 24% implemented  </summary>
 
 - [ ] AddCustomAttributes
 - [ ] AdminAddUserToGroup
@@ -32,7 +32,7 @@
 - [ ] AdminUpdateDeviceStatus
 - [x] AdminUpdateUserAttributes
 - [ ] AdminUserGlobalSignOut
-- [ ] AssociateSoftwareToken
+- [x] AssociateSoftwareToken
 - [x] ChangePassword
 - [ ] ConfirmDevice
 - [x] ConfirmForgotPassword
@@ -89,7 +89,7 @@
 - [ ] SetLogDeliveryConfiguration
 - [ ] SetRiskConfiguration
 - [ ] SetUiCustomization
-- [ ] SetUserMfaPreference
+- [x] SetUserMfaPreference
 - [ ] SetUserPoolMfaConfig
 - [ ] SetUserSettings
 - [x] SignUp
@@ -106,7 +106,7 @@
 - [ ] UpdateUserPool
 - [ ] UpdateUserPoolClient
 - [ ] UpdateUserPoolDomain
-- [ ] VerifySoftwareToken
+- [x] VerifySoftwareToken
 - [x] VerifyUserAttribute
 
 </details>

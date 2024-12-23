@@ -41,6 +41,7 @@ const useCases: {
   'AWSCognitoIdentityProviderService.DeleteUserAttributes': authUseCase.deleteUserAttributes,
   'AWSCognitoIdentityProviderService.AssociateSoftwareToken': mfaUseCase.associateSoftwareToken,
   'AWSCognitoIdentityProviderService.VerifySoftwareToken': mfaUseCase.verifySoftwareToken,
+  'AWSCognitoIdentityProviderService.SetUserMFAPreference': mfaUseCase.setUserMFAPreference,
 };
 
 const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {

@@ -1,6 +1,6 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { User, UserAttribute } from '@prisma/client';
-import { PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'common/constants';
+import { MFA_SETTING_LIST, PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'common/constants';
 import type {
   CognitoUserEntity,
   SocialUserEntity,
@@ -51,6 +51,11 @@ export const toCognitoUserEntity = (
         value: attr.value,
       }),
     ),
+    preferredMfaSetting: z
+      .enum(MFA_SETTING_LIST)
+      .optional()
+      .parse(prismaUser.preferredMfaSetting ?? undefined),
+    mfaSettingList: prismaUser.enabledTotp ? ['SOFTWARE_TOKEN_MFA'] : undefined,
     totpSecretCode: prismaUser.totpSecretCode ?? undefined,
     createdTime: prismaUser.createdAt.getTime(),
     updatedTime: prismaUser.updatedAt.getTime(),

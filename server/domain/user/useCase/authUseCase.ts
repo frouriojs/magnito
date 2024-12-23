@@ -29,7 +29,12 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      return { UserAttributes: toAttributeTypes(user), Username: user.name };
+      return {
+        UserAttributes: toAttributeTypes(user),
+        Username: user.name,
+        PreferredMfaSetting: user.preferredMfaSetting,
+        UserMFASettingList: user.mfaSettingList,
+      };
     }),
   listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
     transaction(async (tx) => {

@@ -3,6 +3,7 @@ import type { EntityId } from 'common/types/brandedId';
 import type { UserAttributeEntity, UserEntity } from 'common/types/user';
 
 export const userCommand = {
+  // eslint-disable-next-line complexity
   save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
     await tx.userAttribute.deleteMany({ where: { userId: user.id } });
 
@@ -26,6 +27,8 @@ export const userCommand = {
         pubA: user.challenge?.pubA,
         pubB: user.challenge?.pubB,
         secB: user.challenge?.secB,
+        preferredMfaSetting: user.preferredMfaSetting,
+        enabledTotp: user.mfaSettingList?.some((setting) => setting === 'SOFTWARE_TOKEN_MFA'),
         totpSecretCode: user.totpSecretCode,
         attributes: { createMany: { data: user.attributes } },
         updatedAt: new Date(user.updatedTime),
@@ -45,6 +48,8 @@ export const userCommand = {
         confirmationCode: user.confirmationCode,
         authorizationCode: user.authorizationCode,
         codeChallenge: user.codeChallenge,
+        preferredMfaSetting: user.preferredMfaSetting,
+        enabledTotp: user.mfaSettingList?.some((setting) => setting === 'SOFTWARE_TOKEN_MFA'),
         totpSecretCode: user.totpSecretCode,
         userPoolId: user.userPoolId,
         attributes: { createMany: { data: user.attributes } },

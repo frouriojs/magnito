@@ -1,5 +1,5 @@
 import type { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import type { PROVIDER_LIST, USER_KINDS } from 'common/constants';
+import type { MFA_SETTING_LIST, PROVIDER_LIST, USER_KINDS } from 'common/constants';
 import type { EntityId, MaybeId } from './brandedId';
 
 export type ChallengeVal = {
@@ -35,6 +35,8 @@ export type SocialUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: undefined;
+  preferredMfaSetting?: undefined;
+  mfaSettingList?: undefined;
   totpSecretCode?: undefined;
 };
 
@@ -58,6 +60,8 @@ export type CognitoUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: ChallengeVal;
+  preferredMfaSetting?: (typeof MFA_SETTING_LIST)[number];
+  mfaSettingList?: (typeof MFA_SETTING_LIST)[number][];
   totpSecretCode?: string;
 };
 

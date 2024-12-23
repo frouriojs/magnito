@@ -1,3 +1,4 @@
+import type { SetUserMFAPreferenceTarget } from 'common/types/auth';
 import type { CognitoUserEntity } from 'common/types/user';
 import { authenticator } from 'otplib';
 import { cognitoAssert } from 'service/cognitoAssert';
@@ -12,6 +13,20 @@ export const mfaMethod = {
       'Invalid verification code provided, please try again.',
     );
 
-    return user;
+    return { ...user, mfaSettingList: ['SOFTWARE_TOKEN_MFA'] };
+  },
+  setPreference: (
+    user: CognitoUserEntity,
+    req: SetUserMFAPreferenceTarget['reqBody'],
+  ): CognitoUserEntity => {
+    return {
+      ...user,
+      preferredMfaSetting: req.SoftwareTokenMfaSettings?.PreferredMfa
+        ? 'SOFTWARE_TOKEN_MFA'
+        : user.preferredMfaSetting,
+      mfaSettingList: req.SoftwareTokenMfaSettings?.Enabled
+        ? ['SOFTWARE_TOKEN_MFA']
+        : user.mfaSettingList,
+    };
   },
 };
