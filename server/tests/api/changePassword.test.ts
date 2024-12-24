@@ -4,10 +4,12 @@ import { calculateSrpA } from 'domain/user/service/srp/calcSrpA';
 import { fromBuffer } from 'domain/user/service/srp/util';
 import { DEFAULT_USER_POOL_CLIENT_ID } from 'service/envValues';
 import { test } from 'vitest';
-import { createUserClient, noCookieClient, testPassword, testUserName } from './apiClient';
+import { noCookieClient, testPassword, testUserName } from './apiClient';
+import { createCognitoUserAndToken } from './utils';
 
 test('changePassword', async () => {
-  await createUserClient();
+  await createCognitoUserAndToken();
+
   const { a, A } = calculateSrpA();
   const res1 = await noCookieClient.$post({
     headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth' },

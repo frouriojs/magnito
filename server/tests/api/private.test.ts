@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
 import { createUserClient, noCookieClient } from './apiClient';
-import { GET } from './utils';
+import { createCognitoUserAndToken, GET } from './utils';
 
 test(GET(noCookieClient.private), async () => {
-  const userClient = await createUserClient();
+  const userClient = await createCognitoUserAndToken().then(createUserClient);
   const res = await userClient.private.$get();
 
   expect(res).toEqual('');
@@ -12,7 +12,7 @@ test(GET(noCookieClient.private), async () => {
 });
 
 test(GET(noCookieClient.private.me), async () => {
-  const userClient = await createUserClient();
+  const userClient = await createCognitoUserAndToken().then(createUserClient);
   const res = await userClient.private.me.get();
 
   expect(res.status).toBe(200);

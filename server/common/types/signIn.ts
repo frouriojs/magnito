@@ -1,3 +1,4 @@
+import type { MFA_SETTING_LIST } from 'common/constants';
 import type { TargetBody } from './auth';
 import type { MaybeId } from './brandedId';
 
@@ -39,24 +40,42 @@ export type RefreshTokenAuthTarget = TargetBody<
 export type InitiateAuthTarget = UserSrpAuthTarget | RefreshTokenAuthTarget;
 
 export type RespondToAuthChallengeTarget = TargetBody<
-  {
-    ChallengeName: 'PASSWORD_VERIFIER';
-    ChallengeResponses: {
-      PASSWORD_CLAIM_SECRET_BLOCK: string;
-      PASSWORD_CLAIM_SIGNATURE: string;
-      TIMESTAMP: string;
-      USERNAME: string;
-    };
-    ClientId: MaybeId['userPoolClient'];
-  },
-  {
-    AuthenticationResult: {
-      AccessToken: string;
-      ExpiresIn: number;
-      IdToken: string;
-      RefreshToken: string;
-      TokenType: 'Bearer';
-    };
-    ChallengeParameters: Record<string, never>;
-  }
+  | {
+      ChallengeName: 'PASSWORD_VERIFIER';
+      ChallengeResponses: {
+        PASSWORD_CLAIM_SECRET_BLOCK: string;
+        PASSWORD_CLAIM_SIGNATURE: string;
+        TIMESTAMP: string;
+        USERNAME: string;
+      };
+      ClientId: MaybeId['userPoolClient'];
+      Session?: undefined;
+    }
+  | {
+      ChallengeName: 'SOFTWARE_TOKEN_MFA';
+      ChallengeResponses: {
+        SOFTWARE_TOKEN_MFA_CODE: string;
+        USERNAME: string;
+      };
+      ClientId: MaybeId['userPoolClient'];
+      Session: string;
+    },
+  | {
+      AuthenticationResult: {
+        AccessToken: string;
+        ExpiresIn: number;
+        IdToken: string;
+        RefreshToken: string;
+        TokenType: 'Bearer';
+      };
+      ChallengeName?: undefined;
+      Session?: undefined;
+      ChallengeParameters: Record<string, never>;
+    }
+  | {
+      AuthenticationResult?: undefined;
+      ChallengeName: (typeof MFA_SETTING_LIST)[number];
+      Session: string;
+      ChallengeParameters: Record<string, never>;
+    }
 >;

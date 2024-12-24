@@ -66,4 +66,8 @@ export const signInMethod = {
       user: params.user,
     });
   },
+  challengeMfa: (
+    user: CognitoUserEntity,
+    srpAuth: { timestamp: string; clientSignature: string },
+  ): CognitoUserEntity => ({ ...user, srpAuth }),
 };

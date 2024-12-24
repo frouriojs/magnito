@@ -35,6 +35,7 @@ export type SocialUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: undefined;
+  srpAuth?: undefined;
   preferredMfaSetting?: undefined;
   mfaSettingList?: undefined;
   totpSecretCode?: undefined;
@@ -60,6 +61,7 @@ export type CognitoUserEntity = {
   createdTime: number;
   updatedTime: number;
   challenge?: ChallengeVal;
+  srpAuth?: { timestamp: string; clientSignature: string };
   preferredMfaSetting?: (typeof MFA_SETTING_LIST)[number];
   mfaSettingList?: (typeof MFA_SETTING_LIST)[number][];
   totpSecretCode?: string;

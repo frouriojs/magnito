@@ -11,6 +11,7 @@ import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { EXPIRES_SEC } from 'service/constants';
 import { transaction } from 'service/prismaClient';
+import { mfaMethod } from '../model/mfaMethod';
 import { signInMethod } from '../model/signInMethod';
 import { isEmailVerified } from '../service/isEmailVerified';
 
@@ -64,27 +65,69 @@ export const signInUseCase = {
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
-      assert(user.challenge?.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
 
-      cognitoAssert(isEmailVerified(user), 'User is not confirmed.');
+      if (req.ChallengeName === 'PASSWORD_VERIFIER') {
+        assert(user.challenge);
+        assert(user.challenge.secretBlock === req.ChallengeResponses.PASSWORD_CLAIM_SECRET_BLOCK);
 
-      const tokens = signInMethod.srpAuth({
-        user,
-        timestamp: req.ChallengeResponses.TIMESTAMP,
-        clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,
-        jwks,
-        pool,
-        poolClient,
-      });
+        cognitoAssert(isEmailVerified(user), 'User is not confirmed.');
 
-      return {
-        AuthenticationResult: {
-          ...tokens,
-          ExpiresIn: 3600,
-          RefreshToken: user.refreshToken,
-          TokenType: 'Bearer',
-        },
-        ChallengeParameters: {},
-      };
+        if (user.mfaSettingList?.some((s) => s === 'SOFTWARE_TOKEN_MFA')) {
+          const updated = signInMethod.challengeMfa(user, {
+            timestamp: req.ChallengeResponses.TIMESTAMP,
+            clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,
+          });
+
+          await userCommand.save(tx, updated);
+
+          return {
+            ChallengeName: 'SOFTWARE_TOKEN_MFA',
+            Session: 'magnito_dummy_session',
+            ChallengeParameters: {},
+          };
+        }
+
+        const tokens = signInMethod.srpAuth({
+          user,
+          timestamp: req.ChallengeResponses.TIMESTAMP,
+          clientSignature: req.ChallengeResponses.PASSWORD_CLAIM_SIGNATURE,
+          jwks,
+          pool,
+          poolClient,
+        });
+
+        return {
+          AuthenticationResult: {
+            ...tokens,
+            ExpiresIn: 3600,
+            RefreshToken: user.refreshToken,
+            TokenType: 'Bearer',
+          },
+          ChallengeParameters: {},
+        };
+      } else {
+        const updated = mfaMethod.verify(user, req.ChallengeResponses.SOFTWARE_TOKEN_MFA_CODE);
+
+        assert(updated.srpAuth);
+
+        const tokens = signInMethod.srpAuth({
+          user,
+          timestamp: updated.srpAuth.timestamp,
+          clientSignature: updated.srpAuth.clientSignature,
+          jwks,
+          pool,
+          poolClient,
+        });
+
+        return {
+          AuthenticationResult: {
+            ...tokens,
+            ExpiresIn: 3600,
+            RefreshToken: user.refreshToken,
+            TokenType: 'Bearer',
+          },
+          ChallengeParameters: {},
+        };
+      }
     }),
 };

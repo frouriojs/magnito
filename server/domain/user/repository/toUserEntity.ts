@@ -51,6 +51,17 @@ export const toCognitoUserEntity = (
         value: attr.value,
       }),
     ),
+    srpAuth: z
+      .object({ timestamp: z.string(), clientSignature: z.string() })
+      .optional()
+      .parse(
+        prismaUser.srpAuthTimestamp
+          ? {
+              timestamp: prismaUser.srpAuthTimestamp,
+              clientSignature: prismaUser.srpAuthClientSignature,
+            }
+          : undefined,
+      ),
     preferredMfaSetting: z
       .enum(MFA_SETTING_LIST)
       .optional()

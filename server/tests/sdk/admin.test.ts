@@ -12,7 +12,7 @@ import assert from 'assert';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
-import { fetchMailBodyAndTrash, inbucketClient } from 'tests/api/utils';
+import { createCognitoUserAndToken, fetchMailBodyAndTrash, inbucketClient } from 'tests/api/utils';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 
@@ -108,7 +108,7 @@ test(`${AdminCreateUserCommand.name} - unset TemporaryPassword`, async () => {
 });
 
 test(AdminDeleteUserCommand.name, async () => {
-  const userClient = await createUserClient();
+  const userClient = await createCognitoUserAndToken().then(createUserClient);
 
   await cognitoClient.send(
     new AdminDeleteUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
@@ -125,7 +125,7 @@ test(AdminUpdateUserAttributesCommand.name, async () => {
   const attrVal2 = 'sample2';
   const attrVal3 = 'sample3';
 
-  await createUserClient();
+  await createCognitoUserAndToken();
 
   await cognitoClient.send(
     new AdminUpdateUserAttributesCommand({
@@ -167,7 +167,7 @@ test(AdminDeleteUserAttributesCommand.name, async () => {
   const attrName1 = 'custom:test1';
   const attrName2 = 'custom:test2';
 
-  await createUserClient();
+  await createCognitoUserAndToken();
 
   await cognitoClient.send(
     new AdminUpdateUserAttributesCommand({
