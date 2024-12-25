@@ -3,11 +3,11 @@ import { signOut } from 'aws-amplify/auth';
 import { APP_NAME } from 'common/constants';
 import type { UserEntity } from 'common/types/user';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
-import { Spacer } from 'components/Spacer';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { APP_VERSION } from 'utils/envValues';
 import styles from './BasicHeader.module.css';
+import { YourProfile } from './YourProfile';
 
 const Menu = ({
   open,
@@ -58,15 +58,7 @@ export const BasicHeader = (props: { user: UserEntity }) => {
           <MenuItem onClick={signOut}>ログアウト</MenuItem>
         </Menu>
       </div>
-      <Modal open={openProfile} onClose={() => setOpenProfile(false)}>
-        <ModalHeader text="プロフィール" />
-        <ModalBody>
-          <div>ユーザー名: {props.user.name}</div>
-          <Spacer axis="y" size={8} />
-          <div>メールアドレス: {props.user.email}</div>
-        </ModalBody>
-        <ModalFooter cancelText="閉じる" cancel={() => setOpenProfile(false)} />
-      </Modal>
+      {openProfile && <YourProfile user={props.user} onClose={() => setOpenProfile(false)} />}
       <Modal open={openPassword} onClose={() => setOpenPassword(false)}>
         <ModalHeader text="パスワードの変更" />
         <ModalBody>

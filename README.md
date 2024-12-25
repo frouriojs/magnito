@@ -93,6 +93,7 @@ You can check the emails sent by Magnito with Inbucket.
 
   - Sign in with your email address and password.
   - Sign in with Google / Apple / Amazon / Facebook emulators.
+  - Support MFA with TOTP.
 
 - Forgot Password
 
