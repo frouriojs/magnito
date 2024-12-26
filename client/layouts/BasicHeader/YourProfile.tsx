@@ -1,12 +1,16 @@
 import { Button, TextField, View } from '@aws-amplify/ui-react';
 import {
+  confirmUserAttribute,
   fetchMFAPreference,
   setUpTOTP,
+  signOut,
   updateMFAPreference,
+  updateUserAttribute,
   verifyTOTPSetup,
 } from 'aws-amplify/auth';
 import { APP_NAME } from 'common/constants';
 import type { UserEntity } from 'common/types/user';
+import { Btn } from 'components/Btn/Btn';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import { Spacer } from 'components/Spacer';
 import { useEffect, useState } from 'react';
@@ -15,17 +19,37 @@ export const YourProfile = (props: { user: UserEntity; onClose: () => void }) =>
   const [enabledTotp, setEnabledTotp] = useState<boolean>();
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [totpCode, setTotpCode] = useState('');
+  const [email, setEmail] = useState(props.user.email);
   const enableTOTP = async () => {
     const totpSetupDetails = await setUpTOTP();
     const setupUri = totpSetupDetails.getSetupUri(APP_NAME);
 
     setQrCodeUrl(setupUri.toString());
   };
+  const disableTOTP = async () => {
+    await updateMFAPreference({ totp: 'DISABLED' });
+
+    setEnabledTotp(false);
+    alert('二要素認証が無効になりました。');
+  };
   const verifyTOTP = async () => {
     await verifyTOTPSetup({ code: totpCode });
     await updateMFAPreference({ totp: 'PREFERRED' });
     alert('二要素認証が有効になりました。');
     setQrCodeUrl('');
+  };
+  const saveEmail = async () => {
+    await updateUserAttribute({ userAttribute: { attributeKey: 'email', value: email } });
+
+    const confirmationCode = prompt('確認コードを入力してください。');
+
+    if (confirmationCode === null) return;
+
+    const result = await confirmUserAttribute({ userAttributeKey: 'email', confirmationCode })
+      .then(() => true)
+      .catch(() => false);
+
+    if (result) await signOut();
   };
 
   useEffect(() => {
@@ -40,10 +64,23 @@ export const YourProfile = (props: { user: UserEntity; onClose: () => void }) =>
       <ModalBody>
         <div>ユーザー名: {props.user.name}</div>
         <Spacer axis="y" size={8} />
-        <div>メールアドレス: {props.user.email}</div>
+        <div>
+          メールアドレス:
+          <Spacer axis="x" size={8} />
+          <input
+            style={{ padding: '2px 8px', borderRadius: 6 }}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Spacer axis="x" size={8} />
+          <Btn size="small" text="SAVE" disabled={email === props.user.email} onClick={saveEmail} />
+        </div>
         <Spacer axis="y" size={8} />
         {enabledTotp ? (
-          <div>二要素認証: 有効</div>
+          <Button size="small" onClick={disableTOTP}>
+            二要素認証無効化
+          </Button>
         ) : qrCodeUrl ? (
           <View>
             <p>認証アプリでこのQRコードをスキャンしてください</p>
