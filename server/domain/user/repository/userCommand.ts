@@ -29,8 +29,9 @@ export const userCommand = {
         secB: user.challenge?.secB,
         srpAuthTimestamp: user.srpAuth?.timestamp,
         srpAuthClientSignature: user.srpAuth?.clientSignature,
-        preferredMfaSetting: user.preferredMfaSetting,
-        enabledTotp: user.mfaSettingList?.some((setting) => setting === 'SOFTWARE_TOKEN_MFA'),
+        preferredMfaSetting: user.preferredMfaSetting ?? null,
+        enabledTotp:
+          user.mfaSettingList?.some((setting) => setting === 'SOFTWARE_TOKEN_MFA') ?? null,
         totpSecretCode: user.totpSecretCode,
         attributes: { createMany: { data: user.attributes } },
         updatedAt: new Date(user.updatedTime),

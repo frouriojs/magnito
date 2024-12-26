@@ -58,9 +58,26 @@ test(SetUserMFAPreferenceCommand.name, async () => {
   await cognitoClient.send(
     new SetUserMFAPreferenceCommand({
       AccessToken: token.AccessToken,
+      SoftwareTokenMfaSettings: { PreferredMfa: true, Enabled: true },
+    }),
+  );
+
+  const user1 = await cognitoClient.send(new GetUserCommand(token));
+
+  expect(user1.PreferredMfaSetting).toBe(MFA_SETTING_LIST['0']);
+  expect(user1.UserMFASettingList?.[0]).toBe(MFA_SETTING_LIST['0']);
+
+  await cognitoClient.send(
+    new SetUserMFAPreferenceCommand({
+      AccessToken: token.AccessToken,
       SoftwareTokenMfaSettings: { PreferredMfa: false, Enabled: false },
     }),
   );
+
+  const user2 = await cognitoClient.send(new GetUserCommand(token));
+
+  expect(user2.PreferredMfaSetting).toBe(undefined);
+  expect(user2.UserMFASettingList).toBe(undefined);
 
   await cognitoClient.send(
     new SetUserMFAPreferenceCommand({
@@ -69,7 +86,15 @@ test(SetUserMFAPreferenceCommand.name, async () => {
     }),
   );
 
-  const user = await cognitoClient.send(new GetUserCommand(token));
+  await cognitoClient.send(
+    new SetUserMFAPreferenceCommand({
+      AccessToken: token.AccessToken,
+      SoftwareTokenMfaSettings: {},
+    }),
+  );
 
-  expect(user.PreferredMfaSetting).toBe(MFA_SETTING_LIST['0']);
+  const user3 = await cognitoClient.send(new GetUserCommand(token));
+
+  expect(user3.PreferredMfaSetting).toBe(MFA_SETTING_LIST['0']);
+  expect(user3.UserMFASettingList?.[0]).toBe(MFA_SETTING_LIST['0']);
 });

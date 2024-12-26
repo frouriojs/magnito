@@ -15,18 +15,28 @@ export const mfaMethod = {
 
     return { ...user, mfaSettingList: ['SOFTWARE_TOKEN_MFA'] };
   },
+  // eslint-disable-next-line complexity
   setPreference: (
     user: CognitoUserEntity,
     req: SetUserMFAPreferenceTarget['reqBody'],
   ): CognitoUserEntity => {
+    const mfaSettingList: CognitoUserEntity['mfaSettingList'] =
+      req.SoftwareTokenMfaSettings?.Enabled === undefined
+        ? user.mfaSettingList
+        : req.SoftwareTokenMfaSettings.Enabled
+          ? ['SOFTWARE_TOKEN_MFA']
+          : undefined;
+
     return {
       ...user,
-      preferredMfaSetting: req.SoftwareTokenMfaSettings?.PreferredMfa
-        ? 'SOFTWARE_TOKEN_MFA'
-        : user.preferredMfaSetting,
-      mfaSettingList: req.SoftwareTokenMfaSettings?.Enabled
-        ? ['SOFTWARE_TOKEN_MFA']
-        : user.mfaSettingList,
+      mfaSettingList,
+      preferredMfaSetting:
+        !mfaSettingList?.some((s) => s === 'SOFTWARE_TOKEN_MFA') ||
+        req.SoftwareTokenMfaSettings?.PreferredMfa === false
+          ? undefined
+          : req.SoftwareTokenMfaSettings?.PreferredMfa === undefined
+            ? user.preferredMfaSetting
+            : 'SOFTWARE_TOKEN_MFA',
     };
   },
 };
