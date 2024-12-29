@@ -3,7 +3,7 @@
 ## cognito-idp
 
 <details>
-<summary> 26% implemented  </summary>
+<summary> 29% implemented  </summary>
 
 - [ ] AddCustomAttributes
 - [ ] AdminAddUserToGroup
@@ -49,8 +49,8 @@
 - [ ] DeleteResourceServer
 - [ ] DeleteUser
 - [x] DeleteUserAttributes
-- [ ] DeleteUserPool
-- [ ] DeleteUserPoolClient
+- [x] DeleteUserPool
+- [x] DeleteUserPoolClient
 - [ ] DeleteUserPoolDomain
 - [ ] DescribeIdentityProvider
 - [ ] DescribeResourceServer
@@ -79,7 +79,7 @@
 - [ ] ListResourceServers
 - [ ] ListTagsForResource
 - [ ] ListUserImportJobs
-- [ ] ListUserPoolClients
+- [x] ListUserPoolClients
 - [x] ListUserPools
 - [x] ListUsers
 - [ ] ListUsersInGroup

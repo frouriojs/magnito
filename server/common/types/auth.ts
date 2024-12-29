@@ -21,7 +21,11 @@ import type {
   CreateUserPoolResponse,
   DeleteUserAttributesRequest,
   DeleteUserAttributesResponse,
+  DeleteUserPoolClientRequest,
+  DeleteUserPoolRequest,
   GetUserResponse,
+  ListUserPoolClientsRequest,
+  ListUserPoolClientsResponse,
   ListUserPoolsRequest,
   ListUserPoolsResponse,
   ListUsersRequest,
@@ -65,11 +69,23 @@ export type ListUsersTarget = TargetBody<ListUsersRequest, ListUsersResponse>;
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
 
+export type ListUserPoolClientsTarget = TargetBody<
+  ListUserPoolClientsRequest,
+  ListUserPoolClientsResponse
+>;
+
 export type CreateUserPoolTarget = TargetBody<CreateUserPoolRequest, CreateUserPoolResponse>;
 
 export type CreateUserPoolClientTarget = TargetBody<
   CreateUserPoolClientRequest,
   CreateUserPoolClientResponse
+>;
+
+export type DeleteUserPoolTarget = TargetBody<DeleteUserPoolRequest, Record<string, never>>;
+
+export type DeleteUserPoolClientTarget = TargetBody<
+  DeleteUserPoolClientRequest,
+  Record<string, never>
 >;
 
 export type AdminGetUserTarget = TargetBody<AdminGetUserRequest, AdminGetUserResponse>;
@@ -158,8 +174,11 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
   'AWSCognitoIdentityProviderService.ListUsers': ListUsersTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
+  'AWSCognitoIdentityProviderService.ListUserPoolClients': ListUserPoolClientsTarget;
   'AWSCognitoIdentityProviderService.CreateUserPool': CreateUserPoolTarget;
   'AWSCognitoIdentityProviderService.CreateUserPoolClient': CreateUserPoolClientTarget;
+  'AWSCognitoIdentityProviderService.DeleteUserPool': DeleteUserPoolTarget;
+  'AWSCognitoIdentityProviderService.DeleteUserPoolClient': DeleteUserPoolClientTarget;
   'AWSCognitoIdentityProviderService.AdminGetUser': AdminGetUserTarget;
   'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;

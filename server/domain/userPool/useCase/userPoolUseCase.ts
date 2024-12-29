@@ -2,6 +2,9 @@ import assert from 'assert';
 import type {
   CreateUserPoolClientTarget,
   CreateUserPoolTarget,
+  DeleteUserPoolClientTarget,
+  DeleteUserPoolTarget,
+  ListUserPoolClientsTarget,
   ListUserPoolsTarget,
 } from 'common/types/auth';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
@@ -40,6 +43,15 @@ export const userPoolUseCase = {
 
     return { UserPools: pools.map((p) => ({ Id: p.id, Name: p.name })) };
   },
+  listUserPoolClients: async (
+    req: ListUserPoolClientsTarget['reqBody'],
+  ): Promise<ListUserPoolClientsTarget['resBody']> => {
+    assert(req.UserPoolId);
+
+    const clients = await userPoolQuery.listClientAll(prismaClient, req.UserPoolId, req.MaxResults);
+
+    return { UserPoolClients: clients.map((c) => ({ ClientId: c.id, ClientName: c.name })) };
+  },
   createUserPool: (
     req: CreateUserPoolTarget['reqBody'],
   ): Promise<CreateUserPoolTarget['resBody']> =>
@@ -65,5 +77,31 @@ export const userPoolUseCase = {
       return {
         UserPoolClient: { ClientId: client.id, UserPoolId: pool.id, ClientName: client.name },
       };
+    }),
+  deleteUserPool: (
+    req: DeleteUserPoolTarget['reqBody'],
+  ): Promise<DeleteUserPoolTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.UserPoolId);
+
+      const pool = await userPoolQuery.findById(tx, req.UserPoolId);
+
+      await userPoolCommand.delete(tx, pool);
+
+      return {};
+    }),
+  deleteUserPoolClient: (
+    req: DeleteUserPoolClientTarget['reqBody'],
+  ): Promise<DeleteUserPoolClientTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.ClientId);
+
+      const client = await userPoolQuery.findClientById(tx, req.ClientId);
+
+      assert(client.userPoolId === req.UserPoolId);
+
+      await userPoolCommand.deleteClient(tx, client);
+
+      return {};
     }),
 };

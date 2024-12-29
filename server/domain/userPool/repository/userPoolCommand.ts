@@ -29,4 +29,16 @@ export const userPoolCommand = {
       },
     });
   },
+  delete: async (tx: Prisma.TransactionClient, pool: UserPoolEntity): Promise<void> => {
+    await tx.userAttribute.deleteMany({ where: { User: { userPoolId: pool.id } } });
+    await tx.user.deleteMany({ where: { userPoolId: pool.id } });
+    await tx.userPoolClient.deleteMany({ where: { userPoolId: pool.id } });
+    await tx.userPool.delete({ where: { id: pool.id } });
+  },
+  deleteClient: async (
+    tx: Prisma.TransactionClient,
+    poolClient: UserPoolClientEntity,
+  ): Promise<void> => {
+    await tx.userPoolClient.delete({ where: { id: poolClient.id } });
+  },
 };
