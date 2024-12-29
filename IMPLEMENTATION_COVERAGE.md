@@ -3,7 +3,7 @@
 ## cognito-idp
 
 <details>
-<summary> 24% implemented  </summary>
+<summary> 26% implemented  </summary>
 
 - [ ] AddCustomAttributes
 - [ ] AdminAddUserToGroup
@@ -41,8 +41,8 @@
 - [ ] CreateIdentityProvider
 - [ ] CreateResourceServer
 - [ ] CreateUserImportJob
-- [ ] CreateUserPool
-- [ ] CreateUserPoolClient
+- [x] CreateUserPool
+- [x] CreateUserPoolClient
 - [ ] CreateUserPoolDomain
 - [ ] DeleteGroup
 - [ ] DeleteIdentityProvider

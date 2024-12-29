@@ -50,7 +50,35 @@ const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
   await test();
 };
 
-transaction((tx) => Promise.all([migrateUser(tx)]))
+const migrateUserPool = async (tx: Prisma.TransactionClient): Promise<void> => {
+  const pools = await tx.userPool.findMany({ where: { name: null } });
+
+  await tx.userPool.updateMany({
+    where: { id: { in: pools.map((p) => p.id) } },
+    data: { name: 'defaultPool' },
+  });
+
+  const poolClients = await tx.userPoolClient.findMany({ where: { name: null } });
+
+  await tx.userPoolClient.updateMany({
+    where: { id: { in: poolClients.map((p) => p.id) } },
+    data: { name: 'defaultPoolClient' },
+  });
+
+  const test = async (): Promise<void> => {
+    const pools = await tx.userPool.findMany();
+
+    pools.forEach((pool) => assert(pool.name !== null));
+
+    const poolClients = await tx.userPoolClient.findMany();
+
+    poolClients.forEach((client) => assert(client.name !== null));
+  };
+
+  await test();
+};
+
+transaction((tx) => Promise.all([migrateUser(tx), migrateUserPool(tx)]))
   .catch((e) => {
     console.error(e);
     process.exit(1);

@@ -25,6 +25,8 @@ const useCases: {
   'AWSCognitoIdentityProviderService.RevokeToken': authUseCase.revokeToken,
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': signUpUseCase.resendConfirmationCode,
   'AWSCognitoIdentityProviderService.ListUserPools': userPoolUseCase.listUserPools,
+  'AWSCognitoIdentityProviderService.CreateUserPool': userPoolUseCase.createUserPool,
+  'AWSCognitoIdentityProviderService.CreateUserPoolClient': userPoolUseCase.createUserPoolClient,
   'AWSCognitoIdentityProviderService.ListUsers': authUseCase.listUsers,
   'AWSCognitoIdentityProviderService.AdminGetUser': adminUseCase.getUser,
   'AWSCognitoIdentityProviderService.AdminCreateUser': adminUseCase.createUser,

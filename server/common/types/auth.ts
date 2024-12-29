@@ -15,6 +15,10 @@ import type {
   AssociateSoftwareTokenRequest,
   AssociateSoftwareTokenResponse,
   CodeDeliveryDetailsType,
+  CreateUserPoolClientRequest,
+  CreateUserPoolClientResponse,
+  CreateUserPoolRequest,
+  CreateUserPoolResponse,
   DeleteUserAttributesRequest,
   DeleteUserAttributesResponse,
   GetUserResponse,
@@ -60,6 +64,13 @@ export type ResendConfirmationCodeTarget = TargetBody<
 export type ListUsersTarget = TargetBody<ListUsersRequest, ListUsersResponse>;
 
 export type ListUserPoolsTarget = TargetBody<ListUserPoolsRequest, ListUserPoolsResponse>;
+
+export type CreateUserPoolTarget = TargetBody<CreateUserPoolRequest, CreateUserPoolResponse>;
+
+export type CreateUserPoolClientTarget = TargetBody<
+  CreateUserPoolClientRequest,
+  CreateUserPoolClientResponse
+>;
 
 export type AdminGetUserTarget = TargetBody<AdminGetUserRequest, AdminGetUserResponse>;
 
@@ -147,6 +158,8 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': ResendConfirmationCodeTarget;
   'AWSCognitoIdentityProviderService.ListUsers': ListUsersTarget;
   'AWSCognitoIdentityProviderService.ListUserPools': ListUserPoolsTarget;
+  'AWSCognitoIdentityProviderService.CreateUserPool': CreateUserPoolTarget;
+  'AWSCognitoIdentityProviderService.CreateUserPoolClient': CreateUserPoolClientTarget;
   'AWSCognitoIdentityProviderService.AdminGetUser': AdminGetUserTarget;
   'AWSCognitoIdentityProviderService.AdminCreateUser': AdminCreateUserTarget;
   'AWSCognitoIdentityProviderService.AdminDeleteUser': AdminDeleteUserTarget;

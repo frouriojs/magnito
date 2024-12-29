@@ -48,6 +48,7 @@ model UserAttribute {
 
 model UserPool {
   id              String           @id
+  name            String?
   privateKey      String
   createdAt       DateTime
   users           User[]
@@ -56,6 +57,7 @@ model UserPool {
 
 model UserPoolClient {
   id         String   @id
+  name       String?
   createdAt  DateTime
   UserPool   UserPool @relation(fields: [userPoolId], references: [id])
   userPoolId String
