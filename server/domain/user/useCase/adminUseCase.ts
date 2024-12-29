@@ -73,7 +73,7 @@ export const adminUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
       const deletableId = adminMethod.deleteUser(user, req.UserPoolId);
 
-      await userCommand.delete(tx, deletableId, user.attributes);
+      await userCommand.delete(tx, deletableId);
 
       return {};
     }),

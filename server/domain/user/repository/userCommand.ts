@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
+import type { UserEntity } from 'common/types/user';
 
 export const userCommand = {
   // eslint-disable-next-line complexity
@@ -61,9 +61,8 @@ export const userCommand = {
   delete: async (
     tx: Prisma.TransactionClient,
     deletableUserId: EntityId['deletableUser'],
-    attributes: UserAttributeEntity[],
   ): Promise<void> => {
-    await tx.userAttribute.deleteMany({ where: { id: { in: attributes.map((attr) => attr.id) } } });
+    await tx.userAttribute.deleteMany({ where: { userId: deletableUserId } });
     await tx.user.delete({ where: { id: deletableUserId } });
   },
 };

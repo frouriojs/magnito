@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type {
   AdminCreateUserRequest,
   AdminCreateUserResponse,
@@ -23,6 +24,7 @@ import type {
   DeleteUserAttributesResponse,
   DeleteUserPoolClientRequest,
   DeleteUserPoolRequest,
+  DeleteUserRequest,
   GetUserResponse,
   ListUserPoolClientsRequest,
   ListUserPoolClientsResponse,
@@ -80,6 +82,8 @@ export type CreateUserPoolClientTarget = TargetBody<
   CreateUserPoolClientRequest,
   CreateUserPoolClientResponse
 >;
+
+export type DeleteUserTarget = TargetBody<DeleteUserRequest, Record<string, never>>;
 
 export type DeleteUserPoolTarget = TargetBody<DeleteUserPoolRequest, Record<string, never>>;
 
@@ -177,6 +181,7 @@ export type AmzTargets = {
   'AWSCognitoIdentityProviderService.ListUserPoolClients': ListUserPoolClientsTarget;
   'AWSCognitoIdentityProviderService.CreateUserPool': CreateUserPoolTarget;
   'AWSCognitoIdentityProviderService.CreateUserPoolClient': CreateUserPoolClientTarget;
+  'AWSCognitoIdentityProviderService.DeleteUser': DeleteUserTarget;
   'AWSCognitoIdentityProviderService.DeleteUserPool': DeleteUserPoolTarget;
   'AWSCognitoIdentityProviderService.DeleteUserPoolClient': DeleteUserPoolClientTarget;
   'AWSCognitoIdentityProviderService.AdminGetUser': AdminGetUserTarget;

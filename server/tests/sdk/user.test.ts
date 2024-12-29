@@ -1,10 +1,13 @@
 import {
   DeleteUserAttributesCommand,
+  DeleteUserCommand,
   GetUserCommand,
+  ListUsersCommand,
   UpdateUserAttributesCommand,
   VerifyUserAttributeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'service/cognito';
+import { DEFAULT_USER_POOL_ID } from 'service/envValues';
 import {
   createCognitoUserAndToken,
   createSocialUserAndToken,
@@ -104,6 +107,19 @@ test(VerifyUserAttributeCommand.name, async () => {
   const emailAttr = user.UserAttributes?.find((attr) => attr.Name === 'email');
 
   expect(emailAttr?.Value).toBe(newEmail);
+});
+
+test(DeleteUserCommand.name, async () => {
+  const token = await createCognitoUserAndToken();
+
+  const res1 = await cognitoClient.send(new ListUsersCommand({ UserPoolId: DEFAULT_USER_POOL_ID }));
+
+  await cognitoClient.send(new DeleteUserCommand(token));
+
+  const res2 = await cognitoClient.send(new ListUsersCommand({ UserPoolId: DEFAULT_USER_POOL_ID }));
+
+  expect(res1.Users).toHaveLength(1);
+  expect(res2.Users).toHaveLength(0);
 });
 
 test(DeleteUserAttributesCommand.name, async () => {

@@ -20,7 +20,6 @@ test(CreateUserPoolCommand.name, async () => {
   expect(client.UserPoolClient?.ClientName === 'testClient').toBeTruthy();
 });
 
-// eslint-disable-next-line complexity
 test(DeleteUserPoolCommand.name, async () => {
   const pool = await cognitoClient.send(new CreateUserPoolCommand({ PoolName: 'testPool' }));
 
@@ -41,8 +40,8 @@ test(DeleteUserPoolCommand.name, async () => {
 
   const res2 = await cognitoClient.send(new ListUserPoolsCommand({ MaxResults: 100 }));
 
-  expect(res1.UserPools?.length).toBe(2);
-  expect(res2.UserPools?.length).toBe(1);
+  expect(res1.UserPools).toHaveLength(2);
+  expect(res2.UserPools).toHaveLength(1);
 });
 
 // eslint-disable-next-line complexity
@@ -67,6 +66,6 @@ test(DeleteUserPoolClientCommand.name, async () => {
     new ListUserPoolClientsCommand({ UserPoolId: pool.UserPool?.Id, MaxResults: 100 }),
   );
 
-  expect(res1.UserPoolClients?.length).toBe(1);
-  expect(res2.UserPoolClients?.length).toBe(0);
+  expect(res1.UserPoolClients).toHaveLength(1);
+  expect(res2.UserPoolClients).toHaveLength(0);
 });

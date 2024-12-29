@@ -4,6 +4,7 @@ import { authUseCase } from 'domain/user/useCase/authUseCase';
 import { mfaUseCase } from 'domain/user/useCase/mfaUseCase';
 import { signInUseCase } from 'domain/user/useCase/signInUseCase';
 import { signUpUseCase } from 'domain/user/useCase/signUpUseCase';
+import { userUseCase } from 'domain/user/useCase/userUseCase';
 import { userPoolUseCase } from 'domain/userPool/useCase/userPoolUseCase';
 import { returnPostError } from 'service/returnStatus';
 import type { AmzTargets } from '../common/types/auth';
@@ -28,6 +29,7 @@ const useCases: {
   'AWSCognitoIdentityProviderService.ListUserPoolClients': userPoolUseCase.listUserPoolClients,
   'AWSCognitoIdentityProviderService.CreateUserPool': userPoolUseCase.createUserPool,
   'AWSCognitoIdentityProviderService.CreateUserPoolClient': userPoolUseCase.createUserPoolClient,
+  'AWSCognitoIdentityProviderService.DeleteUser': userUseCase.deleteUser,
   'AWSCognitoIdentityProviderService.DeleteUserPool': userPoolUseCase.deleteUserPool,
   'AWSCognitoIdentityProviderService.DeleteUserPoolClient': userPoolUseCase.deleteUserPoolClient,
   'AWSCognitoIdentityProviderService.ListUsers': authUseCase.listUsers,
