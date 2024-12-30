@@ -5,14 +5,16 @@ import { toUserPoolClientEntity, toUserPoolEntity } from './toUserPoolEntity';
 
 export const userPoolQuery = {
   listAll: (tx: Prisma.TransactionClient, limit?: number): Promise<UserPoolEntity[]> =>
-    tx.userPool.findMany({ take: limit }).then((pools) => pools.map(toUserPoolEntity)),
+    tx.userPool
+      .findMany({ take: limit, orderBy: { createdAt: 'asc' } })
+      .then((pools) => pools.map(toUserPoolEntity)),
   listClientAll: (
     tx: Prisma.TransactionClient,
     userPoolId: string,
     limit?: number,
   ): Promise<UserPoolClientEntity[]> =>
     tx.userPoolClient
-      .findMany({ where: { userPoolId }, take: limit })
+      .findMany({ where: { userPoolId }, take: limit, orderBy: { createdAt: 'asc' } })
       .then((clients) => clients.map(toUserPoolClientEntity)),
   findById: (tx: Prisma.TransactionClient, userPoolId: string): Promise<UserPoolEntity> =>
     tx.userPool.findUniqueOrThrow({ where: { id: userPoolId } }).then(toUserPoolEntity),

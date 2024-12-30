@@ -18,11 +18,21 @@ export const userQuery = {
           kind: USER_KINDS.social,
         },
         include: { attributes: true },
+        orderBy: { createdAt: 'asc' },
       })
       .then((users) => users.map(toSocialUserEntity)),
-  listAll: (tx: Prisma.TransactionClient, userPoolId: string): Promise<UserEntity[]> =>
+  listAll: (
+    tx: Prisma.TransactionClient,
+    userPoolId: string,
+    limit?: number,
+  ): Promise<UserEntity[]> =>
     tx.user
-      .findMany({ where: { userPoolId }, include: { attributes: true } })
+      .findMany({
+        where: { userPoolId },
+        include: { attributes: true },
+        take: limit,
+        orderBy: { createdAt: 'asc' },
+      })
       .then((users) => users.map(toUserEntity)),
   findById: (
     tx: Prisma.TransactionClient,
