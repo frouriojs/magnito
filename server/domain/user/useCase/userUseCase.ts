@@ -14,9 +14,6 @@ export const userUseCase = {
 
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
-
-      assert(user.kind === 'cognito');
-
       const deletableId = userMethod.delete(user);
 
       await userCommand.delete(tx, deletableId);

@@ -12,7 +12,12 @@ import assert from 'assert';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
-import { createCognitoUserAndToken, fetchMailBodyAndTrash, inbucketClient } from 'tests/api/utils';
+import {
+  createCognitoUserAndToken,
+  createSocialUserAndToken,
+  fetchMailBodyAndTrash,
+  inbucketClient,
+} from 'tests/api/utils';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 
@@ -107,8 +112,18 @@ test(`${AdminCreateUserCommand.name} - unset TemporaryPassword`, async () => {
   expect(res.UserStatus).toBe(UserStatusType.FORCE_CHANGE_PASSWORD);
 });
 
-test(AdminDeleteUserCommand.name, async () => {
+test(`${AdminDeleteUserCommand.name} - cognito`, async () => {
   const userClient = await createCognitoUserAndToken().then(createUserClient);
+
+  await cognitoClient.send(
+    new AdminDeleteUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
+
+  await expect(userClient.private.me.get()).rejects.toThrow();
+});
+
+test(`${AdminDeleteUserCommand.name} - social`, async () => {
+  const userClient = await createSocialUserAndToken().then(createUserClient);
 
   await cognitoClient.send(
     new AdminDeleteUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),

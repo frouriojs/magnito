@@ -109,9 +109,8 @@ test(VerifyUserAttributeCommand.name, async () => {
   expect(emailAttr?.Value).toBe(newEmail);
 });
 
-test(DeleteUserCommand.name, async () => {
+test(`${DeleteUserCommand.name} - cognito`, async () => {
   const token = await createCognitoUserAndToken();
-
   const res1 = await cognitoClient.send(new ListUsersCommand({ UserPoolId: DEFAULT_USER_POOL_ID }));
 
   await cognitoClient.send(new DeleteUserCommand(token));
@@ -122,8 +121,45 @@ test(DeleteUserCommand.name, async () => {
   expect(res2.Users).toHaveLength(0);
 });
 
-test(DeleteUserAttributesCommand.name, async () => {
+test(`${DeleteUserCommand.name} - social`, async () => {
+  const token = await createSocialUserAndToken();
+  const res1 = await cognitoClient.send(new ListUsersCommand({ UserPoolId: DEFAULT_USER_POOL_ID }));
+
+  await cognitoClient.send(new DeleteUserCommand(token));
+
+  const res2 = await cognitoClient.send(new ListUsersCommand({ UserPoolId: DEFAULT_USER_POOL_ID }));
+
+  expect(res1.Users).toHaveLength(1);
+  expect(res2.Users).toHaveLength(0);
+});
+
+test(`${DeleteUserAttributesCommand.name} - cognito`, async () => {
   const token = await createCognitoUserAndToken();
+  const attrName1 = 'custom:test1';
+  const attrName2 = 'custom:test2';
+
+  await cognitoClient.send(
+    new UpdateUserAttributesCommand({
+      ...token,
+      UserAttributes: [
+        { Name: attrName1, Value: 'sample1' },
+        { Name: attrName2, Value: 'sample2' },
+      ],
+    }),
+  );
+
+  await cognitoClient.send(
+    new DeleteUserAttributesCommand({ ...token, UserAttributeNames: [attrName1] }),
+  );
+
+  const user = await cognitoClient.send(new GetUserCommand(token));
+
+  expect(user.UserAttributes?.every((attr) => attr.Name !== attrName1)).toBeTruthy();
+  expect(user.UserAttributes?.some((attr) => attr.Name === attrName2)).toBeTruthy();
+});
+
+test(`${DeleteUserAttributesCommand.name} - social`, async () => {
+  const token = await createSocialUserAndToken();
   const attrName1 = 'custom:test1';
   const attrName2 = 'custom:test2';
 

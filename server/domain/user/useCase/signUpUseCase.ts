@@ -43,6 +43,9 @@ export const signUpUseCase = {
   confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
+
+      assert(user.kind === 'cognito');
+
       const confirmed = cognitoUserMethod.confirm(user, req.ConfirmationCode);
 
       await userCommand.save(tx, confirmed);
@@ -57,6 +60,7 @@ export const signUpUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
 
       assert(poolClient.userPoolId === user.userPoolId);
+      assert(user.kind === 'cognito');
 
       await sendConfirmationCode(user);
 

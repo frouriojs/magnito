@@ -22,15 +22,6 @@ import { toAttributeTypes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import { sendTemporaryPassword } from '../service/sendAuthMail';
 
-const findUser = async (
-  tx: Prisma.TransactionClient,
-  req: AdminCreateUserTarget['reqBody'],
-): Promise<CognitoUserEntity> => {
-  assert(req.Username);
-
-  return await userQuery.findByName(tx, req.Username);
-};
-
 const createUser = async (
   tx: Prisma.TransactionClient,
   req: AdminCreateUserTarget['reqBody'],
@@ -57,7 +48,13 @@ export const adminUseCase = {
   },
   createUser: (req: AdminCreateUserTarget['reqBody']): Promise<AdminCreateUserTarget['resBody']> =>
     transaction(async (tx) => {
-      const user = await (req.MessageAction === 'RESEND' ? findUser : createUser)(tx, req);
+      assert(req.Username);
+
+      const user = await (req.MessageAction === 'RESEND'
+        ? userQuery.findByName(tx, req.Username)
+        : createUser(tx, req));
+
+      assert(user.kind === 'cognito');
 
       if (req.MessageAction !== 'SUPPRESS') await sendTemporaryPassword(user);
 
@@ -115,6 +112,8 @@ export const adminUseCase = {
 
       const user = await userQuery.findByName(tx, req.Username);
 
+      assert(user.kind === 'cognito');
+
       await userCommand.save(tx, adminMethod.setUserPassword(user, req));
 
       return {};
@@ -126,6 +125,8 @@ export const adminUseCase = {
       assert(req.Username);
 
       const user = await userQuery.findByName(tx, req.Username);
+
+      assert(user.kind === 'cognito');
 
       await userCommand.save(tx, adminMethod.updateAttributes(user, req.UserAttributes));
 

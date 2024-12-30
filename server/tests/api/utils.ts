@@ -66,7 +66,7 @@ export const createSocialUserAndToken = async (): Promise<{ AccessToken: string 
   const user = await noCookieClient.public.socialUsers.$post({
     body: {
       provider: 'Google',
-      name: 'user1',
+      name: testUserName,
       email: `${ulid()}@example.com`,
       codeChallenge: createHash('sha256').update(codeVerifier).digest('base64url'),
       userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,

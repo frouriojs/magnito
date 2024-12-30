@@ -79,7 +79,9 @@ export const authUseCase = {
     transaction(async (tx) => {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const user = await userQuery.findByName(tx, req.Username);
+
       assert(poolClient.userPoolId === user.userPoolId);
+      assert(user.kind === 'cognito');
 
       const forgotUser = cognitoUserMethod.forgotPassword(user);
       await userCommand.save(tx, forgotUser);
@@ -92,6 +94,8 @@ export const authUseCase = {
   ): Promise<ConfirmForgotPasswordTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
+
+      assert(user.kind === 'cognito');
 
       await userCommand.save(
         tx,

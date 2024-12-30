@@ -19,7 +19,9 @@ export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME).catch(() => null);
+
       cognitoAssert(user, 'Incorrect username or password.');
+      assert(user.kind === 'cognito');
 
       const { userWithChallenge, ChallengeParameters } = signInMethod.createChallenge(
         user,
@@ -65,6 +67,7 @@ export const signInUseCase = {
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
+      assert(user.kind === 'cognito');
 
       if (req.ChallengeName === 'PASSWORD_VERIFIER') {
         assert(user.challenge);

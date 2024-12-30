@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
 import { USER_KINDS } from 'common/constants';
 import type { MaybeId } from 'common/types/brandedId';
-import type { CognitoUserEntity, SocialUserEntity, UserEntity } from 'common/types/user';
-import { toCognitoUserEntity, toSocialUserEntity, toUserEntity } from './toUserEntity';
+import type { SocialUserEntity, UserEntity } from 'common/types/user';
+import { toSocialUserEntity, toUserEntity } from './toUserEntity';
 
 export const userQuery = {
   countId: (tx: Prisma.TransactionClient, id: string): Promise<number> =>
@@ -39,10 +39,8 @@ export const userQuery = {
     id: UserEntity['id'] | MaybeId['socialUser'],
   ): Promise<UserEntity> =>
     tx.user.findUniqueOrThrow({ where: { id }, include: { attributes: true } }).then(toUserEntity),
-  findByName: (tx: Prisma.TransactionClient, name: string): Promise<CognitoUserEntity> =>
-    tx.user
-      .findFirstOrThrow({ where: { name }, include: { attributes: true } })
-      .then(toCognitoUserEntity),
+  findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserEntity> =>
+    tx.user.findFirstOrThrow({ where: { name }, include: { attributes: true } }).then(toUserEntity),
   findByRefreshToken: (tx: Prisma.TransactionClient, refreshToken: string): Promise<UserEntity> =>
     tx.user
       .findFirstOrThrow({ where: { refreshToken }, include: { attributes: true } })
