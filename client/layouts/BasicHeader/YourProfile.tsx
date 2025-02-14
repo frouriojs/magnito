@@ -13,18 +13,19 @@ import type { UserEntity } from 'common/types/user';
 import { Btn } from 'components/Btn/Btn';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import { Spacer } from 'components/Spacer';
+import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 
 export const YourProfile = (props: { user: UserEntity; onClose: () => void }) => {
   const [enabledTotp, setEnabledTotp] = useState<boolean>();
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [qrDataURL, setQrDataURL] = useState<string | null>(null);
   const [totpCode, setTotpCode] = useState('');
   const [email, setEmail] = useState(props.user.email);
   const enableTOTP = async () => {
     const totpSetupDetails = await setUpTOTP();
-    const setupUri = totpSetupDetails.getSetupUri(APP_NAME);
+    const setupUri = totpSetupDetails.getSetupUri(APP_NAME, props.user.name);
 
-    setQrCodeUrl(setupUri.toString());
+    await QRCode.toDataURL(setupUri.toString(), { width: 160 }).then(setQrDataURL);
   };
   const disableTOTP = async () => {
     await updateMFAPreference({ totp: 'DISABLED' });
@@ -35,8 +36,10 @@ export const YourProfile = (props: { user: UserEntity; onClose: () => void }) =>
   const verifyTOTP = async () => {
     await verifyTOTPSetup({ code: totpCode });
     await updateMFAPreference({ totp: 'PREFERRED' });
+
     alert('二要素認証が有効になりました。');
-    setQrCodeUrl('');
+    setQrDataURL(null);
+    setEnabledTotp(true);
   };
   const saveEmail = async () => {
     await updateUserAttribute({ userAttribute: { attributeKey: 'email', value: email } });
@@ -81,16 +84,10 @@ export const YourProfile = (props: { user: UserEntity; onClose: () => void }) =>
           <Button size="small" onClick={disableTOTP}>
             二要素認証無効化
           </Button>
-        ) : qrCodeUrl ? (
+        ) : qrDataURL ? (
           <View>
             <p>認証アプリでこのQRコードをスキャンしてください</p>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
-                qrCodeUrl,
-              )}`}
-              alt="TOTP QR Code"
-              style={{ padding: 16, width: 150 }}
-            />
+            <img src={qrDataURL} alt="TOTP QR Code" />
             <TextField
               label="ワンタイムトークンコードを入力"
               placeholder="123456"
